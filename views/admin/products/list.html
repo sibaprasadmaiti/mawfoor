@@ -1,0 +1,465 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>       
+<!-- page content -->
+<style type="text/css">
+    .img{margin: 0;display: flex;flex-direction: row;overflow: scroll;height: 6em;width: 230px;overflow: auto;display: -webkit-inline-box;}
+    .onoffswitch {position: relative; width: 90px;-webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;}
+    .onoffswitch-checkbox {position: absolute;opacity: 0;pointer-events: none;}
+    .onoffswitch-label {display: block; overflow: hidden; cursor: pointer;border: 2px solid #999999; border-radius: 20px;}
+    .onoffswitch-inner {display: block; width: 200%; margin-left: -100%;transition: margin 0.3s ease-in 0s;}
+    .onoffswitch-inner:before, .onoffswitch-inner:after {display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;box-sizing: border-box;}
+    .onoffswitch-inner:before {content: "ON";padding-left: 10px;background-color: #34A7C1; color: #FFFFFF;}
+    .onoffswitch-inner:after {content: "OFF";padding-right: 10px;background-color: #EEEEEE; color: #999999;text-align: right;}
+    .onoffswitch-switch {display: block; width: 18px; margin: 6px;background: #FFFFFF;position: absolute; top: 0; bottom: 0;right: 56px;border: 2px solid #999999; border-radius: 20px;transition: all 0.3s ease-in 0s;}
+    .onoffswitch-inner1:b                efore, .onoffswitch-inner1:after {display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;box-sizing: border-box;}
+    .onoffswitch-inner1:after {content: "ON";padding-left: 10px;background-color: #34A7C1; color: #FFFFFF;}
+    .onoffswitch-inner1:before {content: "OFF";padding-right: 10px;background-color: #EEEEEE;color: #999999;text-align: right;}
+    .onoffswitch-switch {display: block; width: 18px; margin: 6px;background: #FFFFFF;position: absolute; top: 0; bottom: 0;right: 56px;border: 2px solid #999999; border-radius: 20px;transition: all 0.3s ease-in 0s;}
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {margin-left: 0;}
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner1 {margin-left: 0;}
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {right: 0px;
+}
+</style>
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%> <%=arrCatFilter%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+        <% if(messages!='') {%>
+            <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+        <%}%>
+        <% if(errors!='') {%>
+            <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+        <% }%>
+        <div class="content_body">
+            <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+                <h3>Manage Products</h3>
+                <!-- <div class="title_right text-right">
+                    <a href="<%= adminbaseurl %>products/exclereport" class="btn btn-success right">  Export Product List</a>
+                </div> -->
+                <div>
+                    <select name="filter" id="filter" class="form-control" onchange="getval(this)">
+                        <option value="" selected disabled>--Category Filter--</option>
+                        <% if(arrCategory!=''){ %>
+                            <% arrCategory.forEach(function(cat) { %>
+                                <option value="<%= cat.id %>" <% if(cat.id==arrCatFilter){%>selected="selected" <%} %>><%= cat.title %></option>
+                            <% }) %>
+                        <% } %>
+                        <!-- <option value="0" <% if(arrCatFilter == 'all'){%>selected="selected" <%} %>>All</option> -->
+                    </select>
+                </div>
+                <form align="right" class="example" id="searchResultForm" action="<%= adminbaseurl %>products" style=" display: flex;">
+                    <div class="searchcom">
+                        <input id="serProduct" type="text" placeholder="Search.." name="search" class="form-control" value="<%= arrSearchData ? arrSearchData : '' %>" />
+                        <button  type="submit" ><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+                <ul></ul>
+            </div> 
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr>
+                            <th class="checkbox_cell"></th>
+                            <th style="width:15px">Sl No</th>
+                            <th>Title</th>
+							<th>Category</th>
+                            <th>Price</th>
+                            <!-- <th>Stocks</th> -->
+                            <th>Image</th>
+                            <th>Status</th>
+                            <!-- <th></th> -->
+                            <th>Action</th>
+                            <th width="100px"><a href="<%= adminbaseurl %>products/addedit" class="add_btn"><span>+</span></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(arrData!=''){ %>
+                            <% var i= startingNumber ? startingNumber : 1;
+                            arrData.forEach(function(val) { %>
+                                <tr>
+                                    <td class="checkbox_cell"></td>
+                                    <td> <%= i %></td>
+                                    <% if(arrCatFilter !=''){ %>
+                                        <td><%= val.product.title %></td>
+                                    <% } else { %>
+                                        <td><%= val.title %></td>
+                                    <% } %>
+                                    
+                                    <% if(arrCatFilter !=''){
+                                        if(arrProductCategory){
+                                            var allCatTitle = '';
+                                            var categoryTitle =[];
+                                            arrProductCategory.forEach(function(proCat){ 
+                                                if(proCat.productId==val.product.id) {
+                                                    catTitle = proCat.category.title+', ';
+                                                } else {
+                                                    catTitle = '';
+                                                } 
+                                                categoryTitle.push({
+                                                    "catTitle":catTitle
+                                                });                                                   
+                                            });
+                                        }
+                                        for(var j=0; j < categoryTitle.length; j++){
+                                            allCatTitle += categoryTitle[j].catTitle
+                                        } 
+                                    } else {
+
+                                        if(arrProductCategory){
+                                            var allCatTitle = '';
+                                            var categoryTitle =[];
+                                            arrProductCategory.forEach(function(proCat){ 
+                                                if(proCat.productId==val.id) {
+                                                    catTitle = proCat.category.title+', ';
+                                                } else {
+                                                    catTitle = '';
+                                                } 
+                                                categoryTitle.push({
+                                                    "catTitle":catTitle
+                                                });                                                   
+                                            });
+                                        }
+                                        for(var j=0; j < categoryTitle.length; j++){
+                                            allCatTitle += categoryTitle[j].catTitle
+                                        } 
+
+                                    } %>
+                                    <td><%= allCatTitle.slice(0,-2) %>  </td>
+
+                                    <% if(arrCatFilter !=''){ %>
+                                        <td><%= val.product.price %>  </td> 
+                                    <% } else { %>
+                                        <td><%= val.price %>  </td> 
+                                    <% } %>
+
+                                    <!-- <td><%= val.price %>  </td>  -->
+                                    
+                                    <!-- <% if(arrCatFilter !=''){ %>
+                                        <% if(val.product.stock =='' || val.product.stock == 0){%>                              
+                                            <td class="text-danger">Out of stock</td>  
+                                        <% }else{ %>                              
+                                            <td><%= val.product.stock %>  </td>  
+                                        <% } %>
+                                    <% } else { %>
+                                        <% if(val.stock =='' || val.stock == 0){%>                              
+                                            <td class="text-danger">Out of stock</td>  
+                                        <% }else{ %>                              
+                                            <td><%= val.stock %>  </td>  
+                                        <% } %>
+                                    <% } %> -->
+                                    <!-- <% if(val.stock =='' || val.stock == 0){%>                              
+                                        <td class="text-danger">Out of stock</td>  
+                                    <% }else{ %>                              
+                                        <td><%= val.stock %>  </td>  
+                                    <% } %> -->
+
+                                    <% if(arrCatFilter !=''){ %>
+                                        <td> 
+                                            <% if(val.image !='' && val.image != null){%>
+                                                <a href="/admin/products/image/<%= val.id %>/<%= val.image %>"><img src="<%= baseurl  %>admin/products/image/<%= val.product.id %>/<%= val.image %>" class="product_img" height="50px" width="50px" ></a>
+                                            <% }else{ %>
+                                                <img src="<%= baseurl + 'user_contents/no_image.jpg' %>" class="product_img" height="50px" width="50px" >
+                                            <% } %>
+                                        </td>
+                                    <% } else { %>
+                                        <td>
+
+                                            <% if(val.image !=''){%>
+                                                <a href="/admin/products/image/<%= val.id %>/<%= val.image %>"><img src="<%= baseurl  %>admin/products/image/<%= val.id %>/<%= val.image %>" class="product_img" height="50px" width="50px" ></a>
+                                            <% }else{ %>
+                                                <a href="<%= baseurl + 'user_contents/no_image.jpg' %>"><img src="<%= baseurl + 'user_contents/no_image.jpg' %>" class="product_img" height="50px" width="50px" ></a>
+                                            <% } %>
+                                            
+                                        </td>
+                                    <% } %>
+
+                                    <!-- <td> 
+                                        <% if(val.file !='' && val.file != null){%>
+                                            <img src="/admin/products/images/file/<%= val.file %>" class="product_img" height="50px" width="50px" >
+                                        <% }else{ %>
+                                            <img src="<%= baseurl + 'user_contents/no_image.jpg' %>" class="product_img" height="50px" width="50px" >
+                                        <% } %>
+                                    </td> -->
+
+                                    <% if(arrCatFilter !=''){ %>
+                                        <td>
+                                            <select class="orderStatusClass" id="oderStatus">
+                                                <option  productId="<%= val.product.id %>" value="active" <%= (val.product.status == "active" ? "selected=selected" : '') %>>Active</option>
+                                                <option  productId="<%= val.product.id %>" value="inactive" <%= (val.product.status == "inactive" ? "selected=selected" : '') %>>Inactive</option>
+                                            </select>
+                                        </td>
+                                        <!-- <td>
+                                            <div class="onoffswitch">
+                                                <input type="checkbox" name="onoffswitch"  value="" class="onoffswitch-checkbox" id="myonoffswitch_<%= val.product.id %>" tabindex="0"  onchange="orderBy('on','<%= val.product.id %>','<%= val.product.fromDate %>','<%= val.product.toDate %>')" checked="checked" />
+                                                <label class="onoffswitch-label" for="myonoffswitch_<%= val.product.id %>"><span class="onoffswitch-switch"></span><span  class="onoffswitch-inner"></span></label>
+                                            </div>
+                                        </td> -->
+                                    <% } else { %>
+                                        <td>
+                                            <select class="orderStatusClass" id="oderStatus">
+                                                <option  productId="<%= val.id %>" value="active" <%= (val.status == "active" ? "selected=selected" : '') %>>Active</option>
+                                                <option  productId="<%= val.id %>" value="inactive" <%= (val.status == "inactive" ? "selected=selected" : '') %>>Inactive</option>
+                                            </select>
+                                        </td>
+                                        <!-- <td>
+                                            <div class="onoffswitch">
+                                                <input type="checkbox" name="onoffswitch"  value="" class="onoffswitch-checkbox" id="myonoffswitch_<%= val.id %>" tabindex="0"  onchange="orderBy('on','<%= val.id %>','<%= val.fromDate %>','<%= val.toDate %>')" checked="checked" />
+                                                <label class="onoffswitch-label" for="myonoffswitch_<%= val.id %>"><span class="onoffswitch-switch"></span><span  class="onoffswitch-inner"></span></label>
+                                            </div>
+                                        </td> -->
+                                    <% } %>
+
+                                    <!-- <td>
+                                        <select class="orderStatusClass" id="oderStatus">
+                                            <option  productId="<%= val.id %>" value="active" <%= (val.status == "active" ? "selected=selected" : '') %>>Active</option>
+                                            <option  productId="<%= val.id %>" value="inactive" <%= (val.status == "inactive" ? "selected=selected" : '') %>>Inactive</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="onoffswitch">
+                                            <input type="checkbox" name="onoffswitch"  value="" class="onoffswitch-checkbox" id="myonoffswitch_<%= val.id %>" tabindex="0"  onchange="orderBy('on','<%= val.id %>','<%= val.fromDate %>','<%= val.toDate %>')" checked="checked" />
+                                            <label class="onoffswitch-label" for="myonoffswitch_<%= val.id %>"><span class="onoffswitch-switch"></span><span  class="onoffswitch-inner"></span></label>
+                                        </div>
+                                    </td> -->
+
+                                    <% if(arrCatFilter !=''){ %>
+                                        <td>
+                                            <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                                                permissions.find(permission=> {
+                                                return permission === 'ProductView'
+                                                })
+                                                }
+                                                if(userPermission==true){ %>
+                                                <a href="<%= adminbaseurl%>products/addedit/<%= val.product.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                            <%}%>
+                                            <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                                                permissions.find(permission=> {
+                                                return permission === 'ProductDelete'
+                                                })
+                                                }
+                                                if(userPermission==true){ %>
+                                                <a href="<%= adminbaseurl%>products/delete/<%= val.product.id %>" class="edit_btn"
+                                                    onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                                            <%}%>
+                                            
+                                        </td>
+                                    <% } else { %>
+                                        <td>
+                                            <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                                                permissions.find(permission=> {
+                                                return permission === 'ProductView'
+                                                })
+                                                }
+                                                if(userPermission==true){ %>
+                                                <a href="<%= adminbaseurl%>products/addedit/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                            <%}%>
+                                            <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                                                permissions.find(permission=> {
+                                                return permission === 'ProductDelete'
+                                                })
+                                                }
+                                                if(userPermission==true){ %>
+                                                <a href="<%= adminbaseurl%>products/delete/<%= val.id %>" class="edit_btn"
+                                                    onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                                            <%}%>
+                                            
+                                        </td>
+                                    <% } %>
+
+                                    <!-- <td>
+                                        <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                                            permissions.find(permission=> {
+                                            return permission === 'ProductView'
+                                            })
+                                            }
+                                            if(userPermission==true){ %>
+                                            <a href="<%= adminbaseurl%>products/addedit/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                        <%}%>
+                                        <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                                            permissions.find(permission=> {
+                                            return permission === 'ProductDelete'
+                                            })
+                                            }
+                                            if(userPermission==true){ %>
+                                            <a href="<%= adminbaseurl%>products/delete/<%= val.id %>" class="edit_btn"
+                                                onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                                        <%}%>
+                                        
+                                    </td> -->
+                                    <td>&nbsp;</td>
+                                </tr>
+                            <% i++; }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <%  if (paginate.hasPreviousPages || previousPage) { %>
+            <div class="pagination_sec">
+                <div class="table_info">Showing <%= startingNumber ? startingNumber : '' %> to <%= endingNumber ? endingNumber : '' %> of <%= itemCount ? itemCount : ''%> entries</div>
+                <ul>
+                    <% if(paginate.hasPreviousPages) {%>
+                        <li><a href="<%= paginate.href(true) %>">Previous</a></li>
+                    <% } else { %>
+                        <li><a href="javascript:void(0)" class="disable">Previous</a></li>
+                    <% } %>
+                    <% pages.forEach(function(page) { %>
+                        <li><a href="<%= page.url %>" <% if(currentPage && currentPage == page.number ) {%> class="active" <% } %>><%= page.number%></a></li>
+                    <%  }) %>
+                    <% if(previousPage) {%>
+                        <li><a href="<%= paginate.href() %>">Next</a></li>
+                    <% }else{ %>
+                        <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                    <% } %>
+                </ul>
+            </div> 
+        <% } %>
+    </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>products/add/date">
+                    <label for="fname">Form Date:</label><br>
+                    <input type="date" id="fdate" name="fdate" value=""><br>
+                    <label for="lname">To Date:</label><br>
+                    <input type="date" id="tdate" name="tdate" value=""><br><br>
+                    <input type="hidden" name="productId" id="productId" value="">
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<!-- <style>
+    td{width: 140px;height: 5px;border: 1px solid #faefef;}
+    td.container{writing-mode: horizontal-rl;word-wrap: break-word;}
+</style> -->
+<script type="text/javascript">
+    $("#checkAll").click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+    $(document).ready(function(){
+        var checkboxes = $('.checkbox input[type="checkbox"]');
+        checkboxes.change(function(){
+            var countCheckedCheckboxes = checkboxes.filter(':checked').length;
+            if(countCheckedCheckboxes > 0){
+                $('.label_info').text(countCheckedCheckboxes+' item(s) selected');
+            } else {
+                $('.label_info').text('No item selected');
+            }
+        });
+    });
+    function deleteProduct() {
+        var chkArray = [];
+        /* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
+        $(".checkbox input:checked").each(function() {
+            chkArray.push($(this).val());
+        });
+        var chkArraylengh = chkArray.length;
+        if(chkArraylengh > 0){
+            //console.log(chkArray)
+            var productData = { 'check' :chkArray}
+            var answer = confirm ("Are you sure you want to delete from the database?");
+            if(answer){
+                $.ajax({
+                    url: "<%= apiurl %>productmul/delete",
+                    type:'POST',
+                    data: productData,
+                    success:function(response){
+                        //console.log(response)
+                        //alert('')
+                        if(response.value==1)
+                            window.location.reload();
+                    }, error: function (e) {
+                        console.log("ERROR : ", e);
+                    }
+                });
+            }
+        } else {
+            alert('For delete select first ');
+        }
+    }
+    $(document).ready(function() {
+        $('#searchResultForm').on('submit', function(e){
+            var data  =  document.getElementById("serProduct").value;
+            if(!data || data == ''){
+                e.preventDefault();
+            }
+        });
+        $('#filterResultForm').on('submit', function(e){
+            var data  =  document.getElementById("filter").value;  
+            if(!data || data == ''){
+                e.preventDefault();
+            }
+        });
+    });
+    function getval(cat) {
+        window.open('<%= adminbaseurl %>products?filter='+cat.value,"_self");
+    }
+    $('.orderStatusClass').change(function(){
+        var productId = $(this).find('option:selected').attr('productId');
+        var statusData = $(this).find('option:selected').val();
+        var previousStatus = $(this).prev().text();
+        var answer = confirm ("Are you sure you want to change the status?");
+        if(answer){
+            $.ajax({ 
+                url: "<%= adminbaseurl %>products/StatusChange/"+productId+'/'+statusData,
+                type:'GET',
+                success:function(response){
+                    console.log(response)
+                    var refreshedUrl = $("#searchResultForm").attr("action");
+                    window.location.href(refreshedUrl)          
+                }, error: function (e) {
+                    console.log("ERROR : ", e);
+                }
+            }); 
+        } else {
+            $(this).find("option[value="+previousStatus+"]").prop('selected', 'selected').change();
+        }
+    });
+    var counter = 30;
+    window.setInterval(function () {
+        counter--;
+        if (counter >= 0) {
+            var span;
+            span = document.getElementById("cnt");
+        }
+        if (counter === 0) {
+            clearInterval(counter);
+        }
+    }, 1000);
+    function refresh() {
+        window.location.href = window.location.href;
+    }
+    function orderBy(val,id,fromDate,toDate){
+        var productId=id;
+        var fromDateN=fromDate
+        var toDateN=toDate
+        if(val=='on'){
+            $("#myonoffswitch_"+id).attr("onclick", "orderBy('off')");
+            $('#myModal').modal('show');
+            $("#productId").val(productId);
+            $("#fdate").val(fromDateN);
+            $("#tdate").val(toDateN);
+        } else {
+            $("#myonoffswitch_"+id).attr("onchange", "orderBy('on')");
+        }
+    }
+</script>

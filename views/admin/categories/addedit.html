@@ -1,0 +1,327 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>       
+
+
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<script src="<%= adminbaseurl %>ckeditor/ckeditor.js"></script>
+
+<!-- page content -->
+
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+			<li><a href="<%= adminbaseurl %>categories">Categories</a></li>
+            <li><%=title%></li>
+          </ul>
+			</div>
+			
+			<% if(messages!='') {%>
+			<div class="succ_msg msg" id="succ_msg">    
+				<i class="fa fa-check"  aria-hidden="true"></i>        
+				<%=messages%>
+			</div>
+			<%}%>                
+			<% if(errors!='') {%>
+			<div class="succ_err msg" id="err_msg">
+				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+				<%=errors%>
+			</div>
+			<% }%> 
+
+
+      <form id="category-info" class="form-horizontal form-label-left" novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>categories/add">
+          <div class="content_body panel_body">
+            <!-- <h3><%=messages%></h3> -->
+            <div class="panel_title">
+              <h3><%=title%> Info</h3>
+            </div>
+                
+            <div class="clearfix"></div>
+            <!-- <ul class="nav nav-tabs custom_tab"> -->
+              <!-- <li><a data-toggle="tab" href="#gen-info" class="active show">General Information</a></li> -->
+              <!-- <!- - <li><a data-toggle="tab" href="#products">Products</a></li> --> 
+            <!-- </ul> -->
+
+					<div class="tab-content">
+
+						<!--category content start-->
+							<div id="gen-info" class="tab-pane fade in active show">
+
+								<div class="row edit_box">
+									
+										
+
+										<div class="col-sm-6"> 
+											<div class="animate_form field">
+													<input id="name" required="required" class="form-control" name="title" type="text" value="<%= arrData ? arrData.title : '' %>">
+													<span>Title<span>*</span></span>
+												<div class="alert_msg"></div>
+											</div>
+										</div>
+
+										<!-- <div class="col-sm-6"> 
+											<div class="animate_form field">
+													<input id="email" required="required" class="form-control" name="email" type="email" value="<%= arrData ? arrData.email : '' %>">
+													<span>Email<span>*</span></span>
+												<div class="alert_msg"></div>
+											</div>
+										</div>
+
+										<div class="col-sm-6"> 
+											<div class="animate_form field">
+													<input id="phone" required="required" class="form-control" name="phone" type="text" value="<%= arrData ? arrData.phone : '' %>" placeholder="10 digit mobile number" data-validate-length-range="10,10" maxlength="10" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+													<span>Phone<span>*</span></span>
+												<div class="alert_msg"></div>
+											</div>
+										</div> -->
+
+										<!-- <div class="col-sm-6"> 
+												<div class="animate_form field">
+														<input id="sequence" required="required" class="form-control" name="sequence" type="text" value="<%= arrData ? arrData.sequence : '' %>">
+														<span>Sequence<span>*</span></span>
+													<div class="alert_msg"></div>
+												</div>
+											</div> -->
+
+										<div class="col-sm-6">
+												<div class="animate_form field">
+														<select name="status" class="form-control">
+															<option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">Active</option>
+															<option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">Inactive</option>
+														</select>
+													<span>Status</span>
+												</div>
+											</div>
+
+											<div class="col-sm-6">
+												<div class="animate_form field">
+												  <label>Image</label>
+												  <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+												  <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+												  <div class="upload_img01">
+													<% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInCategoryImage(arrData.image, arrData.id)){%>
+													  <img id="preview" src="<%= baseurl+ 'admin/categories/'+ arrData.id+'/'+arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+													<% } else { %>
+													  <img id="preview" src="<%= baseurl + 'admin/categories/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+													<% } %>
+												  </div>
+												</div>
+											  </div>
+
+											  <div class="col-sm-6">
+												<div class="animate_form field">
+												  <span>Description<span></span></span>
+												  <textarea id="description" class="form-control" name="description" type="text" required="required" ><%= arrData ? arrData.description : '' %></textarea>
+												  <div class="alert_msg"></div>
+												</div>
+											  </div>
+
+											  <div class="col-sm-6 mb-5">
+												<div class="animate_form field mb-1">
+												  <span>Sequence <span class="text-danger"></span></span>
+												  <input id="sequence" class="form-control"  name="sequence" type="number"  value="<%= arrData ? arrData.sequence : '' %>" />
+												</div>
+												<span class="text-danger font-weight-bold" id="sequence_error"></span>
+											  </div>
+				
+								</div>
+							</div>
+                    <!--category content end-->
+
+                    
+
+                  </div>
+          </div>
+                <div class="btn_right mb-4">
+                  <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+                  <button id="send" type="submit" class="submit_btn">Submit</button>
+                </div>
+          </form>
+
+        </div>
+      </div>
+</div>
+
+
+<script src="<%= adminbaseurl %>build/js/croppr.js"></script>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+
+
+<script type="text/javascript">
+  function PreviewImage() {
+  var oFReader = new FileReader(); oFReader.readAsDataURL(document.getElementById("image").files[0]);
+  oFReader.onload = function (oFREvent) {
+  document.getElementById("imagePreview").src = oFREvent.target.result;
+  };
+};
+
+      var imageData=null;
+			var fileParts = '';
+			var image_target = $('#cropper').get(0);
+			var after_cropped_target = $('#imagePreview').get(0);
+			var cropImageFile = '';
+			
+			$('.js-loadfile').change(function(evt) {
+				var files = evt.target.files; // FileList object
+				var reader = new FileReader();
+
+				reader.onload = function(e) {
+				  imageData=reader.result;
+				  loadData();
+				}
+				fileParts = files[0].name.split('.');
+				reader.readAsDataURL(files[0]);
+			});
+			
+			dataURLtoFile = function(dataurl, filename) {
+				var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+				while(n--){
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				return new File([u8arr], filename, {type:mime});
+			}; 
+			
+			loadData = function() {
+				//set the image target
+				document.getElementById('cropperImageContainer').innerHTML = '<img id="cropper" src="" alt="" style="display:none;">';
+				
+				image_target = $('#cropper').get(0);
+				image_target.src=imageData;
+				after_cropped_target.src=image_target.src;
+				var croppr = new Croppr('#cropper', {
+					aspectRatio: 1,
+					minSize: [88, 87, 'px'],
+					onInitialize: (instance) => { 
+						console.log(instance); 
+						var left = 129,
+						top =  0,
+						width = 768,
+						height = 768;
+						cropImage(left,top,width,height);
+					},
+					onCropStart: (data) => { 
+						//console.log('start', data);
+						//profileInfoNode.innerHTML = 'Width: ' + data.width + 'px, Height: ' + data.height+'px';
+						
+					},
+					onCropEnd: (data) => {
+						console.log(data);
+						var left = data.x,
+						top =  data.y,
+						width = data.width,
+						height = data.height;
+						cropImage(left,top,width,height);
+					},
+					onCropMove: (data) => { 
+						//console.log('move', data); 
+						//profileInfoNode.innerHTML = 'Width: ' + data.width + 'px, Height: ' + data.height+'px';
+					}
+				});
+				
+				//croppr.destroy();
+			};
+			
+			cropImage = function(left,top,width,height){
+				//alert("Test");
+				var image_target = $('.croppr-image').get(0);
+				var after_cropped_target = $('#imagePreview').get(0);
+				var crop_canvas;
+					
+				crop_canvas = document.createElement('canvas');
+				crop_canvas.width = width;
+				crop_canvas.height = height;
+				
+				crop_canvas.getContext('2d').drawImage(image_target, left, top, width, height, 0, 0, width, height);
+				var dataURL=crop_canvas.toDataURL("image/png");
+				after_cropped_target.src=dataURL;
+				var imageCropped64Image = dataURL;
+				
+				var d = new Date();
+				var n = d.getTime();
+				
+				var basefile = fileParts[0]+ '_' + n;
+				var ext = fileParts[1];
+				
+				//var ext = imageCropped64Image.split(';')[0].match(/jpeg|png|gif/)[0];
+				var mime = imageCropped64Image.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+				var mimeType = '';
+				if (mime && mime.length) {
+				mimeType = mime[1];
+				}
+				
+				document.getElementById('uploadHiddenCropImage').value = basefile+'.'+ext;
+				cropImageFile = this.dataURLtoFile(imageCropped64Image, basefile+'.'+ext)
+			};
+			
+			$('#category-info').on('submit', function(e){
+				var form = document.getElementById('category-info');
+				var formData = new FormData();
+				//var formData = new FormData(form);
+				formData.append('image', cropImageFile);
+
+				var xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(result) {
+					if (this.readyState == 4 && this.status == 200) {
+						document.getElementById('cropperImageContainer').innerHTML = '';
+						//window.scrollTo(0, 0);
+				   }
+				};
+				// Add any event handlers here...
+				xhr.open('POST', '/api/v1/test_category/fileupload', true);
+				xhr.send(formData);
+			});
+////////////////////////////////code end////////////////////////////////
+function validate(evt){
+//alert( evt.value);
+     evt.value = evt.value.replace(/[^0-9]/g,"");
+}
+
+</script>
+
+<script>            
+    CKEDITOR.editorConfig = function (config) {
+       config.language = 'es';
+       config.uiColor = '#F7B42C';
+       config.height = 300;
+       config.toolbarCanCollapse = true;
+   
+   };
+   CKEDITOR.replace('description1');
+</script>
+
+
+
+
+<script>
+   $("#checkAll").click(function () {
+     $('input:checkbox').not(this).prop('checked', this.checked);
+ });
+
+ function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script>

@@ -1,0 +1,271 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+         <div class="header_wraper">
+              <h2><%=title%></h2>
+              <ul>
+                  <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                  <li><a href="<%= adminbaseurl %>order/list/1" >Orders</a></li> 
+                  <li><h4><%=title%><small></small></h4></li>
+              </ul>
+          </div>
+  
+          <% if(messages!='') {%>
+          <div class="succ_msg msg" id="succ_msg">    
+              <i class="fa fa-check"  aria-hidden="true"></i>        
+              <%=messages%>
+          </div>
+          <%}%>                
+          <% if(errors!='') {%>
+          <div class="succ_err msg" id="err_msg">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+              <%=errors%>
+          </div>
+          <% }%> 
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+            <h3><%=title%></h3>
+            <div class="float-right">
+                <a target="_blank" href="<%= adminbaseurl%>order/invoice/<%= allDetails.id %>" class="btn btn-success btn-sm">Download Invoice</a>
+            </div>
+            </div>
+            
+            <fieldset>
+                <div class="content_body panel_body" >   
+                    
+                  <div class="tab-content">
+                    <div id="order" class="tab-pane fade in active show">
+                      <div class="row edit_box">
+        
+        
+                        <div class="col-sm-6"> 
+                          <div class="field">
+                            <p style="font-weight: bold; font-size:130%;display: inline;"> #<%= allDetails ? allDetails.orderNo : '' %></p>
+                            <p style="font-size:120%;display: inline;padding-left: 6px;"> <%= moment(allDetails.createdAt).format('DD/MM/YYYY') %> : <%= moment(allDetails.createdAt).format('hh:mm A') %></p>
+                          </div>
+                        </div>
+        
+                        <div class="col-sm-6">
+                          <div class="field">
+                            <p style="font-weight: bold; font-size:130%;"> <% if(allDetails && allDetails.paymentMethod =='Cash On Delivery'){%>COD<% } else {%><%= allDetails.paymentMethod %> <%}%> Amount:  <%= allDetails ? allDetails.amountPaid : '' %> AED</p><br>
+                          </div>
+                        </div>
+        
+                        <div class="col-sm-6">
+                          <div class="field">
+                            <p style="font-weight: bold; font-size:130%;"> Customer Details </p><br>
+                            <p style="font-size:120%;"> <%= allDetails ? allDetails.customerName : '' %></p>
+                            <p style="font-size:120%;"> <%= allDetails ? allDetails.shippingAddress : '' %>  </p>
+                            <p style="font-size:120%;"> <%= allDetails ? allDetails.shippingCity : '' %> - <%= allDetails ? allDetails.shippingPin : '' %>  </p><br>
+                            <p style="font-size:120%;"> Mob: <%= allDetails ? allDetails.customerMobile : '' %>  </p>
+                          </div>
+                        </div>
+        
+                        <div class="col-sm-6"> 
+                          
+                          <div class=" field">
+                            <div class="row">
+                              <div class="col-md-3">
+                                <span style="font-weight: bold; font-size:120%; white-space: nowrap;">Order Status</span>
+                              </div>
+                              <div class="col-md-9">
+                                <% if(sessionStoreId) {%>
+                                  <form action="<%= adminbaseurl %>order/statuschange" method="post" class="">
+                                    <select id="statusChange" name="orderStatus" onchange="this.form.submit()">
+                                        <% statusList.forEach(function(statusName){%>
+                                            <% if(statusName.name == 'orderStatus'){ %>
+                                                <% statusName.dropdownSettingsOptions.forEach(function(status){%>
+                                                    <option value="<%=status.optionValue%>"  <% if(allDetails.orderStatus == status.optionValue ){ %> selected="selected" <% }%> ><%=status.optionLabel %></option>
+                                                <% })%>
+                                            <% } %>
+                                        <% })%>
+                                    </select>
+                                    <input type="hidden" name="orderId" value="<%= allDetails.id %>"/>
+                                  </form>
+                                <% } else {%>
+                                  <span style="font-weight: bold; font-size:120%; white-space: nowrap;"><%= allDetails ? allDetails.orderStatus : '' %></span> 
+                                <% }%>
+                              </div>
+                            </div>
+                            
+                          </div>
+        
+                          <div class=" field" style="margin-top: 6px;">
+                            <div class="row">
+                              <!-- <div class="col-md-3">
+                                <span style="font-weight: bold; font-size:120%;">Salesman</span>
+                              </div>
+                              <div class="col-md-9">
+                                <span style="font-weight: bold; font-size:120%;"></span>
+                              </div> -->
+                              <!-- <div class="col-md-3" style="margin-top: 6px;">
+                                <span style="font-weight: bold; font-size:120%;">Delivery Boy</span>
+                              </div> -->
+                              <!-- <div class="col-md-9" style="margin-top: 6px;">
+                                <% if(sessionStoreId) {%>
+                                  <form action="<%= adminbaseurl %>order/salesman" method="post" class="">
+                                    <select id="salesmanId" name="salesmanId" onchange="this.form.submit()">
+                                      <% if(allDetails.salesmanId == null || allDetails.salesmanId == '' ){ %> <option value="" >Select Delivey Boy</option> <% }%>
+                                      
+                                      <% salesmanList.forEach(function(salesman){%>
+                                          <option value="<%=salesman.id%>"  <% if(allDetails.salesmanId == salesman.id ){ %> selected="selected" <% }%> ><%=salesman.name %></option>
+                                      <% })%>
+                                    </select>
+                                    <input type="hidden" name="orderId" value="<%= allDetails.id %>"/>
+                                  </form>
+                                <% } else {%>
+                                  <span style="font-weight: bold; font-size:120%; white-space: nowrap;"><% salesmanList.forEach(function(sname) { if(sname.id==allDetails.salesmanId){ %> <%= sname.name %></ <% } }) %></span>
+                                <% }%>
+                              </div> -->
+
+                            </div>
+                          </div> 
+        
+                        </div>             
+                        
+                      </div>
+        
+        
+                      
+                      <% if(productDetails && productDetails!=''){%>
+                      <div class="row">
+                        <div class="col-lg-12">                    
+                        </div>    
+                        <div class="col-lg-12">
+                          <div class="content_body booking_summary">
+                            <div class="panel_title">
+                              <h3>Order Summary</h3>
+                            </div>
+                            <div class="table_wraper">
+                                <div class="row">
+                                    <div class="col-md-7 order-align order-align-head font-weight-bold" style="font-size: 17px;">Item Name </div>
+                                    <div class="col-md-3 order-align order-align-head font-weight-bold" style="font-size: 17px;">Unit Price</div>
+                                    <div class="col-md-2 order-align order-align-head font-weight-bold right" style="font-size: 17px;">Total Price</div>
+                                </div>
+                                <hr style="background-color: black;">
+                                <div class="row" id="itemContent" style="padding-top: 4px;">
+                                  <% var i=1; productDetails.forEach(function(product) { %>	
+                                    
+                                    <div  class="col-md-7 order-align" ><h5><span class=""></span></h5><p style="font-size:120%;"><%= product.productName ? product.productName : ''%>  <% if(product.giftSetName && product.giftSetName !='' && product.giftSetName != null){%> (<%= product.giftSetName %>) <%}%></p></div>
+                                    <div  class="col-md-3 order-align" style="font-size:120%;"><%= product.quantity ? product.quantity : ''%> x <p class="fa fa"> <%= product.price ? product.price : ''%></p></div>
+                                    <div  class="col-md-2 order-align right" ><p class="fa fa" style="font-size:120%;"> <%= product.totalPrice ? product.totalPrice : ''%></p></div>   
+
+                                  <% i++; }) %>
+                                </div>
+                            </div>
+                           
+                          </div>
+                        </div>    
+                      </div>
+        
+                      <div class="row">
+                        <div class="col-sm-6">
+        
+                            <div class="animate_form field">
+                              <label class="control-label" for="message">Message </label>
+                              <p style="font-size:120%;"> <%= allDetails ? allDetails.message : '' %>  </p>
+                            </div>
+        
+                        </div>
+                        <div class="col-sm-6">
+        
+                          <div class="order_total">
+                            <ul>
+        
+                              <% if(allDetails && allDetails.baseGrandTotal != 0 && allDetails.baseGrandTotal != null && allDetails.baseGrandTotal != '' && allDetails.baseGrandTotal >= 1){%>
+                                <li>
+                                  <span>Item(s) Subtotal</span>
+                                  <h5><i ></i><span class="span_sub_total"><%= allDetails.baseGrandTotal >= 1 ? allDetails.baseGrandTotal : 0 %></span></h5>
+                                </li>
+                                <%}%>
+
+                              <% if(allDetails && allDetails.tax != 0 && allDetails.tax != null && allDetails.tax != '' && allDetails.tax >= 1){%>
+                                <li>
+                                  <span>Tax</span>
+                                  <h5><i ></i><span class="span_sub_total"><%= allDetails.tax >= 1 ? allDetails.tax : 0 %></span></h5>
+                                </li>
+                                <%}%>
+
+                              <% if(allDetails && allDetails.discountAmount != 0 && allDetails.discountAmount != null && allDetails.discountAmount != '' && allDetails.discountAmount >= 1){%>
+                                <li>
+                                  <span>Discount</span>
+                                  <h5><i ></i><span class="span_sub_total"><%= allDetails.discountAmount >= 1 ? allDetails.discountAmount : 0 %></span></h5>
+                                </li>
+                                <%}%>
+        
+                              <% if(allDetails && allDetails.walletAmount != 0 && allDetails.walletAmount != null && allDetails.walletAmount != '' && allDetails.walletAmount >= 1){%>
+                              <li>
+                                <span>Wallet Discount</span>
+                                <h5><i ></i><span class="span_sub_total"><%= allDetails.walletAmount >= 1 ? allDetails.walletAmount : 0 %></span></h5>
+                              </li>
+                              <%}%>
+        
+                              <% if(allDetails && allDetails.couponAmount!=0 && allDetails.couponAmount != null && allDetails.couponAmount != '' && allDetails.couponAmount >= 1){%>
+                                <li>
+                                  <span>Coupon Discount</span>
+                                  <h5><i ></i><span class="span_sub_total"><%= allDetails.couponAmount >= 1 ? allDetails.couponAmount : 0%></span></h5>
+                                </li>
+                              <%}%>
+
+                              <% if(allDetails && allDetails.total!=0 && allDetails.total != null && allDetails.total != '' && allDetails.total >= 1){%>
+                                <li>
+                                  <span>COD </span>
+                                  <h5><i ></i><span class="span_sub_total"><%= allDetails.total >= 1 ? allDetails.total : 0%></span></h5>
+                                </li>
+                              <%}%>
+                             
+                                <li>
+                                  <span>Delivery Charges</span>
+                                  <h5><i ></i>
+                                    <% if(allDetails && allDetails.shippingAmount!=0 && allDetails.shippingAmount != null && allDetails.shippingAmount != ''){%>
+                                    <%= allDetails.shippingAmount >= 1 ? allDetails.shippingAmount : 0 %>
+                                    <%} else {%>
+                                      0
+                                    <%}%>
+                                  </h5>
+                                </li>
+        
+                              <li class="total">
+                                <span>Total Price</span>
+                                <h5><i ></i> <%= allDetails.amountPaid %></h5>
+                                
+                              </li>
+        
+                              <% if(allDetails && allDetails.paymentMethod != null && allDetails.paymentMethod != ''){%>
+                              <li class="">
+                                <span><%= allDetails.paymentMethod %></span>
+                                <h5><i > <%= allDetails.amountPaid %></i></h5>
+                              </li>
+                              <%}%>
+        
+                            </ul>
+                          </div>
+        
+                        </div>
+                      </div>  
+                      <%  } %>
+                      
+                      <div class="col-sm-6">
+                        <div class="animate_form field">
+                          <p style="font-weight: bold; font-size:130%;"> Order History</p><br>
+                          <p style="font-size:120%; margin-top: 6px;"> Order Created: <%= moment(allDetails.createdAt).format('hh:mm A') %> By <%= allDetails ? allDetails.customerName : '' %></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+ 

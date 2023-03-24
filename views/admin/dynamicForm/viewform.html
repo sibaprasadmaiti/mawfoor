@@ -1,0 +1,188 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>dynamicform/list/1">Form</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>dynamicform/apply/add">
+            <div class="content_body panel_body edit_store">
+                <div class="panel_title">
+                    <h3><%=title%></h3>
+                </div>
+                <div class="clearfix"></div>
+                <% var i= 1; arrData.forEach(function(val) { %>	
+                  <input class="form-control" type="hidden" name="id" value="<%=val.id %>">
+                  <input class="form-control" type="hidden" name="tableName" value="<%=val.tableName %>">
+                <div class="row edit_box">
+                  <% var j= 1; val.dynamicformfields.forEach(function(val2) { %>	
+
+                    <%if(val2.dataType =='text') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%> </span>
+                            <input id="<%=val2.fieldName %>" class="form-control"  name="<%=val2.fieldName %>" type="text" placeholder="<%=val2.placeholder %>" <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='email') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%> </span>
+                            <input id="<%=val2.fieldName %>" class="form-control"  name="<%=val2.fieldName %>" placeholder="<%=val2.placeholder %>" type="email" <%if(val2.required =='Yes') {%>required="required" <% }%> >
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='number') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%> </span>
+                            <input id="<%=val2.fieldName %>" class="form-control" placeholder="<%=val2.placeholder %>" name="<%=val2.fieldName %>" type="number" <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='date') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span>
+                            <input id="<%=val2.fieldName %>" class="form-control"  name="<%=val2.fieldName %>" type="date"  <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='time') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span>
+                            <input id="<%=val2.fieldName %>" class="form-control"  name="<%=val2.fieldName %>" type="time"  <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='datetime') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span>
+                            <input id="<%=val2.fieldName %>" class="form-control"  name="<%=val2.fieldName %>" type="datetime-local"  <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='file') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span>
+                            <input id="<%=val2.fieldName %>" class="form-control" name="<%=val2.fieldName %>" type="file"  <%if(val2.required =='Yes') {%>required="required" <% }%> <%if(val2.fileType =='image') {%> accept="image/*" <% }%> <%if(val2.multiSelect =='Yes') {%> multiple <% }%>>
+                            <input id="<%=val2.fieldName %>" class="form-control" name="<%=val2.fieldName %>" type="hidden">
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='radio') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span><br><br>
+                            <% var k= 1; val2.dynamicformfieldvalues.forEach(function(val3) { %>	
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="<%=val2.fieldName %>" id="<%=val2.fieldName %>" value="<%=val3.values %>"  <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                              <label class="form-check-label" for="<%=val2.fieldName %>"><%=val3.values %></label>
+                            </div>
+                            <% k++; }) %>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='checkboxlist') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span><br><br>
+                            <% var k= 1; val2.dynamicformfieldvalues.forEach(function(val3) { %>	
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="checkbox" name="<%=val2.fieldName %>" id="<%=val2.fieldName %>" value="<%=val3.values %>"  <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                              <label class="form-check-label" for="<%=val2.fieldName %>"><%=val3.values %></label>
+                            </div>
+                            <% k++; }) %>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='select') {%>  
+                      <div class="col-sm-6 mb-3" style="z-index: 10;">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></span><br><br>
+                              <select name="<%=val2.fieldName %>" class="form-control" id="multipleSelect"  <%if(val2.required =='Yes') {%>required="required" <% }%> <%if(val2.multiSelect =='Yes') {%> data-live-search="true" data-actions-box="true" data-selected-text-format="count>3" multiple <% }%>>
+                                <%if(val2.multiSelect =='No') {%>  
+                                <option value="">--- Select ---</option>
+                                <% }%>
+                              <% var k= 1; val2.dynamicformfieldvalues.forEach(function(val3) { %>	
+                                  <option value="<%=val3.values %>"><%=val3.values %></option>
+                              <% k++; }) %>
+                              </select>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='textarea') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span><%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%> </span>
+                            <textarea id="<%=val2.fieldName %>" class="form-control" name="<%=val2.fieldName %>" type="text"  <%if(val2.required =='Yes') {%>required="required" <% }%>></textarea>
+                        </div>
+                      </div>
+                    <% }%>
+
+                    <%if(val2.dataType =='checkbox') {%>  
+                      <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="checkbox" name="<%=val2.fieldName %>" id="<%=val2.fieldName %>" value="<%=val2.fieldName %>"  <%if(val2.required =='Yes') {%>required="required" <% }%>>
+                              <label class="form-check-label" for="<%=val2.fieldName %>"> <%=val2.label %> <%if(val2.required =='Yes') {%> <span class="text-danger">*</span> <% }%></label>
+                            </div>
+                        </div>
+                      </div>
+                    <% }%>
+
+                  <% j++; }) %>
+                </div> 
+                <% i++; }) %>
+            </div>	
+            <% if(fieldCount){ %>
+            <div class="btn_right mb-4">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+            <% }%>
+        </form>
+    </div>
+</div>
+<%- include ../partials/footer.html %>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#multipleSelect').selectpicker();
+  });
+</script>

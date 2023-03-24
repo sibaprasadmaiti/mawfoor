@@ -1,0 +1,154 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+                <li><%=title%></li>
+            </ul>
+        </div>
+
+        <% if(messages!='') {%>
+            <div class="succ_msg msg" id="succ_msg">    
+                <i class="fa fa-check"  aria-hidden="true"></i>        
+                <%=messages%>
+            </div>
+        <%}%>                
+        <% if(errors!='') {%>
+            <div class="succ_err msg" id="err_msg">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+                <%=errors%>
+            </div>
+        <% }%>
+
+        <form class="form-horizontal form-label-left" method="post" action="<%= adminbaseurl %>datamigration">
+            <div class="content_body panel_body">
+                <div class="panel_title">
+                    <h3><%=title%></h3>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row edit_box">
+                    <div class="col-sm-6 mb-2">
+                        <div class="animate_form field">
+                            <span>From Store <span class="text-danger">*</span></span>
+                            <select name="fromStore" id="fromStore" class="form-control" required>
+                                <option value="" selected disabled>Select Store</option>
+                                <% storeList.forEach(function(store){%>
+                                    <option value="<%=store.id%>"><%=store.storeName %></option>
+                                <% })%>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="animate_form field">
+                            <span>To Store <span class="text-danger">*</span></span>
+                            <select name="toStore" id="toStore" class="form-control" required>
+                                <option value="" selected disabled>Select Store</option>
+                                <% storeList.forEach(function(store){%>
+                                    <option value="<%=store.id%>"><%=store.storeName %></option>
+                                <% })%>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 mb-4">
+                        <span class="font-weight-bold">Please select modules, which you want to migrate <span class="text-danger">*</span></span>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="module">
+                                Module
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="moduleItem">
+                                Module Item
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="dynamicSection">
+                                Section
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="subSection">
+                                Sub Section
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="menu">
+                                Menu
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="blogAuthor">
+                                Blog Author
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="blogCategory">
+                                Blog Category
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="blog">
+                                Blog
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="brand">
+                                Brand
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="productCategory">
+                                Product Category
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-6">
+                        <div class="animate_form field">
+                            <div class="form-check pl-0 checkedBox">
+                                <input type="checkbox" data-toggle="toggle" name="moduleName[]" value="products">
+                                Products
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn_right mb-4">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<%- include ../partials/footer.html %>

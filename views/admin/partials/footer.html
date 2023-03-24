@@ -1,0 +1,65 @@
+<!--copyright start-->
+<div class="copyright">
+   <p> Copyright © 2022 Maefoor . All Rights Reserved.</p>
+</div>
+<!--copyright end-->
+
+<script src="<%= adminbaseurl %>build/js/jquery.min.js"></script>
+<script src="<%= adminbaseurl %>build/js/popper.min.js"></script>
+<script src="<%= adminbaseurl %>build/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<%= adminbaseurl %>build/js/imageupload.min.js"></script>
+<script src="<%= adminbaseurl %>build/js/custom.js"></script>
+
+<script>
+    var allPanels = $('.collapse1').hide();    
+    $('.dropdown-toggle1').click(function() {
+        allPanels.not($(this).next()).slideUp();
+        if($(this).next().is(":visible")){
+            $(this).next().slideUp();
+        }else{
+            $(this).next().slideDown();
+        }
+        return false;
+    });    
+</script>
+<script>
+    var allPanels = $('.collapse').hide();    
+    $('.dropdown-toggle').click(function() {
+        allPanels.not($(this).next()).slideUp();
+        if($(this).next().is(":visible")){
+            $(this).next().slideUp();
+        }else{
+            $(this).next().slideDown();
+        }
+        return false;
+    });
+    $(document).ready(function(){
+        //var domain = '{{ DOMAIN }}'; // www.example.com or dev.example.com
+        //var domain_index =  window.location.href.indexOf(domain);
+        //var long_app_name = window.location.href.slice(domain_index+domain.length+1); 
+        //this turns http://www.example.com/whatever/whatever to whatever/whatever
+        //var app_name = long_app_name.slice(long_app_name.indexOf(':')+1); 
+        if($( '.menu_waraper li ul').has( 'a[href="' + window.location.href+'"]' )){
+            $('.menu_waraper a[href="' + window.location.href+'"]').addClass('active');
+            $( '.menu_waraper li ul').has( 'a[href="' + window.location.href+'"]' ).slideDown();
+            var ulid= $( '.menu_waraper li ul').has( 'a[href="' + window.location.href+'"]' ).attr('id') ;
+            $('.menu_waraper a[href="#' + ulid+'"]').addClass('active');
+        }
+        // console.log(window.location.href)
+    });
+</script>
+
+<script type="text/javascript">
+    setTimeout(function() {
+      
+     $("#succ_msg,#err_msg").fadeOut("slow");  
+     // err_msg    
+    }, 1000 );
+
+    // $(document).ready( function() {
+    //   $('.msg').delay(200).fadeOut();
+    // });
+  </script>
+
+</body>
+</html>

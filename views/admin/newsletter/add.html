@@ -1,0 +1,220 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li>News Letter</li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+
+      <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>newsletter/sendMail">
+          <div class="content_body panel_body edit_store">
+              <div class="panel_title mb-5">
+                <div class="mt-3">
+                    <div class="float-left"> <h3>Send Mail</h3></div>
+                    <div class="float-right">
+                        <a href="<%= adminbaseurl %>newsletter/newemail/list/1" class="btn btn-info btn-sm" >Add New Emails</a>
+                        <a href="<%= adminbaseurl %>newsletter/list/1" class="btn btn-success btn-sm" >View Newsletter</a>
+                    </div>
+                 </div>
+              </div>
+            <div class="clearfix"></div>
+            <div class="row edit_box">
+                <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1">
+                      <span>Subject <span class="text-danger">*</span></span>
+                      <input id="heading" class="form-control"  name="heading" type="text" required>
+                  </div>
+                  <span class="text-danger font-weight-bold" id="heading_error"></span>
+              </div>
+
+              <% if(sessionStoreId!='') {%>
+                <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+              <% } else {%>
+                  <div class="col-sm-6 mb-5">
+                      <div class="animate_form field mb-1">
+                          <span>Select Store <span class="text-danger">*</span></span>
+                          <select name="storeId" id="storeId" class="form-control">
+                              <% stores.forEach(function(store){%>
+                              <option value="<%=store.id%>"><%=store.storeName %></option>
+                              <% })%>
+                          </select>
+                      </div>
+                  </div>
+              <% }%>
+
+                <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1" style="z-index: 3;">
+                      <span>Emails <span class="text-danger">*</span></span>
+                      <select name="emails" class="form-control selectpicker" id="emails" data-live-search="true" data-actions-box="true" data-selected-text-format="count>2" multiple required>
+                        <% customersList.forEach(function(customer){%>
+                          <% if(customer.email!='' && customer.email!=null) {%>
+                            <option value="<%=customer.email%>"><%=customer.email %> (<%=customer.firstName %> <%=customer.lastName %>)</option>
+                          <% } %>
+                        <% })%> 
+                        <% emailList.forEach(function(emails){%>
+                          <% if(emails.email!='' && emails.email!=null) {%>
+                          <option value="<%=emails.email%>"><%=emails.email %> (<%=emails.name %>)</option>
+                          <% } %>
+                        <% })%> 
+                      </select>
+                  </div>
+                  <span class="text-danger font-weight-bold" id="email_error"></span>
+                </div>
+
+                <div class="col-sm-12 mb-5">
+                    <div class="animate_form field mb-1">
+                      <span>Mail Description <span class="text-danger">*</span></span>
+                      <textarea id="description" class="form-control" name="description" type="text" required></textarea>
+                    </div>
+                    <span class="text-danger font-weight-bold" id="description_error"></span>
+                </div>
+
+              </div>
+          </div>
+          <div class="btn_right mb-4">
+              <button id="send" type="submit" class="submit_btn">Submit</button>
+          </div>
+      </form>
+    </div>
+  </div>
+<%- include ../partials/footer.html %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#emails').selectpicker();
+  });
+</script>
+<script>            
+  CKEDITOR.editorConfig = function (config) {
+    config.language = 'es';
+    config.uiColor = '#F7B42C';
+    config.height = 300;
+    config.toolbarCanCollapse = true;
+  };
+  CKEDITOR.replace('description');
+  CKEDITOR.config.startupMode = 'source';
+</script>
+
+<!-- -------------------------------------- validation --------------------------------  -->
+
+<script>
+
+  $(document).ready(function () {
+      $("#heading_error").hide();
+      err_heading = true;
+      $("#description_error").hide();
+      err_description = true;
+      $("#email_error").hide();
+      err_email = true;
+
+      $("#heading").keyup(function () {
+          heading_check_fun();
+      });
+
+      $("#emails").change(function () {
+          email_check_fun();
+      });
+
+      $("#description").keyup(function () {
+          description_check_fun();
+      });
+
+
+
+      function heading_check_fun() {
+          let k = $("#heading").val();
+          let val = k.trim();
+          if (val.length == "") {
+              $("#heading_error").show();
+              $("#heading_error").html("Subject is required");
+              err_heading = false;
+              return false;
+          }
+          else {
+              err_heading = true;
+              $("#heading_error").html("");
+              $("#heading_error").hide();
+          }
+      }
+
+
+      function description_check_fun() {
+          let k = $("#description").val();
+          let val = k.trim();
+          if (val.length == ""  ) {
+              $("#description_error").show();
+              $("#description_error").html("Description is required");
+              err_description = false;
+              return false;
+          }
+          else {
+              err_description = true;
+              $("#description_error").html("");
+              $("#description_error").hide();
+
+          }
+      }
+
+      function email_check_fun() {
+          let k = $("#emails").val();
+          let val = k.trim();
+          if (val.length == ""  ) {
+              $("#email_error").show();
+              $("#email_error").html("Please select Email");
+              err_email = false;
+              return false;
+          }
+          else {
+              err_email = true;
+              $("#email_error").html("");
+              $("#email_error").hide();
+
+          }
+      }
+
+
+      $("#send").click(function () {
+          err_heading = true;
+          err_email = true;
+          err_description = true;
+          heading_check_fun();
+          email_check_fun();
+          description_check_fun();
+
+          if ((err_heading == true) && (err_email == true) && (err_description == true) ) {
+              return true;
+          }
+          else {
+              return false;
+
+          }
+
+      });
+
+
+  });
+
+</script>
+

@@ -1,0 +1,266 @@
+<%- include ../partials/header_new.html %>
+  <%- include ../partials/sidebar.html %>
+
+    <style>
+      .addStore {
+        padding: 10px;
+        float: right;
+        font-size: 15px;
+      }
+
+      .product_list025 {
+        border: solid 1px #ccc;
+      }
+
+      .table_wraper table tr td a {
+        font-size: 15px;
+        font-weight: 500;
+        color: #4483a7;
+      }
+
+      @media (max-width: 767px) {
+        .table_heading {
+          padding: 0px;
+        }
+      }
+    </style>
+    <div class="content_wraper">
+      <div class="main_container">
+        <div class="header_wraper">
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard">Dashboard</a></li>
+            <li>
+              <h4>
+                <%=title%><small></small>
+              </h4>
+            </li>
+          </ul>
+          <h2>
+            <%=title%>
+          </h2>
+        </div>
+
+        <% if(messages!='' ) {%>
+          <div class="succ_msg msg" id="succ_msg">
+            <i class="fa fa-check" aria-hidden="true"></i>
+            <%=messages%>
+          </div>
+          <%}%>
+            <% if(errors!='' ) {%>
+              <div class="succ_err msg" id="err_msg">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <%=errors%>
+              </div>
+              <% }%>
+
+                <div class="content_body">
+                  <div class="table_heading mb-2 pb-5">
+                    <div class="float-left">
+                      <span style="font-size: 14px;">Showing </span>
+                      <select onchange="location = this.value" style="height: 25px; width: 60px;">
+                        <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <%
+                          if(pageSize=='10' ){ %>selected <% }%> >10</option>
+                        <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <%
+                          if(pageSize=='25' ){ %>selected <% }%>>25</option>
+                        <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <%
+                          if(pageSize=='50' ){ %>selected <% }%>>50</option>
+                        <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <%
+                          if(pageSize=='100' ){ %>selected <% }%>>100</option>
+                      </select>
+                      <span style="font-size: 14px;"> entries </span>
+                    </div>
+
+                    <div class="float-right">
+                      <a href="<%= adminbaseurl %>emailconfig/view" class="btn btn_theme01 btn-sm"><i
+                          class="fa fa-plus"></i> Create Configuration</a>
+                    </div>
+                  </div>
+
+
+                  <div class="table_heading mb-4 pb-4">
+                    <div class="float-left">
+                      <form class="header-searchbox">
+                        <div class="searchcom">
+                          <input type="text" placeholder="Search.." name="search" />
+                          <button><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class="table-responsive table_wraper">
+                    <table class="table product_list025">
+                      <thead>
+                        <tr style="cursor: pointer;">
+                          <% if(orderType=='DESC' ) {%>
+                            <th data-column="id" data-order="ASC" class="text-center theading">Sl No <%
+                                if(columnName=='id' ) {%><i class="fa fa-sort fa-lg text-success"></i>
+                                <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                  <% }%>
+                            </th>
+                            <% }else{ %>
+                              <th data-column="id" data-order="DESC" class="text-center theading">Sl No <%
+                                  if(columnName=='id' ) {%><i class="fa fa-sort fa-lg text-success"></i>
+                                  <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                    <% }%>
+                              </th>
+                              <% }%>
+
+                                <% if(orderType=='DESC' ) {%>
+                                  <th data-column="email" data-order="ASC" class="theading">Email <%
+                                      if(columnName=='email' ) {%><i class="fa fa-sort fa-lg text-success"></i>
+                                      <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                        <% }%>
+                                  </th>
+                                  <% }else{ %>
+                                    <th data-column="email" data-order="DESC" class="theading">Email <%
+                                        if(columnName=='email' ) {%><i class="fa fa-sort fa-lg text-success"></i>
+                                        <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                          <% }%>
+                                    </th>
+                                    <% }%>
+
+                                      <% if(orderType=='DESC' ) {%>
+                                        <th data-column="domain" data-order="ASC" class="theading">Domain <%
+                                            if(columnName=='domain' ) {%><i class="fa fa-sort fa-lg text-success"></i>
+                                            <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                              <% }%>
+                                        </th>
+                                        <% }else{ %>
+                                          <th data-column="domain" data-order="DESC" class="theading">Domain <%
+                                              if(columnName=='domain' ) {%><i class="fa fa-sort fa-lg text-success"></i>
+                                              <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                                <% }%>
+                                          </th>
+                                          <% }%>
+
+                                            <% if(sessionStoreId=='' ) {%>
+                                              <th>Store</th>
+                                              <% }%>
+
+                                                <% if(orderType=='DESC' ) {%>
+                                                  <th data-column="status" data-order="ASC" class="theading">Status <%
+                                                      if(columnName=='status' ) {%><i
+                                                        class="fa fa-sort fa-lg text-success"></i>
+                                                      <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                                        <% }%>
+                                                  </th>
+                                                  <% }else{ %>
+                                                    <th data-column="status" data-order="DESC" class="theading">Status
+                                                      <% if(columnName=='status' ) {%><i
+                                                          class="fa fa-sort fa-lg text-success"></i>
+                                                        <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                                          <% }%>
+                                                    </th>
+                                                    <% }%>
+                                                      <th class="text-center">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <% var i=1; arrData.forEach(function(val) { %>
+                          <tr>
+                            <td class="text-center">
+                              <%= i %>
+                            </td>
+                            <td>
+                              <%= val.email %>
+                            </td>
+                            <td>
+                              <%= val.domain %>
+                            </td>
+                            <% if(sessionStoreId=='' ) {%>
+                              <td>
+                                <%= val.storeName %>
+                              </td>
+                              <% }%>
+                                <td class="font-weight-bold">
+                                  <%if(val.status=='Active') {%> <span class="text-success">Active</span>
+                                    <% } else {%> <span class="text-danger">Inactive</span>
+                                      <% } %>
+                                </td>
+                                <td class="text-center"><a href="<%= adminbaseurl%>emailconfig/view/<%= val.id %>"
+                                    class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                  <a href="<%= adminbaseurl%>emailconfig/delete/<%= val.id %>" class="edit_btn"
+                                    onclick="return(confirm('Do you really want to delete? '));"><i
+                                      class="fa fa-trash"></i></a>
+                                </td>
+                          </tr>
+                          <% i++; }) %>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--====================================== Pagination Start ======================================-->
+                  <% if(listCount>0) {%>
+                    <div class="pagination_sec">
+                      <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%>
+                          <%= listCount %>
+                            <% }else{ %>
+                              <%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount :
+                                  (currentPage*pageSize) %>
+                                  <% } %> of <%= listCount %> entries</div>
+                      <% if(currentPage>1) {%>
+                        <ul>
+                          <li><a
+                              href="<%= adminbaseurl%>emailconfig/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>">Prev</a>
+                          </li>
+                        </ul>
+                        <% }else{ %>
+                          <ul>
+                            <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                          </ul>
+                          <% } %>
+                            <% for(var i=1; i<=pageCount; i++) { %>
+                              <ul>
+                                <% if(currentPage==i) {%>
+                                  <li><a
+                                      href="<%= adminbaseurl%>emailconfig/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                      class="active">
+                                      <%=i %>
+                                    </a></li>
+                                  <% }else{ %>
+                                    <li><a
+                                        href="<%= adminbaseurl%>emailconfig/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                        class="">
+                                        <%=i %>
+                                      </a></li>
+                                    <% } %>
+                              </ul>
+                              <% } %>
+                                <% if(currentPage < pageCount) {%>
+                                  <ul>
+                                    <li><a
+                                        href="<%= adminbaseurl%>emailconfig/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>">Next</a>
+                                    </li>
+                                  </ul>
+                                  <% }else{ %>
+                                    <ul>
+                                      <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                                    </ul>
+                                    <% } %>
+                    </div>
+                    <% } %>
+                      <!--====================================== Pagination End ======================================-->
+                </div>
+      </div>
+    </div>
+
+
+    <%- include ../partials/footer.html %>
+
+      <script>
+        $(document).ready(() => {
+          $('.theading').on('click', function () {
+            var column = $(this).data('column');
+            var order = $(this).data('order');
+
+            if (order == 'DESC') {
+              $(this).data('order', 'ASC');
+              window.location.href = `<%= adminbaseurl%>emailconfig/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+            } else {
+              $(this).data('order', 'DESC');
+              window.location.href = `<%= adminbaseurl%>emailconfig/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+            }
+          })
+        });
+      </script>

@@ -1,0 +1,263 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>sitesettings/list/1">Site Settings</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+
+        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>sitesettings/addOrUpdate">
+                   <div class="content_body panel_body edit_store">
+                      <div class="panel_title">
+                          <h3>Settings Information</h3>
+                      </div>
+                      <div class="clearfix"></div>
+                      <div class="row edit_box">
+                        
+                    <% if(sessionStoreId!='') {%>
+                      <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                    <% } else {%>
+                        <div class="col-sm-6 mb-5">
+                            <div class="animate_form field mb-1">
+                                <span>Select Store <span class="text-danger">*</span></span>
+                                <select name="storeId" id="storeId" class="form-control">
+                                    <% stores.forEach(function(store){%>
+                                    <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                    <% })%>
+                                </select>
+                            </div>
+                        </div>
+                    <% }%>
+                     <div class="col-sm-6">
+                        <div class="animate_form field">
+                            <span>Select Group</span>
+                            <select name="groupId" id="groupId" class="form-control" required="required">
+                              <option value=""  <% if(arrData.siteSettingsGroupId == ''){ %> selected="selected" <% }%>>Select</option>
+                              <% groups.forEach(function(group){%>
+                                <option value="<%=group.id%>"  <% if(arrData.siteSettingsGroupId == group.id){ %> selected="selected" <% }%>><%=group.groupTitle; %></option>
+                              <% })%>
+                            </select>
+                        </div>
+                     </div>
+
+                     <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Title<span>*</span></span>
+                          <input id="title" class="form-control"  name="title" type="text" required="" value="<%= arrData ? arrData.title : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                     <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Site Name<span>*</span></span>
+                          <input id="title" class="form-control"  name="siteName" type="text" required="" value="<%= arrData ? arrData.siteName : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Tagline<span>*</span></span>
+                          <input id="title" class="form-control"  name="tagline" type="text" required="" value="<%= arrData ? arrData.tagline : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Email<span>*</span></span>
+                          <input id="title" class="form-control"  name="email" type="text" required="" value="<%= arrData ? arrData.email : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Mobile No<span>*</span></span>
+                          <input id="title" class="form-control"  name="mobileNo" type="text" required="" value="<%= arrData ? arrData.mobileNo : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>App Version<span>*</span></span>
+                          <input id="title" class="form-control"  name="appVersion" type="text" required="" value="<%= arrData ? arrData.appVersion : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Fax<span>*</span></span>
+                          <input id="title" class="form-control"  name="fax" type="text" required="" value="<%= arrData ? arrData.fax: '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Site Url<span>*</span></span>
+                          <input id="title" class="form-control"  name="siteUrl" type="text" required="" value="<%= arrData ? arrData.siteUrl : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Address<span>*</span></span>
+                          <input id="title" class="form-control"  name="address" type="text" required="" value="<%= arrData ? arrData.address : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Site Description<span>*</span></span>
+                          <input id="title" class="form-control"  name="siteDescription" type="text" required="" value="<%= arrData ? arrData.siteDescription : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Feature<span>*</span></span>
+                          <input id="title" class="form-control"  name="feature" type="text" required="" value="<%= arrData ? arrData.feature : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                    <!-- <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Max Pro Availability<span>*</span></span>
+                          <input id="title" class="form-control"  name="maxProAvailability" type="text" required="" value="<%= arrData ? arrData.maxProAvailability : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div> -->
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Shippin Charges<span>*</span></span>
+                          <input id="title" class="form-control"  name="shippingCharges" type="text" required="" value="<%= arrData ? arrData.shippingCharges : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Free Shipping Limit<span>*</span></span>
+                          <input id="title" class="form-control"  name="freeShippingLimit" type="text" required="" value="<%= arrData ? arrData.freeShippingLimit : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div>
+                    <!-- <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Contact Us Content<span>*</span></span>
+                          <input id="title" class="form-control"  name="contactUsContent" type="text" required="" value="<%= arrData ? arrData.contactUsContent : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                    </div> -->
+
+                     <div class="col-sm-6">
+                        <div class="animate_form field">
+                            <span>Value<span>*</span></span>
+                            <input id="sValue" class="form-control"  name="sValue" type="text" required="" value="<%= arrData ? arrData.value : '' %>">
+                          <div class="alert_msg"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="animate_form field">
+                            <span>Sequence<span>*</span></span>
+                            <input id="seq" class="form-control" name="seq" type="seq" required="" value="<%= arrData ? arrData.sequence : '' %>">
+                            <div class="alert_msg"></div>
+                          </div>
+                     </div>
+
+                  <div class="col-sm-6">
+                    <div class="animate_form field">
+                        <span>Facebook<span>*</span></span>
+                          <input id="sValue" class="form-control"  name="facebook" type="text" required="" value="<%= arrData ? arrData.facebook : '' %>">
+                        <div class="alert_msg"></div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                      <div class="animate_form field">
+                          <span>Twitter<span>*</span></span>
+                          <input id="seq" class="form-control" name="twitter" type="seq" required="" value="<%= arrData ? arrData.twitter : '' %>">
+                          <div class="alert_msg"></div>
+                      </div>
+                   </div>
+
+                   <div class="col-sm-6">
+                    <div class="animate_form field">
+                        <span>Linkedin<span>*</span></span>
+                        <input id="sValue" class="form-control"  name="linkedin" type="text" required="" value="<%= arrData ? arrData.linkedin : '' %>">
+                      <div class="alert_msg"></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="animate_form field">
+                        <span>Instagram<span>*</span></span>
+                        <input id="seq" class="form-control" name="instagram" type="seq" required="" value="<%= arrData ? arrData.	instagram : '' %>">
+                        <div class="alert_msg"></div>
+                      </div>
+                 </div>
+
+                <div class="col-sm-6">
+                  <div class="animate_form field">
+                      <span>Latitude<span>*</span></span>
+                        <input id="sValue" class="form-control"  name="latitude" type="text" required="" value="<%= arrData ? arrData.latitude : '' %>">
+                      <div class="alert_msg"></div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="animate_form field">
+                      <span>Longitude<span>*</span></span>
+                        <input id="seq" class="form-control" name="longitude" type="seq" required="" value="<%= arrData ? arrData.longitude : '' %>">
+                      <div class="alert_msg"></div>
+                  </div>
+                </div>
+
+                     <div class="col-sm-6">
+                            <div class="animate_form field">
+                                <span>IsSystem</span>
+                                <select name="isSystem" class="form-control">
+                                    <option value="">Select</option>>
+                                  <option <% if(arrData.isSystem=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                                  <option <% if(arrData.isSystem=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="animate_form field">
+                              <span>Status</span>
+                              <select name="status" class="form-control">
+                                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                              </select>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                <div class="btn_right mb-4">
+                    <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+                    <button id="send" type="submit" class="submit_btn">Submit</button>
+                </div>
+              </form>
+          </div>
+       </div>
+<%- include ../partials/footer.html %>

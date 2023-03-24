@@ -1,0 +1,1142 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>         
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+
+<style>
+.gallery {
+  padding: 12px;
+}
+.remove {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.remove img {
+  width: 100%;
+  height: auto;
+}
+
+.remove .btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-48%, -248%);
+  background-color: rgb(238, 105, 105);
+  color: white;
+  font-size: 16px;
+  padding: 1px 8px;
+  border-radius: 47px;
+  text-align: center;
+}
+
+.remove .btn:hover {
+  background-color: rgb(248, 9, 9);
+}
+</style>
+
+
+<div class="content_wraper">
+  <div class="main_container">              
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+			<li><a href="<%= adminbaseurl %>product">Product</a></li>
+         <li><%=title%></li>
+      </ul>
+    </div>
+
+    <% if(messages!='') {%>
+    <div class="succ_msg msg" id="succ_msg">    
+      <i class="fa fa-check"  aria-hidden="true"></i>        
+      <%=messages%>
+    </div>
+    <%}%>                
+    <% if(errors!='') {%>
+    <div class="succ_err msg" id="err_msg">
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+      <%=errors%>
+    </div>
+    <% }%>
+    
+    <!--product info start-->
+    <form id="product-info" novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>product/add">
+      <div class="content_body panel_body">
+        <div class="panel_title">
+          <h3>Product Info</h3>
+        </div>
+        <div class="clearfix"></div>
+          <div class="row edit_box">
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="title" class="form-control" name="title" type="text" required="required" value="<%= arrData ? arrData.title : '' %>">
+                <span>Title<span>*</span></span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+
+            <%  if(arrData && arrData !=''){ %>
+              <div class="col-sm-6" style="display: none;"> 
+                <div class="animate_form field">
+                  <input id="slug" class="form-control" name="slug" type="text" readonly value="<%= arrData ? arrData.slug : '' %>">
+                  <span>Slug<span></span></span>
+                  <!-- <div class="alert_msg"></div> -->
+                </div>
+              </div>
+            <% } %>
+
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <select name="category_id" class="form-control" id="category_id" required="required">
+                  <option value="" selected disabled>--Select Category--</option>
+                  <% 
+                  arrCategory.forEach(function(cat) { %>
+                  <option value="<%= cat.id %>" <% if(cat.id==arrData.category_id){%>selected="selected" <%} %>><%= cat.title %></option>
+                  <%  }) %>
+                </select>
+                <span>Category<span>*</span></span>
+              </div>
+            </div>
+
+            <!-- <div class="col-md-6 mb-3">
+              <div class="animate_form field">
+                <label for="validationDefault02">Category<span>*</span></label>
+                <select class="multipleselect" name="category_id" id="category_id" size="4" class="form-control" multiple required="required">
+                  <% arrCategory.forEach(function(cat) { 
+                    if(product_category){
+                      var select='';                     
+                      product_category.forEach(function(pro_cat){ 
+                          if(pro_cat.category_id==cat.id) {
+                              select='selected="selected"';
+                          }                                                     
+                      });
+                  } %>
+                    <option <%= select %> value="<%= cat.id %>" ><%= cat.title %> </option>
+                  <%  }) %>
+                
+                </select>
+                <style>
+                  .multipleselect{ width:100%;}
+                  .multipleselect option{padding: 1em;}
+                </style>
+                <!- - <input type="checkbox" name="sall" id="sall">&nbsp;Select All - ->
+              </div>
+            </div> -->
+
+            <div class="col-md-6 mb-3" style="display: none;">
+              <div class="animate_form field">
+                <label for="validationDefault02">Store<span>*</span></label>
+                <select class="multipleselect" name="stores" id="stores" size="4" class="form-control" multiple required="required">
+                  <% arrSrore.forEach(function(str) {
+                    if(product_store){
+                        var select='';                     
+                        product_store.forEach(function(pstr){ 
+                            if(pstr.store_id==str.id) {
+                                select='selected="selected"';
+                            }                                                     
+                        });
+                    }%>
+                        <option <%= select %>  value="<%=str.id%>"><%=str.name%></option> 
+                    <%  }) %>
+                </select>
+                <style>
+                  .multipleselect{ width:100%;}
+                  .multipleselect option{padding: 1em;}
+                </style>
+                <!-- <input type="checkbox" name="sall" id="sall">&nbsp;Select All -->
+              </div>
+            </div>
+
+           
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <label class="control-label" for="short_description">Short Description </label>
+                <textarea rows="4" type="text" id="short_description" name="short_description"  class="form-control col-md-12 col-xs-12"><%= arrData ? arrData.short_description : '' %></textarea>
+              </div>
+            </div>
+
+            <div class="col-sm-6" style="display: none;"> 
+              <div class="animate_form field">
+                <label class="control-label" for="description">Description </label>
+                <textarea rows="4" type="text" id="description" name="description"  class="form-control col-md-7 col-xs-12"><%= arrData ? arrData.description : '' %></textarea>
+              </div>
+            </div>
+            
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="keyword" class="form-control" name="keyword" type="text" value="<%= arrData ? arrData.keyword : '' %>">
+                <span>Keyword<span></span></span>
+              </div>
+            </div>
+
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                  <input id="from_time" class="form-control" name="from_time" type="time" value="<%= arrData ? arrData.from_time : '00:00' %>">
+                  <span>From Time<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                  <input id="to_time" class="form-control" name="to_time" type="time" value="<%= arrData ? arrData.to_time : '00:00' %>">
+                  <span>To Time<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+           
+
+            <!-- <div class="col-sm-6" id="subcategorySection" <% if(arrSub_category && arrSub_category!=''){ }else{%> style="display: none;" <% } %>>
+              <div class="animate_form field" >
+                <% if(arrSub_category && arrSub_category!=''){ %>
+                  <select name="sub_category_id"  class="form-control">
+                    <option value="" selected disabled>--Select Sub Category--</option>
+                    <% 
+                    arrSub_category.forEach(function(subcat) { %>
+                    <option value="<%= subcat.id %>" <% if(subcat.id==arrData.sub_category_id){%>selected="selected" <%} %>><%= subcat.title %></option>
+                    <%  }) %>
+                  </select>
+                <% }else{ %>
+                  <select name="subcategory" class="form-control" id="sub_category_id" >
+                    <option value="" disabled selected>--Select Subcategory--</option>                      
+                  </select>
+                <% }%>      
+                <span>Sub Category<span></span></span>
+              </div>
+            </div> -->
+
+           
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="color" class="form-control" name="color" type="text" value="<%= arrData ? arrData.color : '' %>">
+                <span>Color<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="size" class="form-control" name="size" type="text" value="<%= arrData ? arrData.size : '' %>">
+                <span>Size<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="type" class="form-control" name="type" type="text" value="<%= arrData ? arrData.type : '' %>">
+                <span>Type<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+           
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="price" class="form-control checkprice" oninput="validatenumber(event)" name="price" type="text" required="required "   value="<%= arrData ? arrData.price : 0.00	 %>">
+                <span>Price<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="animate_form field">
+                <select name="veg_only" class="form-control">
+                  <!-- <option value="" selected >-- Select --</option> -->
+                  <option <% if(arrData.veg_only=='no'){ %>selected="selected" <% }%> value="no">No</option>
+                  <option <% if(arrData.veg_only=='yes'){ %>selected="selected" <% }%> value="yes">Yes</option>
+                </select>
+                <span> Veg Only</span>
+              </div>
+            </div> 
+
+            <div class="col-md-6">
+              <div class="animate_form field">
+                <select name="best_sellers" class="form-control">
+                  <!-- <option value="" selected >-- Select --</option> -->
+                  <option <% if(arrData.best_sellers=='no'){ %>selected="selected" <% }%> value="no">No</option>
+                  <option <% if(arrData.best_sellers=='yes'){ %>selected="selected" <% }%> value="yes">Yes</option>
+                </select>
+                <span>Best Sellers</span>
+              </div>
+            </div> 
+
+            <!-- <div class="col-md-6">
+              <div class="animate_form field">
+                <select name="most_favourite" class="form-control">
+                  <!- - <option value="" selected >-- Select --</option> - ->
+                  <option <% if(arrData.most_favourite=='no'){ %>selected="selected" <% }%> value="no">No</option>
+                  <option <% if(arrData.most_favourite=='yes'){ %>selected="selected" <% }%> value="yes">Yes</option>
+                </select>
+                <span>Most Favourite</span>
+              </div>
+            </div>  -->
+
+            <div class="col-md-6">
+              <div class="animate_form field">
+                <select name="new_arrivals" class="form-control">
+                  <!-- <option value="" selected >-- Select --</option> -->
+                  <option <% if(arrData.new_arrivals=='no'){ %>selected="selected" <% }%> value="no">No</option>
+                  <option <% if(arrData.new_arrivals=='yes'){ %>selected="selected" <% }%> value="yes">Yes</option>
+                </select>
+                <span>New Arrivals</span>
+              </div>
+            </div> 
+
+            <div class="col-md-6">
+              <div class="animate_form field">
+                <select name="spicy" class="form-control">
+                  <!-- <option value="" selected >-- Select --</option> -->
+                  <option <% if(arrData.spicy=='no'){ %>selected="selected" <% }%> value="no">No</option>
+                  <option <% if(arrData.spicy=='yes'){ %>selected="selected" <% }%> value="yes">Yes</option>
+                </select>
+                <span>Spicy</span>
+              </div>
+            </div> 
+
+            <!-- <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form field">
+                <input id="url" class="form-control" name="url" onsubmit="substrUrl" type="text" value="<%= arrData ? arrData.url : '' %>">
+                <span>Url<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form field">
+                <input id="spice_level" class="form-control" name="spice_level" type="number" value="<%= arrData ? arrData.spice_level : 0.00	 %>">
+                <span>Spice Level<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <label>Type<span></span></label>
+                  <select name="type" class="form-control" >
+                    <option value="" selected disabled>--Select Type--</option>
+                    <option value="Veg" <% if(arrData.type=='Veg'){%> selected="selected" <%}  %> >Veg</option>
+                    <option value="Nonveg" <% if(arrData.type=='Nonveg'){%> selected="selected" <%}  %> >Nonveg</option>
+                  </select>
+              </div>     
+            </div> -->
+
+            <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form ">
+                <select name="tax_class_id"  class="form-control">
+                  <option value="" selected disabled>--Select Tax--</option>
+                  <% 
+                  arrtaxData.forEach(function(tax) { %>
+                  <option value="<%= tax.optionID %>" <% if(tax.optionID==arrData.tax_class_id){%>selected="selected" <%} %>><%= tax.optionLabel %></option>
+                  <%  }) %>
+                </select>
+                <span>Tax</span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="special_price" class="form-control checkprice" oninput="validatenumber(event)" name="special_price" type="text" value="<%= arrData ? arrData.special_price : '' %>">
+                <span>Special Price<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="from_special_price" class="form-control"  name="special_price_from" type="text" value="<%= arrData ? arrData.special_price_from : '' %>">
+                <span>Special Price From<span></span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="special_price_to" class="form-control" name="special_price_to" type="text" value="<%= arrData ? arrData.special_price_to : '' %>">
+                <span>Special Price To<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-6" > 
+              <div class="animate_form field">
+                <input id="weight" class="form-control" name="weight" type="text" value="<%= arrData ? arrData.weight : '' %>">
+                <span>Weight<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+            
+            <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form field">
+                <input id="inventory" class="form-control" name="inventory" type="text" value="<%= arrData ? arrData.stock : '' %>">
+                <span>Inventory<span></span></span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+                  
+            <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form field">
+                <input id="meta_title" class="form-control" name="meta_title" type="text" value="<%= arrData ? arrData.meta_title : '' %>">
+                <span>Meta Title<span></span></span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+                  
+            <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form field">
+                <input id="meta_key" class="form-control" name="meta_key" type="text" value="<%= arrData ? arrData.meta_key : '' %>">
+                <span>Meta Key<span></span></span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+                  
+            <div class="col-sm-6" style="display: none"> 
+              <div class="animate_form field">
+                <input id="meta_description" class="form-control" name="meta_description" type="text" value="<%= arrData ? arrData.meta_description : '' %>">
+                <span>Meta Description<span></span></span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+
+            <!-- product change by tanbir 08.06.2020 start -->
+            <!-- <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="option_title" class="form-control" name="option_title" type="text"  value="<%= arrData ? arrData.option_title : '' %>">
+                <span>Option Title<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div>
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <!- - <input id="option_type" class="form-control" name="option_type" type="text"  value="<%= arrData ? arrData.option_type : '' %>"> - ->
+                <select name="option_type" class="form-control">
+                  <option value="">--Select Option Type--</option>
+                  <option <% if(arrData.option_type=='Drop-down'){ %>selected="selected" <% }%> value="Drop-down">Drop-down</option>
+                  <!- - <option value="Drop-down">Drop-down </option> -->
+                  <!-- <option value="Drop-down 1">Drop-down 1</option> - ->
+                </select>
+                <span>Option Type<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div>
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input id="option_value" class="form-control" name="option_value" type="text" value="<%= arrData ? arrData.option_value : '' %>">
+                <span>Option Value<span></span></span>
+                <!- - <div class="alert_msg"></div> - ->
+              </div>
+            </div> -->
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <% if(arrData ) { %>
+                <input id="sku" class="form-control" readonly name="sku" type="text"  required value="<%= arrData ? arrData.sku : '' %>">
+                <%} else {%>
+                <input id="sku" class="form-control" name="sku" type="text" value="<%= arrData ? arrData.sku : '' %>">
+                <% } %>
+                <span>Sku<span></span></span>
+                <!-- <div class="alert_msg"></div> -->
+              </div>
+            </div>
+            <!-- product change by tanbir 08.06.2020 start -->
+
+            <div class="col-md-6">
+              <div class="animate_form field">
+                <select name="status" class="form-control">
+                  <option <% if(arrData.status=='active'){ %>selected="selected" <% }%> value="active">Active</option>
+                  <option <% if(arrData.status=='inactive'){ %>selected="selected" <% }%> value="inactive">Inactive</option>
+                </select>
+                <span>Status</span>
+              </div>
+            </div> 
+
+            <div class="col-sm-6"> 
+              <div class="animate_form field">
+                <input type="checkbox" id="chk_is_configurable" name="is_configurable" <% if(arrProduct_unit && Array.isArray(arrProduct_unit)){ if(arrProduct_unit.length > 0){ %> checked <%}} %> >
+                <span>Is Addon<span></span></span>
+              </div>
+            </div>
+            
+            
+            <!-- <div class="col-md-6">
+              <div class="animate_form field">
+                <input type="checkbox" id="bselling" name="bselling" value="Yes">
+                <label for="bselling"> Best sellings</label><br>
+              </div>
+            </div>  -->
+           </div>
+      </div>        
+
+        <!-- Product size price start-->                  
+        <div class="is_configurable_class" style="display: none">
+        <!-- <div class="is_configurable_class" <% if(arrProduct_unit && Array.isArray(arrProduct_unit)){ if(arrProduct_unit.length > 1){ %> style="display: block" <%}else{ %> style="display: none" <%}}else{ %> style="display: none" <%} %> >   -->
+        <div class="content_body panel_body">
+          <div class="panel_title">
+            <h3>Addon Products</h3>
+            <button style="display:none" class="clone_trigger panel_btn" type="button"><i class="fa fa-plus" aria-hidden="true"></i> Add Product Unit</button>
+          </div>
+
+          <!-- is configurable changed by tanbir 08.06.2020 start -->
+
+          <!-- <div class="row">
+
+            <div class="col-sm-2" style="display: none">
+              <label class="control-label" for="option_value">SKU<span class="required"></span>
+              </label>
+            </div>
+            <div class="col-sm-4">
+              <label class="control-label" for="option_label">Option Title <span class="required"></span>
+              </label>
+            </div>
+            
+            <div class="col-sm-4">
+              <label class="control-label" for="option_value">Option Type<span class="required"></span>
+              </label>
+            </div>
+
+          </div> 
+
+          <div class="row" style="margin-bottom: 15px;">     
+            
+
+            <div class="col-sm-4">
+              <div class="field" style="color: #f00 ">
+                <input value="<%= arrProduct_option_title ? arrProduct_option_title : '' %>"   type="text" id="product_option_title" name="product_option_title" class="form-control" >
+              </div>
+            </div>  
+
+            <div class="col-sm-4">
+              <div class="field" style="color: #f00 ">
+                <select name="product_option_type" class="form-control">
+                  <option value="">--Select Option Type--</option>
+                  <option <% if(arrProduct_option_type=='Drop-down'){ %>selected="selected" <% }%> value="Drop-down">Drop-down</option>
+                  <!- - <option <% if(arrData.option_type=='Drop Down'){ %>selected="selected" <% }%> value="Drop Down 2">Drop Down 2</option> - ->
+                </select>
+              </div>
+            </div>
+
+          </div> -->
+          
+          <!-- is configurable changed by tanbir 08.06.2020 end -->
+        
+          <div class="row">
+
+            <!-- <div class="col-sm-2">
+              <label class="control-label" for="option_label">Inventory<span class="required"></span>
+              </label>
+            </div> -->
+
+            <div class="col-sm-4">
+              <label class="control-label" for="option_label">Product Title<span class="required"></span>
+              </label>
+            </div>
+            
+            <div class="col-sm-2">
+              <label class="control-label" for="option_value">Product Price<span class="required"></span>
+              </label>
+            </div>
+
+            <div class="col-sm-2">
+              <label class="control-label" for="option_value">SKU<span class="required"></span>
+              </label>
+            </div>
+
+            <!-- <div class="col-sm-2">
+              <label class="control-label" for="product_inventory">Inventory<span class="required"></span>
+              </label>
+            </div> -->
+
+            <!-- <div class="col-sm-2">
+              <label class="control-label" for="option_value">Product Special Price<span class="required"></span>
+              </label>
+            </div> -->
+
+            <!-- <div class="col-sm-1">
+              <label class="control-label" for="option_value">Product Quantity<span class="required"></span>
+              </label>
+            </div> -->
+
+            <div class="col-sm-2">
+              <label class="control-label" for="product_status">Product Status<span class="required"></span>
+              </label>
+            </div>
+
+          </div>            
+    
+          <% if(arrProduct_unit && Array.isArray(arrProduct_unit) && arrProduct_unit.length > 0) {
+            arrProduct_unit.forEach(function(val, index) {               
+          %>            
+          <div class="row clone" style="margin-bottom: 15px;"> 
+
+              <!-- <div class="col-sm-2"  >
+                <input value="<%= val.inventory %>"   type="text" id="product_inventory" name="product_inventory" class="form-control" >
+              </div> -->
+
+              <div class="col-sm-4">
+                <div class="field" style="color: #f00 ">
+                  <input value="<%= val.title %>" type="text" id="product_title" name="product_title" class="form-control" >
+                </div>
+              </div>  
+
+              <div class="col-sm-2">
+                <div class="field" style="color: #f00 ">
+                  <input type="text" id="product_price" name="product_price" value="<%= val.price %>" class="form-control" >
+                </div>
+              </div>
+
+              <div class="col-sm-2">
+                <div class="field" style="color: #f00 ">
+                  <input value="<%= val.sku %>"   type="text" id="product_sku" name="product_sku" class="form-control" >
+                </div>
+              </div>
+
+              <!-- <div class="col-sm-2">
+                <div class="field" style="color: #f00 ">
+                  <input value="<%= val.stock %>"   type="text" id="product_inventory" name="product_inventory" class="form-control" >
+                </div>
+              </div> -->
+
+              <!-- <div class="col-sm-2">
+                <input type="number"  id="product_special_price" name="product_special_price" value="<%= val.special_price %>" class="form-control" >
+              </div> -->
+
+              <!-- <div class="col-sm-2">
+                <input type="number"  id="product_quantity" name="product_quantity" value="<%= val.quantity %>" class="form-control" >
+              </div> -->
+
+              <div class="col-sm-2">
+                <select name="product_status" class="form-control">
+                  <option <% if(val.status=='active'){ %>selected="selected" <% }%> value="active">Active</option>
+                  <option <% if(val.status=='inactive'){ %>selected="selected" <% }%> value="inactive">Inactive</option>
+                </select>
+              </div>
+
+              <!-- <div class="col-sm-2">
+                <input id="ddddddddddddd" class="form-control special_price_from"  name="special_price_from" type="text" value="<%= arrData ? arrData.special_price_from : '' %>">
+              </div> -->
+              
+              
+              
+              <div class="col-sm-2">
+                <button  class="remove_trigger btn btn-danger" type="button"><i class="fa fa-close" aria-hidden="true"></i></button>
+              </div>     
+              <input name="updateUnitId" type="hidden"  value="<%= val.id %>" >                
+          </div>
+        <%  })
+        }else{%>
+        
+          <div class="row clone" style="margin-bottom: 15px;">
+
+            <!-- <div class="col-sm-2">
+              <input value="" type="text" id="product_inventory" name="product_inventory" class="form-control" >
+            </div> -->
+
+            <div class="col-sm-4">
+              <div class="field" style="color: #f00 ">
+                <input name="product_title" value=""  type="text" id="product_title"  class="form-control">
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <div class="field" style="color: #f00 ">
+                <input name="product_price" type="text" id="product_price"  value="" class="form-control">
+              </div>
+            </div>  
+
+            <div class="col-sm-2">
+              <div class="field" style="color: #f00 ">
+                <input value=""   type="text" id="product_sku" name="product_sku" class="form-control" >
+              </div>
+            </div>
+
+            <!-- <div class="col-sm-2">
+              <div class="field" style="color: #f00 ">
+                <input value=""   type="text" id="product_inventory" name="product_inventory" class="form-control" >
+              </div>
+            </div> -->
+
+            <!-- <div class="col-sm-2">
+              <input type="number"  id="product_special_price" name="product_special_price" value="" class="form-control" >
+            </div>        -->
+
+            <!-- <div class="col-sm-2">
+              <input type="number"  id="product_quantity" name="product_quantity" value="" class="form-control" >
+            </div> -->
+
+            <div class="col-sm-2">
+              <select name="product_status" class="form-control">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            
+            <div class="col-sm-2">
+              <button class="remove_trigger btn btn-danger" type="button"><i class="fa fa-close" aria-hidden="true"></i></button>
+            </div>
+            <input name="updateUnitId" type="hidden" value="">
+          </div>
+          <% } %>  
+          <div class="placer"></div>
+        </div>
+      </div>
+    </div>  
+    <!-- Product size price end--> 
+
+    <div class="content_body panel_body">
+      <div class="panel_title">
+        <h3>Product Icon<span></span></h3>
+      </div>
+      <div  class="file-tab field">
+        <div class="">
+          <i class="" aria-hidden="true"></i>
+          <span>Browse</span>
+          <!-- <input type="file"  id="icon" name="icon"  accept="image/*"  onchange="preViewIcon()" <% if(arrData && arrData.icon && arrData.icon!=''){  }else {%> required="required"<% }%> > -->
+          <input type="file"  id="icon" name="icon"  accept="image/*"  onchange="preViewIcon()" >
+          <input type="hidden" name="update_icon" value="<%= arrData ? arrData.icon : '' %>"> 
+
+          <div class="upload_img01">
+            <% if(arrData.icon !='' && arrData.icon != null && helper.isFileExistsInProIcon(arrData.icon)){%>
+            <img id="iconpreview" src="<%= baseurl + 'superpos/myimages/product/icon/' + arrData.icon %>" style="height: 100px; margin: 12px; width: 100px;" class="img-thumbnail" />
+            <% }else{ %>
+              <img id="iconpreview" src="<%= baseurl + 'user_contents/no_image.jpg' %>" style="height: 100px; margin: 12px; width: 100px;" class="img-thumbnail" />
+            <% } %>
+          </div>  
+          <!-- <div class="row">
+            <div class="upload_img01">
+              <img id="iconpreview" src="" style="height: 100px; margin: 12px; width: 100px;" class="img-thumbnail" />
+              </div>
+          </div> -->
+        </div> 
+      </div> 
+    </div>
+  
+
+    <div class="content_body panel_body" style="display: none;">
+      <div class="panel_title">
+        <h3>Product Images<span>*</span></h3>
+      </div>
+      <div  class="file-tab">
+        <div class="">
+          <i class="" aria-hidden="true"></i>
+          <span>Browse</span>
+          <input type="file" id="image" name="image" value=""  accept="image/*" data-type='image' multiple>
+          <div class="row">
+            <div class="gallery"> </div>
+            
+            <% if(productImages !='' && productImages !=null){ %>  
+              <% productImages.forEach(function(img){ %>
+                <div class="upload_img011" >
+                  <img id="preview" src="<%= baseurl + 'superpos/myimages/product/' + img.image %>" style="height: 100px; margin: 7px; width: 100px;" class="img-thumbnail" />
+                  <div class="remove">
+                  <a class="btn" href="<%= adminbaseurl%>productImage/delete/<%= img.id %>/<%= arrData.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a></td>
+                  </div>
+                </div> 
+              <%})%>
+            <%}%>
+              
+            
+          </div>
+        </div> 
+      </div> 
+    </div>
+    
+    <div class="btn_right mb-4">
+      <!-- <button type="reset" class="cancel_btn">Reset</button> -->
+      <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+      <button id="send" type="submit" class="submit_btn" ><%= arrData ? "Update Product" : "Add Product" %></button>
+    </div>  
+  </form>
+  </div>
+</div>     
+
+<script src="<%= adminbaseurl %>build/js/croppr.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+<script src="<%= adminbaseurl %>build/js/croppr.js"></script>
+<script src="<%= adminbaseurl %>ckeditor/ckeditor.js"></script>
+<script src="<%= adminbaseurl %>validator-master/multifield.js"></script>
+<script src="<%= adminbaseurl %>validator-master/validator.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
+<%- include ../jqueryDatePicker/jquerydatepicker.html %>
+
+
+<script>
+$(function() {
+  // Multiple images preview in browser
+  var imagesPreview = function(input, placeToInsertImagePreview) {
+
+    if (input.files) {
+        var filesAmount = input.files.length;
+
+        for (i = 0; i < filesAmount; i++) {
+            var reader = new FileReader();
+
+            reader.onload = function(event) {
+                $($.parseHTML('<img style="height: 100px; margin: 7px; width: 100px;">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+              }
+
+            reader.readAsDataURL(input.files[i]);
+        }
+    }
+  };
+
+  $('#image').on('change', function() {
+      imagesPreview(this, 'div.gallery');
+  });
+});
+</script>
+<script>
+  function preView()  {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif)$/i; 
+  if(!allowedExtensions.exec(filePath)){
+      // alert('Please upload file having extensions .jpg only.');
+      fileInput.value = '';
+      return false;
+  }else{
+      //Image preview
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();             
+          reader.onload = function(){
+            var output = document.getElementById('preview');
+            output.src = reader.result;
+          };
+          reader.readAsDataURL(event.target.files[0]);
+        
+        };
+  }
+  }
+  </script>
+
+<script>
+  function preViewIcon()  {
+    var fileInput = document.getElementById('icon');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif)$/i; 
+  if(!allowedExtensions.exec(filePath)){
+      // alert('Please upload file having extensions .jpg only.');
+      fileInput.value = '';
+      return false;
+  }else{
+      //Image preview
+  if (fileInput.files && fileInput.files[0]) {
+    var reader = new FileReader();             
+      reader.onload = function(){
+        var output = document.getElementById('iconpreview');
+        output.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    
+    };
+  }
+  }
+  </script>
+
+
+
+<script>
+// $("#special_price_from").each(function(){
+//     var currentValue = $("#special_price_from").val();
+//     if(currentValue)
+//     $("#special_price_to").datepicker('setDate',new Date(currentValue));
+// // });
+$("#from_special_price","#special_price_to").keydown(function(event) {
+  //alert(1)
+  if(event.keyCode != 8){
+    event.preventDefault();
+  }
+});
+var dateToday = new Date();
+var dates = $("#from_special_price, #special_price_to").datepicker({
+  // defaultDate: "+1d",
+  changeMonth: true,
+  changeYear: true,
+  dateFormat: 'yy-mm-dd',
+  minDate: dateToday,
+  onSelect: function(selectedDate) {    
+    console.log(this)
+    var option = this.id.indexOf("from_special_price") != -1 ? "minDate" : "maxDate",
+    instance = $(this).data("datepicker"),
+    date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+    dates.not(this).datepicker("option", option, date);
+  }
+});
+// $( function() {
+//   $( "#special_price_from" ).datepicker({
+//     dateFormat: 'yy-mm-dd',
+//     numberOfMonths: 1,    
+//   });  
+// } );
+// $( function() {
+//   $( "#special_price_to" ).datepicker({
+//     dateFormat: 'yy-mm-dd',
+//     numberOfMonths: 1,    
+//   });  
+// } );
+</script>
+
+<script type="text/javascript">
+
+  var validator = new FormValidator({ "events": ['blur', 'input', 'change'] }, document.forms[0]);
+  document.forms[0].onsubmit = function (e) {
+    var submit = true,
+      validatorResult = validator.checkAll(this);
+
+    console.log(validatorResult);
+    return !!validatorResult.valid;
+  };
+
+  function PreviewIcon(){
+
+  }
+
+function PreviewImage() {
+
+var fileInput = document.getElementById('image');
+var filePath = fileInput.value;
+var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+if(!allowedExtensions.exec(filePath)){
+    alert('Please upload file having extensions .jpeg/.jpg/.png  only.');
+    fileInput.value = '';
+    return false;
+}else{
+  //Image preview
+  if (fileInput.files && fileInput.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+          document.getElementById('imagePreview').innerHTML = '<img src="'+e.target.result+'"/>';
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+  }
+}
+
+
+  var oFReader = new FileReader(); oFReader.readAsDataURL(document.getElementById("image").files[0]);
+  oFReader.onload = function (oFREvent) {
+  document.getElementById("imagePreview").src = oFREvent.target.result;
+  };
+};
+  
+  $('#product-info').on('submit', function(e){
+    // var form = document.getElementById('product-info');
+    var formData = new FormData();
+    //var formData = new FormData(form);
+    // formData.append('image', cropImageFile);
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.onreadystatechange = function(result) {
+    //   if (this.readyState == 4 && this.status == 200) {
+    //     document.getElementById('cropperImageContainer').innerHTML = '';
+    //     //window.scrollTo(0, 0);
+    //     }
+    // };
+    // // Add any event handlers here...
+    // xhr.open('POST', '<%= adminbaseurl %>product/fileupload', true);
+    // xhr.send(formData);
+
+    	if (document.getElementById("image").files && document.getElementById("image").files.length > 0) {
+      console.log(document.getElementById("image").files[0]);
+      // e.preventDefault();
+      formData.append('image', document.getElementById("image").files[0]);
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function (result) {
+        if (this.readyState == 4 && this.status == 200) {
+          // document.getElementById('cropperImageContainer').innerHTML = '';
+          //window.scrollTo(0, 0);
+        }
+      };
+      // Add any event handlers here...
+      //xhr.open('POST', '/api/v1/banner/fileupload', true);
+      xhr.open('POST', '<%= adminbaseurl %>product/fileupload', true);
+      xhr.send(formData);
+    }
+  });
+  ////////////////////////////////code end////////////////////////////////
+  function validate(evt){
+    //alert( evt.value);
+    evt.value = evt.value.replace(/[^0-9]/g,"");
+  }
+
+</script>
+
+<SCRIPT type="text/javascript">
+  
+</SCRIPT>
+
+
+<script>            
+  CKEDITOR.editorConfig = function (config) {
+    config.language = 'es';
+    config.uiColor = '#F7B42C';
+    config.height = 300;
+    config.toolbarCanCollapse = true; 
+  };
+ CKEDITOR.replace('description');
+//  CKEDITOR.replace('short_description');
+</script>
+
+<script>
+  // jQuery(".choose").chosen({
+  //   max_selected_options: 10,
+  // placeholder_text_multiple: ""
+  // })
+  // .bind("chosen:maxselected", function (){
+  //   window.alert("You reached your limited number of selections which is 10 selections!");
+  // });
+</script>
+
+<script>
+  $(document).ready(function(){
+    $(".datepicker").datepicker();
+    $("button").click(function(){
+      $("p").removeClass("intro");
+    });
+    if ($('#chk_is_configurable').is(":checked")) {
+      // alert(1)
+      $(".is_configurable_class").show();
+      $(".clone_trigger.panel_btn").show();   
+       
+    }else{
+      // alert(2)
+      $(".clone_trigger.panel_btn").hide();   
+      $(".is_configurable_class").hide(); 
+    }
+  });
+</script>
+
+<script>
+  $(document).ready(function(){
+    $(".clone_trigger").click(function () {        
+      $('.clone').first().clone()
+      .find("input").val("").end()
+      .find(".remove_trigger").show().end()      
+      .insertBefore(".placer");
+      $('input.cl:last').val('');
+      event.preventDefault();
+    });   
+    $(document).on('click','.remove_trigger',function () {     
+      if ($(".clone").length > 0) {        
+        if($(".clone").length == 1){
+          $(".clone:last")
+          .find("input").val("").end()     
+          $(".clone_trigger.panel_btn").hide();   
+          $(".is_configurable_class").hide();  
+          $("#chk_is_configurable"). prop("checked", false);
+        }else{
+          $(this).closest('.clone').remove();
+        }                         
+      }        
+      event.preventDefault();
+    });      
+    
+    // $("#price").click(function () {
+    // $(document).on('input','#price',function () {   
+    //   // document.getElementById('price').oninput = function () {
+    //   console.log(this.value)
+    //   console.log($(this.parentNode))
+    //   var regex = /^[0-9]*(?:\.\d{1,2})?$/;
+    //   if( !regex.test(this.value)){
+    //     alert('invalid value');
+    //     if(!$(this.parentNode).hasClass('bad')){
+    //       $(this.parentNode).addClass('bad')
+    //       $( '<div class="alert">Must enter a valid phone number</div>' ).insertAfter( this );
+    //     }  else{
+    //       $(this.parentNode).removeClass('bad');
+    //       $(this).next('div').remove();   
+    //     }               
+    //   }else{
+    //     $(this.parentNode).removeClass('bad');
+    //     $(this).next('div').remove();      
+    //   }
+    // })
+
+  });
+</script>
+<script>
+  $("#chk_is_configurable").click(function () {
+    if ($(this).is(":checked")) {
+      $(".is_configurable_class").show();
+      $(".clone_trigger.panel_btn").show();   
+      
+      // $( ".clone:not(:first)" ).each(function(){
+      //   $(this).remove();
+      // });
+      // $(".clone:last").find("input:text").val("").end();
+      // $(".is_configurable_class").show();
+    } else {
+      $(".is_configurable_class").hide();
+      $(".clone_trigger.panel_btn").hide();         
+      $( ".clone:not(:first)" ).remove();
+      $(".clone:last").find("input").val("").end();
+      // alert($('.remove_trigger:visible').length);
+      // $('.remove_trigger:visible').parent().parent('.clone').remove();
+      // if($('.clone.remove_trigger').css('display') == 'none')
+      // {
+      //   alert(141)
+      //   // Take element is hidden action
+      // }
+      // $(".is_configurable_class").hide();
+    }
+  });
+
+    
+   function validatenumber(event) {
+    console.log(event.target.value);
+    // event.target.parentElement.classList.add("bad");
+    var regex = /^[0-9]*(?:\.\d{1,2})?$/;    // allow only numbers [0-9] 
+    // if( !regex.test(event.target.value) ) {
+    //   alert('invalid value');
+    // console.log(event.target.parentElement)
+
+    if( !regex.test(event.target.value)){
+      // alert('invalid value');
+      console.log(event.target.parentElement.classList)
+      // event.target.classList.contains('bad')
+      if(!event.target.parentElement.classList.contains('bad')){
+        // alert('no')
+        // console.log($(event.target.parentNode))
+        //  $(event.parentNode).addClass("bad");
+        $(event.target.parentElement).next('div').remove();
+        $('<div class="alert">Must enter a valid price</div>' ).insertAfter(event.target.parentElement);
+      }                
+    }else{
+      console.log(event.target.nextElementSibling);
+      event.target.parentElement.classList.remove("bad");
+      $(event.target.parentElement).next('div').remove();
+      // event.target.nextElementSibling.remove();    
+    }
+  }
+</script>
+
+<script>
+  $("#sall").change(function() {
+    if($(this).prop("checked") == true){
+      $('#category_id option').prop('selected', true);
+    } else {
+      $('#category_id option').prop('selected', false);
+    }
+  }); 
+  </script>
+
+<!-- <script>
+  function substrUrl() {
+   
+    var res = str.substr(2);
+    document.getElementById("url").innerHTML=res;
+  }
+  </script> -->

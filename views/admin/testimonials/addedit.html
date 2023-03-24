@@ -1,0 +1,144 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>testimonials/list/1">Testimonials</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>testimonials/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>Testimonial Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Title<span>*</span></span>
+              <input id="title" class="form-control"  name="title" type="text"  required="required" value="<%= arrData ? arrData.title : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <% if(sessionStoreId!='') {%>
+            <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+          <% } else {%>
+              <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1">
+                      <span>Select Store <span class="text-danger">*</span></span>
+                      <select name="storeId" id="storeId" class="form-control">
+                          <% stores.forEach(function(store){%>
+                          <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                          <% })%>
+                      </select>
+                  </div>
+              </div>
+          <% }%>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Company</span>
+                <input id="company" class="form-control"  name="company" type="text" value="<%= arrData ? arrData.company : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Designation</span>
+                <input id="designation" class="form-control" name="designation" type="text" value="<%= arrData ? arrData.designation : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" id="status" required="required" class="form-control">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="animate_form field">
+              <span>Description<span>*</span></span>
+              <textarea id="description" class="form-control" name="description" type="text" required="required" ><%= arrData ? arrData.description : '' %></textarea>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <label>Image</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+              <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+              <div class="upload_img01">
+                <% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInTestimonialsImage(arrData.id+'/'+arrData.image)){%>
+                  <img id="preview" src="<%= baseurl+ 'admin/testimonials/'+ arrData.id +'/' + arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } else { %>
+                  <img id="preview" src="<%= baseurl + 'admin/testimonials/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script type="text/javascript">
+  function isNumber(this){
+    this.value = this.value.replace(/[^0-9.]/g,'');
+  }
+  function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+  $(document).keyup(function(){
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug+= "-"+(name.length+1);	
+    $('#slug').val(slug);
+  });
+</script>
+<script type="text/javascript">
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script>

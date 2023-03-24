@@ -1,0 +1,218 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>pages/list/1">Pages</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>pages/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>Page Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Title<span>*</span></span>
+              <input id="title" class="form-control"  name="title" type="text"  required="required" value="<%= arrData ? arrData.title : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Slug<span>*</span></span>
+              <input id="slug" class="form-control" name="slug" type="text" onkeypress="return blockother(event)" required="required" readonly value="<%= arrData ? arrData.slug : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+            <span>URL Key<span>*</span></span>
+            <input id="urlKey" class="form-control" name="urlKey" type="text" required="required" value="<%= arrData ? arrData.urlKey : '' %>">
+            <div class="alert_msg"></div>
+            </div>
+        </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+            <span>Page Heading<span>*</span></span>
+            <input id="pageHeading" class="form-control" name="pageHeading" type="text" required="required" value="<%= arrData ? arrData.heading : '' %>">
+            <div class="alert_msg"></div>
+            </div>
+        </div>
+        <% if(sessionStoreId!='') {%>
+          <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+        <% } else {%>
+            <div class="col-sm-6 mb-5">
+                <div class="animate_form field mb-1">
+                    <span>Select Store <span class="text-danger">*</span></span>
+                    <select name="storeId" id="storeId" class="form-control">
+                        <% stores.forEach(function(store){%>
+                        <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                        <% })%>
+                    </select>
+                </div>
+            </div>
+        <% }%>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Short Description<span>*</span></span>
+              <input id="shortDes" class="form-control"  name="shortDes" type="text"  required="required" value="<%= arrData ? arrData.shortDescription : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Content<span>*</span></span>
+              <textarea id="content" class="form-control"  name="content" type="text"  required="required" ><%= arrData ? arrData.content : '' %></textarea>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Meta Title<span>*</span></span>
+              <input id="metaTitle" class="form-control"  name="metaTitle" type="text"  required="required" value="<%= arrData ? arrData.metaTitle : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Meta Keyword<span>*</span></span>
+              <input id="metaKeyword" class="form-control"  name="metaKeyword" type="text"  required="required" value="<%= arrData ? arrData.metaKeyword : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Meta Description<span>*</span></span>
+              <textarea id="metaDescription" class="form-control"  name="metaDescription" type="text"  required="required" ><%= arrData ? arrData.metaDescription : '' %></textarea>
+              <div class="alert_msg"></div>
+          </div>
+          </div>
+         <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" class="form-control">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <label>Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+                <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+                <div class="upload_img01">
+                <% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInPagesImage(arrData.id+'/'+arrData.image)){%>
+                    <img id="preview" src="<%= baseurl+ 'admin/pages/image/'+ arrData.id +'/' + arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% }else{ %>
+                    <img id="preview" src="<%= baseurl + 'user_contents/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+                </div>
+            </div>
+          </div>
+           <div class="col-sm-6">
+            <div class="animate_form field">
+                <label>Meta Image</label>
+                <input type="file" class="form-control" id="metaImage" name="metaImage" accept="image/*" onchange="preView1()" <% if(arrData && arrData.metaImage && arrData.metaImage==''){ %> required="required" <% }%> />
+                <input type="hidden" name="update_image" value="<%= arrData ? arrData.metaImage : '' %>" />
+                <div class="upload_img01">
+                <% if(arrData.metaImage !='' && arrData.metaImage != null && helper.isFileExistsInPagesMetaImage(arrData.id+'/'+arrData.metaImage)){%>
+                    <img id="preview1" src="<%= baseurl+ 'admin/pages/metaimage/'+ arrData.id +'/' + arrData.metaImage %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% }else{ %>
+                    <img id="preview1" src="<%= baseurl + 'user_contents/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<%- include ../partials/footer.html %>
+<script type="text/javascript">
+function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+  $('#title').keyup(function(){
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    var storeId = $('#storeId').val();
+    var randomNumber = Math.floor(1000 + Math.random()*9000);
+    $('#slug').val(slug+ storeId+'-'+ randomNumber);
+  });
+  $('#storeId').change(function(){
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g,'-');
+    var randomNumber = Math.floor(1000+Math.random()*9000);
+    var storeId = $('#storeId').val();
+    $('#slug').val(slug+storeId+'-'+randomNumber);
+  });
+</script>
+<script type="text/javascript">
+function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+  function preView1() {
+    var fileInput = document.getElementById('metaImage');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview1');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script>

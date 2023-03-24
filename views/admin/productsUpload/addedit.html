@@ -1,0 +1,80 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<!-- page content -->
+
+<div class="content_wraper">
+  <div class="main_container">        
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+        <ul>
+          <li><a href="<%= adminbaseurl %>dashboard">Dashboards</a></li>           
+          <li><%=title%></li>
+        </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+    <% }%>   
+    
+    <form id="category-info" name="forms" class="form-horizontal form-label-left" novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>product_upload/add">
+      <div class="content_body panel_body">
+
+        <div class="panel_title">
+          <h3><%=title%> Info</h3>
+        </div>
+            
+        <div class="clearfix"></div>
+
+        <div class="tab-content">
+          <div>
+            <h3>Download a sample CSV file</h3>
+            <button  class="btn"><a href="<%= adminbaseurl %>product_upload_template.csv" download><i class="fa fa-download"></i> Download</a></button>
+          </div><br><br>
+
+          <!--category content start-->
+          <div id="gen-info" class="tab-pane fade in active show">
+            <div class="row edit_box">
+            </div>
+            <div class="panel_title">
+              <label>Upload Your CSV file</label>
+            </div>
+            <div class="animate_form field">
+              <input type="file" id="product_upload" name="product_upload"  value=""  class="" accept=".csv"   />
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+        <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+        <button id="submitForm" type="submit" class="submit_btn" >Submit</button>
+      </div>
+    </form>
+  </div>
+  </div>
+</div>
+
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+
+<script>
+$('#submitForm').bind("click",function() { 
+  var csvVal = $('#product_upload').val(); 
+  if(csvVal==''){
+    alert("Please choose a csv file first." );
+    return false;
+  } else {
+    return confirm('Are you sure?')
+  }
+});
+</script>

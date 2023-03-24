@@ -1,0 +1,173 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style> 
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>couponTransaction/list/1" >Rule List</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>couponTransaction/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <div class="panel_title">
+          <h3><%=title%></h3>
+          <div class="float-right mb-3">
+            <a href="<%= adminbaseurl %>couponTransaction/list/1" class="btn btn-info btn-sm"  ><i class="fa fa-list"></i> Rule list</a>
+          </div> 
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Customer <span class="text-danger">*</span></span>
+                <select name="customerId" id="customerId" class="form-control" required="required">
+                    <option value=""  <% if(arrData.customerId == ''){ %> selected="selected" <% }%>>Select</option>
+                    <% customers.forEach(function(customer){%>
+                      <option value="<%=customer.id%>"  <% if(arrData.customerId == customer.id){ %> selected="selected" <% }%>><%=customer.firstName; %> <%=customer.lastName; %></option>
+                    <% })%>
+                  </select>
+            </div>
+          </div>
+
+          <% if(sessionStoreId!='') {%>
+            <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+          <% } else {%>
+              <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1">
+                      <span>Select Store <span class="text-danger">*</span></span>
+                      <select name="storeId" id="storeId" class="form-control">
+                          <% stores.forEach(function(store){%>
+                          <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                          <% })%>
+                      </select>
+                  </div>
+              </div>
+          <% }%>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>CouponId <span class="text-danger">*</span></span>
+              <input id="couponId" class="form-control"  name="couponId" type="number"  required="required" value="<%= arrData ? arrData.couponId : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>AppliedAmount <span class="text-danger">*</span></span>
+              <input id="appliedAmount" class="form-control"  name="appliedAmount" type="text"  required="required" value="<%= arrData ? arrData.appliedAmount : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Coupon Type <span class="text-danger">*</span></span>
+                <select name="couponType" class="form-control" required="required">
+                    <option <% if(arrData.couponType=='amount'){ %>selected="selected" <% }%> value="amount">Amount</option>
+                    <option <% if(arrData.couponType=='percentage'){ %>selected="selected" <% }%> value="percentage">Percentage</option>
+                </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>CouponValue <span class="text-danger">*</span></span>
+              <input id="couponValue" class="form-control"  name="couponValue" type="number"  required="required" value="<%= arrData ? arrData.couponValue : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>couponCode <span class="text-danger">*</span></span>
+              <input id="couponCode" class="form-control"  name="couponCode" type="text"  required="required" value="<%= arrData ? arrData.couponCode : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>purchaseLimit <span class="text-danger">*</span></span>
+              <input id="purchaseLimit" class="form-control"  name="purchaseLimit" type="text"  required="required" value="<%= arrData ? arrData.purchaseLimit : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>DateFrom <span class="text-danger">*</span></span>
+              <input id="dateFrom" class="form-control"  name="dateFrom" type="date"  required="required" value="<%= arrData ? arrData.dateFrom : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>DateTo <span class="text-danger">*</span></span>
+              <input id="dateTo" class="form-control"  name="dateTo" type="date"  required="required" value="<%= arrData ? arrData.dateTo : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>TimeFrom <span class="text-danger">*</span></span>
+              <input id="timeFrom" class="form-control"  name="timeFrom" type="time"  required="required" value="<%= arrData ? arrData.timeFrom : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>TimeTo <span class="text-danger">*</span></span>
+              <input id="timeTo" class="form-control"  name="timeTo" type="time"  required="required" value="<%= arrData ? arrData.timeTo : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>IsShare <span class="text-danger">*</span></span>
+                <select name="isShare" class="form-control" required="required">
+                    <option <% if(arrData.isShare=='Yes'){ %>selected="selected" <% }%> value="Yes">Yes</option>
+                    <option <% if(arrData.isShare=='No'){ %>selected="selected" <% }%> value="No">No</option>
+                </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Status <span class="text-danger">*</span></span>
+                <select name="status" class="form-control" required="required">
+                    <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">Yes</option>
+                    <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">No</option>
+                </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="btn_right mb-4">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+

@@ -1,0 +1,86 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+         <div class="header_wraper">
+              <h2><%=title%></h2>
+              <ul>
+                  <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                  <li><h4><%=title%><small></small></h4></li>
+              </ul>
+          </div>
+  
+          <% if(messages!='') {%>
+          <div class="succ_msg msg" id="succ_msg">    
+              <i class="fa fa-check"  aria-hidden="true"></i>        
+              <%=messages%>
+          </div>
+          <%}%>                
+          <% if(errors!='') {%>
+          <div class="succ_err msg" id="err_msg">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+              <%=errors%>
+          </div>
+          <% }%> 
+          
+      <div class="content_body">
+          <div class="table_heading">
+          <h3>File List</h3>
+          <a href="<%= adminbaseurl %>fileUpload/view" class="btn btn-info btn-lg addStore"  ><i class="fa fa-plus1">+</i> Add File</a> 
+          <div class="table_search">
+            <input type="text" placeholder="Search Stores...">
+              <a href="javascript:void(0)" data-toggle="tooltip" title="Close" class="close_search">&times;</a>
+          </div>
+      </div>
+
+      <div class="table-responsive table_wraper">
+      <table class="table product_list025">
+        <thead>
+            <tr>
+                <th style="width:15px" class="text-center">Sl No</th>
+                <th>Customer</th>
+                <th>Image</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+      <tbody>
+      
+          <% var i= 1;
+              arrData.forEach(function(val) { %>	
+            <tr>
+                <td class="text-center"> <%= i %></td>
+                <td>
+                    <% arrCustomer.forEach(function(customer) {
+                            if(customer.id==val.customerId){ %>
+                    <%= customer.firstName %> <%= customer.lastName %></ <% } }); %>
+                </td>
+                <td> 
+                    <% if(val.image !='' && val.image != null){%>
+                        <img src="<%= baseurl+ 'admin/multiplefiles/'+ val.image %>" alt="<%= val.image %>" class="product_img" height="50px" >
+                    <% }else{ %>
+                        <img src="<%= baseurl + 'admin/brands/no_image.jpg' %>" class="product_img" height="50px" width="50px" >
+                    <% } %>
+                </td>
+                <td class="text-center">
+                    <a href="<%= adminbaseurl%>fileUpload/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                    <a href="<%= adminbaseurl%>fileUpload/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+          <% i++; }) %>
+          </tbody>
+          </table>
+         </div>
+      </div>
+  </div>
+  
+
+<%- include ../partials/footer.html %>

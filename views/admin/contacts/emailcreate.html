@@ -1,0 +1,132 @@
+<%- include ../partials/header_new.html %>
+  <%- include ../partials/sidebar.html %>
+
+    <style>
+      .edit_box .field {
+        margin-bottom: 25px;
+      }
+
+      .edit_box .field span {
+        font-size: 14px;
+        margin-bottom: 2px;
+        display: inline-block;
+      }
+
+      .edit_box .field input,
+      .edit_box .field select {
+        font-size: 14px;
+        font-weight: normal;
+        color: #555;
+        border: 1px solid #ced4da;
+      }
+
+      .panel_title {
+        padding-bottom: 15px;
+      }
+
+      @media(max-width: 767px) {
+        .edit_box .field {
+          margin-bottom: 15px;
+        }
+
+        .panel_title {
+          padding-bottom: 5px;
+        }
+
+        .btn_right {
+          text-align: center;
+        }
+      }
+    </style>
+    <div class="content_wraper">
+      <div class="main_container">
+
+        <div class="header_wraper">
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard">Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>emailconfig/list/1">Config List</a></li>
+            <li>
+              <%=title%>
+            </li>
+          </ul>
+          <h2>
+            <%=title%>
+          </h2>
+        </div>
+
+        <% if(messages!='' ) {%>
+          <div class="succ_msg msg" id="succ_msg">
+            <i class="fa fa-check" aria-hidden="true"></i>
+            <%=messages%>
+          </div>
+          <%}%>
+            <% if(errors!='' ) {%>
+              <div class="succ_err msg" id="err_msg">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <%=errors%>
+              </div>
+              <% }%>
+
+                <form class="form-horizontal form-label-left" method="post"
+                  action="<%= adminbaseurl %>emailconfig/addOrUpdate">
+                  <div class="content_body edit_store">
+                    <div class="panel_title">
+                      <h3>Email Configuration</h3>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row edit_box">
+                      <div class="col-sm-6">
+                        <div class="field">
+                          <span>Email <span class="text-danger">*</span></span>
+                          <input id="email" class="form-control" required name="email" type="email"
+                            value="<%= arrData ? arrData.email : '' %>">
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6">
+                        <div class="field">
+                          <span>Domain <span class="text-danger">*</span></span>
+                          <input id="domain" class="form-control" required name="domain" type="text"
+                            value="<%= arrData ? arrData.domain : '' %>">
+                        </div>
+                      </div>
+
+                      <% if(sessionStoreId!='' ) {%>
+                        <input id="storeId" class="form-control" name="storeId" type="hidden"
+                          value="<%= sessionStoreId %>">
+                        <% } else {%>
+                          <div class="col-sm-6">
+                            <div class="field">
+                              <span>Select Store <span class="text-danger">*</span></span>
+                              <select name="storeId" id="storeId" class="form-control">
+                                <% stores.forEach(function(store){%>
+                                  <option value="<%=store.id%>" <% if(arrData.storeId==store.id){ %> selected="selected"
+                                    <% }%>><%=store.storeName; %>
+                                  </option>
+                                  <% })%>
+                              </select>
+                            </div>
+                          </div>
+                          <% }%>
+
+                            <div class="col-sm-6">
+                              <div class="field">
+                                <span>Status <span class="text-danger">*</span></span>
+                                <select name="status" class="form-control" id="status">
+                                  <option <% if(arrData.status=='Active' ){ %>selected="selected" <% }%>
+                                      value="Active">Active</option>
+                                  <option <% if(arrData.status=='Inactive' ){ %>selected="selected" <% }%>
+                                      value="Inactive">Inactive</option>
+                                </select>
+                              </div>
+                            </div>
+                    </div>
+                  </div>
+                  <div class="btn_right">
+                    <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>">
+                    <button id="send" type="submit" class="btn btn_theme01">Submit</button>
+                  </div>
+                </form>
+      </div>
+    </div>
+    <%- include ../partials/footer.html %>

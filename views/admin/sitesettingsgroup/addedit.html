@@ -1,0 +1,80 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>sitesettingsgroup/list/1">SettingsGroup</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+      <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>sitesettingsgroup/addOrUpdate">
+        <div class="content_body panel_body edit_store">
+            <div class="panel_title">
+                <h3>SettingsGroup Information</h3>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row edit_box">
+              <div class="col-sm-6">
+                <div class="animate_form field">
+                    <span>GroupTitle<span>*</span></span>
+                    <input id="gTittle" class="form-control"  name="gTittle" type="text" required="required" value="<%= arrData ? arrData.groupTitle : '' %>">
+                  <div class="alert_msg"></div>
+                </div>
+              </div>
+              <% if(sessionStoreId!='') {%>
+                <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+              <% } else {%>
+                  <div class="col-sm-6 mb-5">
+                      <div class="animate_form field mb-1">
+                          <span>Select Store <span class="text-danger">*</span></span>
+                          <select name="storeId" id="storeId" class="form-control">
+                              <% stores.forEach(function(store){%>
+                              <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                              <% })%>
+                          </select>
+                      </div>
+                  </div>
+              <% }%>
+              <div class="col-sm-6">
+                  <div class="animate_form field">
+                      <span>Sequence<span>*</span></span>
+                      <input id="seq" class="form-control" name="seq" type="seq" required="required" value="<%= arrData ? arrData.sequence : '' %>">
+                      <div class="alert_msg"></div>
+                    </div>
+              </div>
+              <div class="col-sm-6">
+                    <div class="animate_form field">
+                        <span>Status<spna>*</spna></span>
+                        <select name="status" class="form-control">
+                            <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                            <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="btn_right mb-4">
+            <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+            <button id="send" type="submit" class="submit_btn">Submit</button>
+        </div>
+      </form>
+    </div>
+</div>
+      
+<%- include ../partials/footer.html %>

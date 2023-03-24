@@ -1,0 +1,28 @@
+</html>
+ <script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script src="http://yaireo.github.io/validator/multifield.js"></script>
+ <script>
+		// initialize the validator
+		var validator = new FormValidator(),
+			$form = $('form');
+
+
+		document.forms[0].addEventListener('blur', function(e){
+			validator.checkField.call(validator, e.target)
+		}, true);
+
+		document.forms[0].addEventListener('input', function(e){
+			validator.checkField.call(validator, e.target);
+		}, true);
+
+		document.forms[0].addEventListener('change', function(e){
+			validator.checkField.call(validator, e.target)
+		}, true);
+
+		document.forms[0].onsubmit = function(e){
+			var submit = true,
+				validatorResult = validator.checkAll(this);
+
+			console.log(validatorResult);
+			return !!validatorResult.valid;
+		};

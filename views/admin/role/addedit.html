@@ -1,0 +1,171 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>roles">Roles</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+
+    <style>
+      .checkrow54 .field{display: inline-block; vertical-align: middle; margin-right: 10px; width: 20%;}
+      .checkrow54 .checkedBox{display:flex; align-items: center;}
+      .checkrow54 .checkedBox input{margin-right:8px}
+      .checkrow54 h2{font-size: 20px; margin-bottom: 30px; }
+    </style>
+    
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>roles/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <div class="panel_title">
+          <h3>Roles Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Name<span>*</span></span>
+              <input id="name" class="form-control"  name="name" type="text"  required="required" value="<%= arrData ? arrData.name : '' %>" <% if(arrData && arrData.name=='Admin'){ %>readonly style="background: lightgray;"<%}%> />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+		  
+		      <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Slug<span>*</span></span>
+              <input id="slug" class="form-control"  name="slug" type="text"  required="required" value="<%= arrData ? arrData.slug : '' %>" readonly="readonly"/>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          
+          <div class="col-sm-12">
+            <div class="animate_form field">
+              <span>Description<span>*</span></span>
+              <textarea id="description" class="form-control" name="description" type="text" required="required" ><%= arrData ? arrData.description : '' %></textarea>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Select Store<%if(permissions.length>0 && role!=''){%><span>*</span><%}%></span>
+              <select name="storeId" id="storeId" class="form-control" <%if(permissions.length>0 && role!=''){%>required="required"<%}%>>
+                <option value="">Select Store</option>
+                <% if(stores.length>0){
+                stores.forEach(function(store){%>
+                  <option value="<%=store.id%>" <% if(arrData.storeId==store.id){ %> selected="selected" <% }%>>
+                      <%=store.storeName; %>
+                  </option>
+                  <% }) }%>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" id="status" required="required" class="form-control">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+              </select>
+            </div>
+          </div>
+
+        
+
+          
+          <div class="checkrow54"> 
+
+            <h2>Models</h2>
+            <% permissions.forEach(function(val) { %>              
+                           
+                 <div class="animate_form field">                  
+                  <div class="form-check pl-0 checkedBox">
+                    <% 
+                    var containsMarcus='';
+                    if(roleHasPermissions!=''){
+                    containsMarcus = !! roleHasPermissions.find(roleHasPermission => { 
+                      return roleHasPermission.permissionId === val.id
+                    })
+                  }else{
+                    containsMarcus = false;
+                  } %>
+                      <% if(containsMarcus){%>
+                        <input id="permission" class="" type="checkbox" data-toggle="toggle" name="permission" value="<%=val.id%>" checked>
+                        <%=val.name%>
+                      <% }else{ %>
+                          <input id="permission" class="" type="checkbox" data-toggle="toggle" name="permission" value="<%=val.id%>">
+                            <%=val.name%>
+                      <%}%>
+                  </div>
+                </div>
+
+               
+              
+            <% }) %>
+          </div>
+		 
+        </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script type="text/javascript">
+  /*function isNumber(this){
+    this.value = this.value.replace(/[^0-9.]/g,'');
+  }*/
+  function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+  $(document).keyup(function(){
+    var name = $('#name').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug+= "-"+(name.length+1);	
+    $('#slug').val(slug);
+  });
+
+</script>
+<script type="text/javascript">
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script>

@@ -1,0 +1,189 @@
+<%- include ../partials/header.html %>       
+<%- include ../partials/sidebar.html %>
+<!-- page content -->
+
+<div class="content_wraper">
+    <div class="main_container">
+      
+          <div class="header_wraper">
+              <h2><%=title%></h2>
+              <ul>
+                  <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                  <li><h4><%=title%><small></small></h4></li>
+              </ul>
+          </div>
+
+            <% if(messages!='') {%>
+            <div class="succ_msg msg" id="succ_msg">    
+                <i class="fa fa-check"  aria-hidden="true"></i>        
+                <%=messages%>
+            </div>
+            <%}%>                
+            <% if(errors!='') {%>
+            <div class="succ_err msg" id="err_msg">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+                <%=errors%>
+            </div>
+            <% }%> 
+          
+          <div class="content_body">
+      <div class="table_heading">
+        <h3>Manage <%=title%></h3>
+          <div class="table_search">
+            <input type="text" placeholder="Search Profile...">
+              <a href="javascript:void(0)" data-toggle="tooltip" title="Close" class="close_search">&times;</a>
+          </div>
+      </div>
+
+      <div class="table-responsive table_wraper">
+        <table class="table">
+            <thead>
+                  <tr>
+                      <th class="checkbox_cell">
+                          <!-- <label class="checkbox"><input  type="checkbox" id="checkAll" name="check"><span></span></label> -->
+                          </th>
+                          <th style="width:15px">Sl No</th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Phone No</th>
+                          <th>Address</th> 
+                          <th>City</th>
+                          <th>State</th>
+                          <!-- <th>PIN</th>
+                          <th>Country</th> -->
+                          <th>Status</th>
+                          <th>Created At</th>
+                          <!-- <th width="100px"><a href="<%= adminbaseurl %>users/addedit" class="add_btn"><span>+</span></a></th> -->
+                      </tr>
+                    </thead>
+
+
+                    <tbody>
+                      
+                        <% var i= startingNumber ? startingNumber : 1;
+                        arrData.forEach(function(val) { %>	
+
+                            <tr>
+                                <td class="checkbox_cell">
+                                    <!-- <label class="checkbox Select"><input type="checkbox" class="checkSelect" value="<%= val.id %>"><span></span></label> -->
+                                </td>
+                                <td> <%= i %></td>
+                                <td> <%= val.firstName %> <%= val.lastName %></td>
+                                <td> <%= val.email %></td>
+                                <td> <%= val.mobile %></td>
+                                <td> <%= val.address %> </td>
+                                <td> <%= val.city %> </td>  
+                                <td> <%= val.state %> </td>
+                                <!-- <td> <%= val.pin %> </td> 
+                                <td> <%= val.country %></td> -->
+                                <!-- <td><img src="<%= val.image %>" width="64" height="64"></td> -->
+                                <td> <%= val.status %></td>
+                                <td> <%= moment(val.createdAt).format( 'LL') %></td>
+                                <!-- <td><a href="<%= adminbaseurl%>users/addedit/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                    <a href="<%= adminbaseurl%>users/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                                </td> -->
+                                  
+                            </tr>
+                        <% i++; }) %>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+        <%  if (paginate.hasPreviousPages || previousPage) { %>
+            <div class="pagination_sec">
+                <div class="table_info">Showing <%= startingNumber ? startingNumber : '' %> to <%= endingNumber ? endingNumber : '' %> of <%= itemCount ? itemCount : ''%> entries</div>   
+                        <ul>
+                        <% if(paginate.hasPreviousPages) {%>
+                        <li><a href="<%= paginate.href(true) %>">Previous</a></li>
+                        <% }else{ %>
+                        <li><a href="javascript:void(0)" class="disable">Previous</a></li>
+                        <% } %>
+                        <% pages.forEach(function(page) { %>
+                        <li><a href="<%= page.url %>" <% if(currentPage && currentPage == page.number ) {%> class="active" <% } %>><%= page.number%></a></li>
+                        <%  }) %>
+                        <% if(previousPage) {%>
+                        <li><a href="<%= paginate.href() %>">Next</a></li>
+                        <% }else{ %>
+                        <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                        <% } %>
+                    </ul>
+                </div>                  
+            </div>
+        <% } %>
+        
+    </div>
+</div>
+
+<!-- page content -->
+<%- include ../partials/footer.html %>
+
+<script>
+    
+    $("#checkAll").click(function () {
+    $('input:checkbox').not(this).prop('checked', this.checked);
+  });
+ </script>
+     
+<script>
+   $(document).ready(function(){
+        var checkboxes = $('.checkbox input[type="checkbox"]'); 
+        checkboxes.click(function(){
+            var countCheckedCheckboxes = checkboxes.filter(':checked').length;
+            if(countCheckedCheckboxes > 0){
+                $('.label_info').text(countCheckedCheckboxes-1+' item(s) selected');
+                
+            }else{
+                $('.label_info').text('No item selected');
+            } 
+        });
+    });
+
+    $(".checkSelect").change(function () {
+  
+    var lenghtCheck= $('input[class="checkSelect"]:checked').filter(':checked').length
+    console.log(lenghtCheck);
+            if( lenghtCheck > 0){
+                $('.label_info').text(lenghtCheck+' item(s) selected');
+            }else{
+                $('.label_info').text('No item selected');
+            }
+   });
+
+
+    function deleteAdmin() {  
+    var chkArray = []; 
+    /* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
+    $('input[class="checkSelect"]:checked').each(function() {
+    chkArray.push($(this).val());
+    });
+    var chkArraylengh = chkArray.length;
+    if(chkArraylengh > 0){
+    console.log(chkArray)
+        var adminData = { 'check' :chkArray}
+        var answer = confirm ("Are you sure you want to delete from the database?");
+            if(answer){
+    $.ajax({ 
+        url: "<%= apiurl %>usermul/delete",
+        type:'POST',
+        data: adminData,
+        success:function(response){
+            console.log(response)
+            //alert('')
+            window.location.reload();
+            //if(response.value==1) 
+           
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+        }
+        });   
+    }
+}else{
+        alert('For delete select first ');
+     }
+}
+
+    </script>
+    
+   

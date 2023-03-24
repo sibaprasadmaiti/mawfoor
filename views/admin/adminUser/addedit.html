@@ -1,0 +1,235 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>roles">Admin User</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>adminUser/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <div class="panel_title">
+          <h3>Admin User Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Name<span>*</span></span>
+              <input id="adminName" class="form-control"  name="adminName" type="text"  required="required" value="<%= arrData ? arrData.admin ? arrData.admin.adminName : arrData.adminName : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Email<span>*</span></span>
+              <input id="email" class="form-control" name="email" type="text" required="required"
+                value="<%= arrData ? arrData.admin ? arrData.admin.email : arrData.email : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Mobile<%if(fullPermission==false){%><span>*</span><%}%></span>
+              <input id="mobile" class="form-control" name="mobile" type="text" required="required" value="<%= arrData ? arrData.admin ? arrData.admin.mobile : arrData.mobile : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+<% 
+//*****Assign Store Id
+var storeId = '';
+   if(arrData){
+     if(arrData.admin){
+       storeId = arrData.admin.storeId;
+     }else if(arrData.storeId){
+       storeId = arrData.storeId;
+     }else{
+       storeId = '';
+     }
+   }
+%>
+          <div class="col-sm-6">
+            <div class="inputBox focus">
+              <div class="inputText">Store<%if(fullPermission==false){%><span>*</span><%}%></div>
+              <select name="store" id="store" class="form-control filled" <%if(fullPermission==false){%> required="required"<%}%>>
+                <%if(fullPermission==true){%>
+                  <option></option>
+                  <%}%>
+                <% stores.forEach(function(store){ %>
+                  <option value="<%=store.id%>" <% if(storeId ==store.id){ %>selected="selected" <%}%>><%=store.storeName%></option>
+                  <% }) %>
+              </select>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Address<span>*</span></span>
+              <input id="address" class="form-control"  name="address" type="text"  value="<%= arrData ? arrData.admin ? arrData.admin.address : arrData.address : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Password<% if(!arrData){ %><span>*</span><% } %></span>
+              <input id="password" class="form-control"  name="password" type="password"  <% if(!arrData){ %>required="required"<% } %>/>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Confirm Password<% if(!arrData){ %><span>*</span><% } %></span>
+              <input id="confirmPassword" class="form-control"  name="confirmPassword" type="password"  <% if(!arrData){ %>required="required"<% } %> value="" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" id="status" required="required" class="form-control">
+                <option <% if(arrData && arrData.admin ? arrData.admin.status : arrData.status =='active'){ %>selected="selected" <% }%> value="active">Active</option>
+                <option <% if(arrData && arrData.admin ? arrData.admin.status : arrData.status=='inactive'){ %>selected="selected" <% }%> value="inactive">Inactive</option>
+                <option <% if(arrData && arrData.admin ? arrData.admin.status : arrData.status=='archive'){ %>selected="selected" <% }%> value="archive">Archive</option>
+              </select>
+            </div>
+          </div>
+          
+         
+		 
+          </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.admin ? arrData.admin.id : arrData.id : '' %>" />
+
+        <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+          permissions.find(permission=> {
+          return permission === 'AdminUserAddEdit'
+          })
+          }
+          if(userPermission==true){ %>
+          <button id="send" type="submit" class="submit_btn">Submit</button>
+          <% } %>
+
+      </div>
+    </form>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script type="text/javascript">
+  $(function () {
+    //*****Ready Function Store Wise Role Details Get
+    var updateRoleId = "<%= arrData ? arrData.roleId : '' %>";//alert(updateRoleId);
+    var updateAssignTo = "<%= arrData ? arrData.admin ? arrData.admin.parentId :'' : '' %>"; //alert(updateAssignTo);
+    $.ajax({
+      url: "<%=adminbaseurl %>/adminUser/getRole",
+      type: "POST",
+      data: { 'storeId': $("#store").val() },
+      success: function (response) {
+        //console.log(response.admins);return false;
+        //*****Roles Data Append
+        var selectOption = '';
+        selectOption += '<select name="role" id="role" class="form-control filled" <%if(fullPermission==false){%> required="required"<%}%> >';
+        response.roles.forEach(function (val) {
+          if(updateRoleId== val.id){
+            selectOption += '<option value="' + val.id + '" selected>' + val.name + '</option>';
+          }else{
+            selectOption += '<option value=' + val.id + '>' + val.name + '</option>';
+          }
+        })
+        selectOption += '</select>';
+        $('#appendRole').html('');
+        $('#appendRole').append(selectOption);
+
+        //*****AdminUser Data Append
+        var selectOption = '';
+        selectOption += '<select name="assignTo" id="assignTo" class="form-control filled" <%if(fullPermission==false){%> required="required"<%}%> >';
+        response.admins.forEach(function (val) {
+          if(updateAssignTo==val.id){
+            selectOption += '<option value="' + val.id + '" selected>' + val.adminName + '</option>';
+          }else{
+            selectOption += '<option value=' + val.id + '>' + val.adminName + '</option>';
+          }
+          
+        })
+        selectOption += '</select>';
+        $('#appendAssignTo').html('');
+        $('#appendAssignTo').append(selectOption);
+
+      }, error: function (jqXHR, textStatus, err) {
+        alert('text status ' + textStatus + ', err ' + err)
+      }
+    });
+
+    /*
+    $.ajax({
+      url: "<%=adminbaseurl %>/adminUser/getUser",
+      type: "POST",
+      data: { 'storeId': $("#role").val() },
+      success: function (response) {
+        var selectOption = '';
+        selectOption += '<select name="assignTo" id="assignTo" class="form-control filled">';
+        response.forEach(function (val) {
+          selectOption += '<option value=' + val.id + '>' + val.email + '</option>';
+        })
+        selectOption += '</select>';
+        $('#appendAssignTo').html('');
+        $('#appendAssignTo').append(selectOption);
+      }, error: function (jqXHR, textStatus, err) {
+        alert('text status ' + textStatus + ', err ' + err)
+      }
+    });*/
+    $("#store").change(function () {
+      $.ajax({
+        url: "<%=adminbaseurl %>/adminUser/getRole",
+        type: "POST",
+        data: { 'storeId': $("#store").val() },
+        success: function (response) {
+          //console.log(response.admins);return false;
+          //*****Roles Data Append
+          var selectOption = '';
+          selectOption += '<select name="role" id="role" class="form-control filled" <%if(fullPermission==false){%> required="required"<%}%> >';
+          response.roles.forEach(function (val) {
+            selectOption += '<option value=' + val.id + '>' + val.name + '</option>';
+          })
+          selectOption += '</select>';
+          $('#appendRole').html('');
+          $('#appendRole').append(selectOption);
+
+          //*****AdminUser Data Append
+          var selectOption = '';
+          selectOption += '<select name="assignTo" id="assignTo" class="form-control filled" <%if(fullPermission==false){%> required="required"<%}%> >';
+          response.admins.forEach(function (val) {
+            selectOption += '<option value=' + val.id + '>' + val.adminName + '</option>';
+          })
+          selectOption += '</select>';
+          $('#appendAssignTo').html('');
+          $('#appendAssignTo').append(selectOption);
+
+        }, error: function (jqXHR, textStatus, err) {
+          alert('text status ' + textStatus + ', err ' + err)
+        }
+      });
+    });
+  });
+  
+</script>

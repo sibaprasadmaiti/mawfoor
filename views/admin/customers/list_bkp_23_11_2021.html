@@ -1,0 +1,300 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<!-- CSS Styles -->
+<style type="text/css">
+  .speech {border: 1px solid #DDD; width: 300px; padding: 0; margin: 0}
+  .speech input {border: 0; width: 240px; display: inline-block; height: 30px;}
+  .speech img {float: right; width: 40px }
+</style>
+<style>
+  #box {
+    padding:5px;
+    width:300px;
+    z-index:10;
+    
+    position:relative;  
+  }
+  #box form {
+   background:skyblue;
+   position: relative;
+   width: 80%;
+   text-align: center;
+   padding:5px;
+   display:none;
+   top:15px;
+   color:black;
+   border-radius: 25px;
+  }
+  #button {
+    width:150px;
+    background:#006699;
+    color:#fff;
+    padding:3px 10px;
+    border:1px solid #006699;  
+    margin-bottom:15px;  
+    cursor:pointer;
+
+  }
+  input[type="submit"] {
+    background:#006699;
+    color:white;
+    border: 2px solid black;
+    text-align:left;
+    cursor:pointer;
+  }
+
+  </style>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <div class="content_body">
+      <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+        <h3>Manage <%=title%></h3>
+        <div class="title_right text-right">
+          <a href="<%= adminbaseurl %>customers/download" class="btn btn-success right">  Export Customer List</a>
+        </div>
+        
+        
+        <div id="box">
+          <span id="button" >Filters</span>
+          <form  id="form">
+           <p><input type="number" placeholder="Enter customer id"name="id" id="filterId"> </p>
+           <p><input type="email" placeholder=" Enter Email" name="email" id="email"/></p>
+           <p><input type="mobile" placeholder="Enter Mobile no" name="mobile"/></p>
+           <p><input type="text" placeholder="Enter City" name="city"/></p>
+           <p><input type="text" placeholder="Enter Country" name="country"/></p><br>
+           <p><select name="gender">
+            <option value="" selected>Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </p>
+        <br>
+           <p><input type="submit" class="theading" value="Apply Filter"/></p>
+         </form>
+        </div>
+        
+      
+
+        <div class="mt-3">
+          <div float-right>
+              <span style="font-size: 16px;">Showing </span>
+              <select onchange="location = this.value" style="height: 25px; width: 60px;">
+                <option value="1?pazesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+                <option value="1?pazesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+                <option value="1?pazesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+                <option value="1?pazesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+              </select> 
+              <span style="font-size: 16px;"> entries </span>      
+          </div>
+      </div>
+      </div>
+
+
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+              <tr style="cursor: pointer;">
+
+                  <% if(orderType =='DESC') {%>
+                      <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }else{ %>
+                      <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }%>
+
+              <th>Name</th>
+                  
+                  <% if(orderType =='DESC') {%>
+                    <th data-column="email" data-order="ASC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }else{ %>
+                      <th data-column="email" data-order="DESC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }%>
+
+                  <% if(orderType =='DESC') {%>
+                      <th data-column="mobile" data-order="ASC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }else{ %>
+                      <th data-column="mobile" data-order="DESC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }%>
+
+                  <th>Gender</th>
+
+                  <th>City</th>
+                  <th>Country</th>
+
+                  <% if(orderType =='DESC') {%>
+                    <th data-column="status" data-order="ASC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="status" data-order="DESC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+                  
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% var i= 1;
+            arrData.forEach(function(val) { %>
+
+              
+                <tr>
+                  <td class="text-center"> <%= i %></td>
+                  <td> <%= val.firstName %> <%= val.lastName %></td>
+                  <td> <%= val.email %></td>
+                  <td> <%= val.mobile %></td>
+                  <td><%= val.gender %></td>
+                  <td>
+                    <% if(arrcustomeraddress.length>0){
+                    arrcustomeraddress.forEach(function(custaddress) {
+                            if(custaddress.customerId == val.id){ %>
+
+                    <%= custaddress.city %></  <% } });} %>
+
+                    </td>
+                    
+                    <td>
+                      <% if(arrcustomeraddress.length>0){
+                      arrcustomeraddress.forEach(function(custaddress) {
+                              if(custaddress.customerId == val.id){ %>
+  
+                      <%= custaddress.country %></  <% } });} %>
+  
+                      </td>
+
+                  <td class="font-weight-bold"> 
+                    <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span><% } else {%> <span class="text-danger">Inactive</span> <% } %>
+                  </td>
+                  <td>
+                    <a href="<%= adminbaseurl%>customers/view/<%= val.id %>" class="edit_btn"><i class="fa fa-eye"></i></a>
+                  </td>
+                </tr>
+              <% i++; }) %>
+            </tbody>
+        </table>
+
+                  <!-- *** /// Pagination Start /// ***-->
+        <% if(listCount>0) {%>
+          <div class="pagination_sec">
+              <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div>
+              <% if(currentPage>1) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=currentPage-1 %>?search=<%=searchItem %><% if(searchItem!=''){ %>?search=<%=searchItem %> <% } %>" >Prev</a></li>
+                  </ul>
+              <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                  </ul>
+              <% } %>
+              <% for(var i=1; i<=pageCount; i++) { %>
+                  <ul>
+                  <% if(currentPage==i) {%>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=i %>?search=<%=searchItem %><% if(searchItem!=''){ %>?search=<%=searchItem %> <% } %>" class="active"><%=i %></a></li>
+                  <% }else{ %>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=i %>?search=<%=searchItem %><% if(searchItem!=''){ %>?search=<%=searchItem %> <% } %>" class=""><%=i %></a></li>
+                  <% } %>
+                  </ul>
+              <% } %>
+              <% if(currentPage < pageCount) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=currentPage+1 %>?search=<%=searchItem %><% if(searchItem!=''){ %>?search=<%=searchItem %> <% } %>" >Next</a></li>
+                  </ul>
+                  <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                  </ul>
+              <% } %>
+          </div>
+          <% } %>
+                    <!-- *** /// Pagination End ///  ***-->
+      </div>
+     
+    </div>
+  </div>
+</div>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+
+<script type="text/javascript">
+  $("#checkAll").click(function () {
+    $('input:checkbox').not(this).prop('checked', this.checked);
+  });
+  $(document).ready(function(){
+    var checkboxes = $('.checkbox input[type="checkbox"]');
+    checkboxes.click(function(){
+      var countCheckedCheckboxes = checkboxes.filter(':checked').length;
+      if(countCheckedCheckboxes > 0){
+        $('.label_info').text(countCheckedCheckboxes-1+' item(s) selected');
+      }else{
+        $('.label_info').text('No item selected');
+      }
+    });
+  });
+  $(".checkSelect").change(function () {
+    var lenghtCheck= $('input[class="checkSelect"]:checked').filter(':checked').length;
+    if( lenghtCheck > 0){
+      $('.label_info').text(lenghtCheck+' item(s) selected');
+    }else{
+      $('.label_info').text('No item selected');
+    }
+  });
+  function deleteCustomer() {
+    var chkArray = [];
+    $('input[class="checkSelect"]:checked').each(function() {
+      chkArray.push($(this).val());
+    });
+    var chkArraylengh = chkArray.length;
+    if(chkArraylengh > 0){
+      var adminData = { 'check' :chkArray}
+      var answer = confirm ("Are you sure you want to delete from the database?");
+      if(answer){
+        $.ajax({
+          url: "<%= apiurl %>customersmul/delete",
+          type:'POST',
+          data: adminData,
+          success:function(response){
+            window.location.reload();
+          }, error: function (e) {
+            console.log("ERROR : ", e);
+          }
+        });
+      }
+    } else {
+      alert('For delete select first');
+    }
+  }
+  // search customer by mobile no 11/07/2019 start 
+  $(document).ready(function() {
+    $('#searchResultForm').on('submit', function(e){
+      // validation code here
+      var data  =  document.getElementById("serProduct").value;
+      if(!data || data == ''){
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+
+<script>
+    $(document).ready(() => {
+     
+        if(order == 'DESC'){
+          $(this).data('order', 'ASC');        
+        }else{
+          $(this).data('order', 'DESC');
+          window.location.href = `<%= adminbaseurl%>customers/list/<%=currentPage %>?column=${column}&order=${order}<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>&email=${email}`
+        }
+      })
+  
+  </script>
+
+<script>
+  $("#button").click(function() {  
+    $("#box form").toggle("slow");
+    
+    return false;
+  });</script>

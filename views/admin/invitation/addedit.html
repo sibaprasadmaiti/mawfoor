@@ -1,0 +1,114 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+<!-- page content -->
+
+<div class="content_wraper">
+  <div class="main_container">
+          
+		<div class="header_wraper">
+			<h2><%=title%></h2>
+				<ul>
+		<li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+		<li><a href="<%= adminbaseurl %>invitation/list">Invitation</a></li>
+					<li><%=title%></li>
+				</ul>
+		</div>
+
+		<% if(messages!='') {%>
+		<div class="succ_msg msg" id="succ_msg">    
+				<i class="fa fa-check"  aria-hidden="true"></i>        
+				<%=messages%>
+		</div>
+		<%}%>                
+		<% if(errors!='') {%>
+		<div class="succ_err msg" id="err_msg">
+				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+				<%=errors%>
+		</div>
+		<% }%>
+
+
+  	<form id="category-info" class="form-horizontal form-label-left" novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>category/add">
+			<fieldset>
+				<div class="content_body panel_body">
+
+            <div class="panel_title">
+              <h3>Invitation</h3>
+            </div>
+                
+            <div class="clearfix"></div>
+            <!-- <ul class="nav nav-tabs custom_tab">
+              <li><a data-toggle="tab" href="#category" class="active show">Category</a></li>
+             
+            </ul> -->
+
+        <div class="tab-content">
+
+                    <!--category content start-->
+          <div id="category" class="tab-pane fade in active show">
+
+            <div class="row edit_box">
+
+				
+				<div class="col-sm-6">
+					<div class="animate_form">
+						<div class="field">
+							<input id="name" class="form-control" name="name" type="text" required="required" value="<%= arrData ? arrData.name : '' %>">
+							<span>Name<span>*</span></span>
+							<!-- <div class="alert_msg"></div> -->
+						</div>
+					</div>
+				</div>
+											
+				<div class="col-sm-6"> 
+					<div class="animate_form field">
+							<input id="email" class="form-control" name="email" type="text" required="required" value="<%= arrData ? arrData.email : '' %>">
+							<span>Email<span>*</span></span>
+						<div class="alert_msg"></div>
+					</div>
+				</div>
+				
+				<div class="col-sm-6"> 
+					<div class="animate_form field">
+							<input id="mobile" class="form-control" name="mobile" type="text" required="required" value="<%= arrData ? arrData.mobile : '' %>">
+							<span>Mobile<span>*</span></span>
+						<div class="alert_msg"></div>
+					</div>
+				</div>
+			
+				
+
+				<div class="col-sm-6">
+					<div class="animate_form field">
+						<label>Message</label>
+						<textarea rows="4" type="text" id="message" name="message"  class="form-control"><%= arrData ? arrData.message : '' %></textarea>
+					</div>
+				</div>
+    
+         	</div>
+                 
+
+                  
+                    
+        </div>
+				<!-- <div class="btn_right mb-4">
+					<input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+					<button id="send" type="submit" class="submit_btn">Submit</button>
+				</div> -->
+			</fieldset> 
+		</form>
+
+  </div>
+</div>
+</div>
+
+
+<script src="<%= adminbaseurl %>build/js/croppr.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+<script src="<%= adminbaseurl %>validator-master/multifield.js"></script>
+<script src="<%= adminbaseurl %>validator-master/validator.js"></script>

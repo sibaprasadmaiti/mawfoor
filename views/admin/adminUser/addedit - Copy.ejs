@@ -1,0 +1,178 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/sidebar') %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>roles">Admin User</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>adminUser/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <div class="panel_title">
+          <h3>Admin User Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Name<span>*</span></span>
+              <input id="adminName" class="form-control"  name="adminName" type="text"  required="required" value="<%= arrData ? arrData.admin.adminName : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="inputBox focus">
+              <div class="inputText">Role<span>*</span></div>
+              <select name="role" id="role" class="form-control filled">
+                <% roles.forEach(function(val){
+                  if(fullPermission==true){ %>
+                    <option value="<%=val.id%>" <% if(arrData && arrData.roleId==val.id){ %> selected="selected" <%}%>><%=val.name%></option>
+                <%}else{%>
+                    <% if(arrData && arrData.roleId==val.id){ %>
+                      <option value="<%=val.id%>" "selected" ><%=val.name%></option>
+                    <%}%>
+                <% }
+               }) %>
+              </select>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="inputBox focus">
+              <div class="inputText">Assign To</div>
+              <select name="assignTo" id="assignTo" class="form-control filled">
+                <option value="">Select</option>
+                <% assignTo.forEach(function(val){
+                  if(fullPermission==true){ %>
+                  <option value="<%=val.id%>" <%if(arrData && arrData.admin.parentId==val.id){ %>selected="selected"<%}%> ><%=val.adminName%></option>
+                <% }else{%>
+                  <% if(arrData && arrData.roleId==val.id){ %>
+                  <option value="<%=val.id%>" selected><%=val.adminName%></option>
+               <%  }
+                }
+               }) %>
+              </select>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>email<span>*</span></span>
+              <input id="email" class="form-control"  name="email" type="text"  required="required" value="<%= arrData ? arrData.admin.email : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>mobile<span>*</span></span>
+              <input id="mobile" class="form-control"  name="mobile" type="text"  required="required" value="<%= arrData ? arrData.admin.mobile : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>address<span>*</span></span>
+              <input id="address" class="form-control"  name="address" type="text"  required="required" value="<%= arrData ? arrData.admin.address : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>password<span>*</span></span>
+              <input id="password" class="form-control"  name="password" type="password"  required="required" value="<%= arrData ? arrData.admin.password : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Confirm Password<span>*</span></span>
+              <input id="confirmPassword" class="form-control"  name="confirmPassword" type="password"  required="required" value="" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" id="status" required="required" class="form-control">
+                <option <% if(arrData && arrData.admin.status=='active'){ %>selected="selected" <% }%> value="active">Active</option>
+                <option <% if(arrData && arrData.admin.status=='inactive'){ %>selected="selected" <% }%> value="inactive">Inactive</option>
+                <option <% if(arrData && arrData.admin.status=='archive'){ %>selected="selected" <% }%> value="archive">Archive</option>
+              </select>
+            </div>
+          </div>
+          
+         
+		 
+          </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.admin.id : '' %>" />        
+        
+        <% var userPermission = !! permissions.find(permission => { 
+          return permission === 'AdminUserAddEdit'
+        })
+        if(userPermission==true){ %>
+          <button id="send" type="submit" class="submit_btn">Submit</button>
+        <% } %>
+
+      </div>
+    </form>
+  </div>
+</div>
+<%- include ('../partials/footer') %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script type="text/javascript">
+  function isNumber(this){
+    this.value = this.value.replace(/[^0-9.]/g,'');
+  }
+  function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+</script>
+<script type="text/javascript">
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script>

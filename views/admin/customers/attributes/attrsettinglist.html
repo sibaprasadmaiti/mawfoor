@@ -1,0 +1,375 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+  
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%> 
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+                <h3><%=title%></h3>
+      
+                <div class="mt-3">
+                  <div class="float-left">
+                    <span style="font-size: 16px;">Showing </span>
+                    <select onchange="location = this.value" style="height: 25px; width: 60px;">
+                      <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+                      <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+                      <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+                      <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+                    </select> 
+                    <span style="font-size: 16px;"> entries </span>        
+                  </div>
+          
+                  <div class="float-right">
+                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#createmodal"><i class="fa fa-plus"></i> Create</button>
+                  </div>
+               </div>
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr style="cursor: pointer;">
+                            <% if(orderType =='DESC') {%>
+                                <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }else{ %>
+                                <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }%>
+            
+                            <% if(orderType =='DESC') {%>
+                                <th data-column="displayName" data-order="ASC" class="theading">Name <% if(columnName =='displayName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }else{ %>
+                                <th data-column="displayName" data-order="DESC" class="theading">Name <% if(columnName =='displayName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }%>
+
+                            <% if(orderType =='DESC') {%>
+                                <th data-column="dataType" data-order="ASC" class="theading">Datatype <% if(columnName =='dataType') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }else{ %>
+                                <th data-column="dataType" data-order="DESC" class="theading">Datatype <% if(columnName =='dataType') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }%>
+
+                            <% if(orderType =='DESC') {%>
+                                <th data-column="attrName" data-order="ASC" class="theading">Attribute Name <% if(columnName =='attrName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }else{ %>
+                                <th data-column="attrName" data-order="DESC" class="theading">Attribute Name <% if(columnName =='attrName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }%>
+            
+                            <% if(sessionStoreId=='') {%>
+                                <th>Store</th>
+                            <% }%>
+            
+                            <% if(orderType =='DESC') {%>
+                                <th data-column="status" data-order="ASC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }else{ %>
+                                <th data-column="status" data-order="DESC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                            <% }%>
+                            <th class="text-center">Action</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% var i= 1; arrData.forEach(function(val) { %>	
+                        <tr>
+                            <td class="text-center"> <%= i %></td>
+                            <td> <%= val.displayName %></td>
+                            <td>
+                                <%if(val.dataType =='text') {%> TextBox <% }%>
+                                <%if(val.dataType =='select') {%> Select <% }%>
+                            </td>
+                            <td>
+                                <%if(val.attrName =='attr1') {%> Attribute 1 <% }%>
+                                <%if(val.attrName =='attr2') {%> Attribute 2 <% }%>
+                                <%if(val.attrName =='attr3') {%> Attribute 3 <% }%>
+                                <%if(val.attrName =='attr4') {%> Attribute 4 <% }%>
+                                <%if(val.attrName =='attr5') {%> Attribute 5 <% }%>
+                                <%if(val.attrName =='attr6') {%> Attribute 6 <% }%>
+                                <%if(val.attrName =='attr7') {%> Attribute 7 <% }%>
+                                <%if(val.attrName =='attr8') {%> Attribute 8 <% }%>
+                                <%if(val.attrName =='attr9') {%> Attribute 9 <% }%>
+                                <%if(val.attrName =='attr10') {%> Attribute 10 <% }%>
+                            </td>
+                            <% if(sessionStoreId=='') {%>
+                                <td><% storeList.forEach(function(store) { if(store.id==val.storeId){ %> <%= store.storeName %></ <% } }) %></td>
+                            <% }%>
+                            <td class="font-weight-bold"> 
+                                <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span><% } else {%> <span class="text-danger">Inactive</span> <% } %>
+                            </td>
+                            <td class="text-center">
+                                <a href="<%= adminbaseurl%>attrsetting/statuschange/<%= val.id %>" class="edit_btn"><%if(val.status=='Yes' || val.status=='yes') {%> <i class="fa fa-toggle-on" title="Change to Inactive"></i> <% } else {%> <i class="fa fa-toggle-off" title="Change to Active"></i> <% } %></a>
+                                <a href="<%= adminbaseurl%>attrsetting/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                            </td>
+                            <% if(val.dataType =='select') {%>
+                            <td>
+                                <a href="<%= adminbaseurl%>attrsetting/value/?sid=<%= val.id %>" class="btn btn-sm btn-outline-primary">Value</a>
+                            </td>
+                            <% }else{ %>
+                            <td></td>
+                            <% } %>
+                        </tr>
+                        <% i++; }) %>
+                    </tbody>
+                </table>
+                <!--====================================== Pagination Start ======================================-->
+                <% if(listCount>0) {%>
+                    <div class="pagination_sec">
+                        <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+                        <% if(currentPage>1) {%>
+                            <ul>
+                            <li><a href="<%= adminbaseurl%>attrsetting/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Prev</a></li>
+                            </ul>
+                        <% }else{ %>
+                            <ul>
+                            <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                            </ul>
+                        <% } %>
+                        <% for(var i=1; i<=pageCount; i++) { %>
+                            <ul>
+                            <% if(currentPage==i) {%>
+                            <li><a href="<%= adminbaseurl%>attrsetting/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="active"><%=i %></a></li>
+                            <% }else{ %>
+                            <li><a href="<%= adminbaseurl%>attrsetting/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class=""><%=i %></a></li>
+                            <% } %>
+                            </ul>
+                        <% } %>
+                        <% if(currentPage < pageCount) {%>
+                            <ul>
+                            <li><a href="<%= adminbaseurl%>attrsetting/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Next</a></li>
+                            </ul>
+                            <% }else{ %>
+                            <ul>
+                            <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                            </ul>
+                        <% } %>
+                    </div>
+                <% } %>
+                <!--====================================== Pagination End ======================================-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../partials/footer.html %>
+
+
+ <!--////////////////////////// Setting Create Modal Start //////////////////////////-->
+ <div class="modal fade" id="createmodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title text-dark" id="modalLabel" style="font-size: 20px;">Create</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>attrsetting/addOrUpdate">
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Field Name <span class="text-danger">*</span></span>
+                        <input id="displayName" class="form-control"  name="displayName" type="text">
+                        <input id="fieldName" class="form-control"  name="fieldName" type="hidden">
+                    </div>
+                    <span class="text-danger font-weight-bold" id="name_err"></span>
+                </div>
+
+                <% if(sessionStoreId!='') {%>
+                    <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                  <% } else {%>
+                      <div class="mb-4">
+                          <div class="animate_form field mb-1">
+                              <span>Select Store <span class="text-danger">*</span></span>
+                              <select name="storeId" id="storeId" class="form-control">
+                                <% storeList.forEach(function(store){%>
+                                    <option value="<%=store.id%>" ><%=store.storeName; %></option>
+                                <% }) %>
+                              </select>
+                          </div>
+                      </div>
+                  <% }%>
+    
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Select Attribute <span class="text-danger">*</span></span>
+                        <select name="attrName" id="attrName" class="form-control">
+                            <option value="" >Select</option>
+                            <option value="attr1" >Attribute 1</option>
+                            <option value="attr2" >Attribute 2</option>
+                            <option value="attr3" >Attribute 3</option>
+                            <option value="attr4" >Attribute 4</option>
+                            <option value="attr5" >Attribute 5</option>
+                            <option value="attr6" >Attribute 6</option>
+                            <option value="attr7" >Attribute 7</option>
+                            <option value="attr8" >Attribute 8</option>
+                            <option value="attr9" >Attribute 9</option>
+                            <option value="attr10" >Attribute 10</option>
+                        </select>
+                    </div>
+                    <span class="text-danger font-weight-bold" id="attr_error"></span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Select Datatype <span class="text-danger">*</span></span>
+                        <select name="dataType" id="dataType" class="form-control">
+                            <option value="" >Select</option>
+                            <option value="text" >Textbox</option>
+                            <option value="select" >Select</option>
+                        </select>
+                    </div>
+                    <span class="text-danger font-weight-bold" id="type_error"></span>
+                </div>
+    
+                <div class="btn_right mb-4">
+                    <button id="send" type="submit" class="submit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript"> 
+    $(document).keyup(function () {
+        let name = $('#displayName').val();
+        let fieldName = name.toString().toLowerCase().replace(/\s+/g, '');
+        $('#fieldName').val(fieldName);
+    });
+  </script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#name_err").hide();
+        err_name = true;
+        $("#displayName").keyup(function () {
+            name_check_fun();
+        });
+
+        $("#attr_error").hide();
+        err_attr = true;
+        $("#attrName").change(function () {
+            attr_check_fun();
+        });
+
+        $("#type_error").hide();
+        err_type = true;
+        $("#dataType").change(function () {
+            type_check_fun();
+        });
+        function name_check_fun() {
+            let name = $("#displayName").val();
+            let value = name.trim();
+            if (value.length == "") {
+                $("#name_err").show();
+                $("#name_err").html("Field Name is required");
+                err_name = false;
+                return false;
+            }else if(value.toLowerCase() =='id'){
+                $("#name_err").show();
+                $("#name_err").html("Id is reserved, you can't use it");
+                err_name = false;
+                return false;
+            }else if(value.toLowerCase() =='select'){
+                $("#name_err").show();
+                $("#name_err").html("Select is reserved, you can't use it");
+                err_name = false;
+                return false;
+            }else {
+                err_name = true;
+                $("#name_err").html("");
+                $("#name_err").hide();
+            }
+        }
+
+        function attr_check_fun() {
+            let k = $("#attrName").val();
+            if (k.length == ""  ) {
+                $("#attr_error").show();
+                $("#attr_error").html("Please select attribute");
+                err_attr = false;
+                return false;
+            }
+            else {
+                err_attr = true;
+                $("#attr_error").html("");
+                $("#attr_error").hide();
+
+            }
+        }
+
+        function type_check_fun() {
+            let k = $("#dataType").val();
+            if (k.length == ""  ) {
+                $("#type_error").show();
+                $("#type_error").html("Please select datatype");
+                err_type = false;
+                return false;
+            }
+            else {
+                err_type = true;
+                $("#type_error").html("");
+                $("#type_error").hide();
+
+            }
+        }
+
+        $("#send").click(function () {
+            err_name = true;
+            err_attr = true;
+            err_type = true;
+            name_check_fun();
+            attr_check_fun();
+            type_check_fun();
+            if ((err_name == true && err_attr == true && err_type == true)) {
+                return true;
+            }else {
+                return false;
+            }
+        });
+    });
+</script>
+  <!--////////////////////////// Setting Create Modal End //////////////////////////-->
+
+  <script>
+    $(document).ready(() => {
+      $('.theading').on('click',function(){
+        var column = $(this).data('column');
+        var order = $(this).data('order');
+  
+        if(order == 'DESC'){
+          $(this).data('order', 'ASC');        
+          window.location.href = `<%= adminbaseurl%>attrsetting/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+        }else{
+          $(this).data('order', 'DESC');
+          window.location.href = `<%= adminbaseurl%>attrsetting/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+        }
+      })
+  });
+  </script>

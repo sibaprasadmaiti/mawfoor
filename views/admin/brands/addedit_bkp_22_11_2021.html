@@ -1,0 +1,255 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>brands/list/1">Labs</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>brands/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>Lab Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Title<span>*</span></span>
+              <input id="title" class="form-control"  name="title" type="text"  required="required" value="<%= arrData ? arrData.title : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Slug<span>*</span></span>
+              <input id="slug" class="form-control" name="slug" type="text" onkeypress="return blockother(event)" required="required" readonly="readonly" value="<%= arrData ? arrData.slug : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Select Store</span>
+                <select name="storeId" id="storeId" class="form-control" required="required">
+                  <option value=""  <% if(arrData.storeId == ''){ %> selected="selected" <% }%>>Select Store</option>
+                  <% stores.forEach(function(store){%>
+                    <option value="<%=store.id%>" <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                  <% })%>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Address<span>*</span></span>
+                <input id="seq" class="form-control" name="address" type="address" required="required" value="<%= arrData ? arrData.address : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Contact Phone<span>*</span></span>
+                <input id="phone" class="form-control"  name="phone" type="text" required="required" value="<%= arrData ? arrData.phone : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Contact E-mail<span>*</span></span>
+                <input id="email" class="form-control"  name="email" type="text" required="required" value="<%= arrData ? arrData.email : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Iso Name<span>*</span></span>
+                <input id="seq" class="form-control" name="isoName" type="isoName" required="required" value="<%= arrData ? arrData.isoName : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Short Description<span>*</span></span>
+              <input id="shortDescriptions" class="form-control"  name="shortDescriptions" type="text"  required="required" value="<%= arrData ? arrData.shortDescriptions : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" id="status" required="required" class="form-control">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+              </select>
+            </div>
+          </div>          
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Rating<span>*</span></span>
+                <input id="rating" class="form-control" name="rating" type="text" required="required" value="<%= arrData ? arrData.rating : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="animate_form field">
+              <span>Description<span>*</span></span>
+              <textarea id="descriptions" class="form-control" name="descriptions" type="text" required="required" ><%= arrData ? arrData.descriptions : '' %></textarea>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <label>Image</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+              <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+              <div class="upload_img01">
+                <% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInBrandImage(arrData.id+'/'+arrData.image)){%>
+                  <img id="preview" src="<%= baseurl+ 'admin/brands/'+ arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } else { %>
+                  <img id="preview" src="<%= baseurl + 'admin/brands/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <% if(arrData){ %>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <label><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addIsoImage" >Add Iso Image</button></label>
+                <div class="row">
+                  <% if(arrData !='' && arrData !=null && arrData.brandsIsoImages !='' && arrData.brandsIsoImages !=null){ %>
+                    <% arrData.brandsIsoImages.forEach(function(img){ %>
+                      <div class="upload_img011">
+                        <img id="preview" src="<%= baseurl + 'admin/brands/iso/'+arrData.id+'/'+ img.isoImage %>" style="height: 100px; margin: 7px; width: 100px;" class="img-thumbnail" />
+                        <div class="remove">
+                          <a class="btn" href="<%= adminbaseurl%>brands/removeIsoImages/<%= arrData.id %>/<%= img.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"> <i class="fa fa-trash"></i></a>
+                        </div>
+                      </div>
+                    <%})%>
+                  <%}%>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <div class="btn_right mb-4">        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal" id="addIsoImage" class="addIsoImage" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa fa-plus" aria-hidden="true"></i> Add Iso Image</h4>
+      </div>
+      <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>brands/addIsoImage">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="">
+                <span>Iso Image</span>
+                <input type="hidden" name="brandId" value="<%= arrData ? arrData.id : '' %>" />
+                <input type="hidden" name="storeId" value="<%= arrData ? arrData.storeId : '' %>" />
+                <input id="isoImage" class="form-control" name="isoImage" type="file" multiple required="required" />
+                <div class="row">
+                  <div class="gallery"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer trsubs">
+          <button type="submit" class="btn btn-primary ">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script type="text/javascript">  
+  function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+  $(document).keyup(function () {
+      var randomNumber = Math.floor(1000 + Math.random() * 9000);
+      var storeId = $('#storeId').val();
+      var name = $('#title').val();
+      var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+      slug += storeId + "-" + randomNumber;
+      $('#slug').val(slug);
+  });
+  $('#storeId').change(function(){
+    var randomNumber = Math.floor(1000 + Math.random() * 9000);
+    var storeId = $('#storeId').val();
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug += storeId + "-" + randomNumber;
+    $('#slug').val(slug);
+  });
+  /*$(document).keyup(function(){
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug+= "-"+(name.length+1);	
+    $('#slug').val(slug);
+  });*/
+</script>
+<script type="text/javascript">
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+  $(function () {
+    // Multiple images preview in browser
+    var imagesPreview = function (input, placeToInsertImagePreview) {
+      if (input.files) {
+        var filesAmount = input.files.length;
+        for (i = 0; i < filesAmount; i++) {
+          var reader = new FileReader();
+          reader.onload = function (event) {
+            $($.parseHTML('<img style="height: 100px; margin: 7px; width: 100px;">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+          }
+          reader.readAsDataURL(input.files[i]);
+        }
+      }
+    };
+    $('#isoImage').on('change', function () {
+      imagesPreview(this, 'div.gallery');
+    });
+  });
+</script>

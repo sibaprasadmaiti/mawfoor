@@ -1,0 +1,59 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+                <li><a href="<%= adminbaseurl %>assign-permission/list">Assign Permissions</a></li>
+                <li><%=title%></li>
+            </ul>
+        </div>
+        <% if(messages!='') {%>
+            <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+        <%}%>
+        <% if(errors!='') {%>
+            <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+        <% }%>
+        
+        <form class="form-horizontal form-label-left" method="post" action="<%= adminbaseurl %>assign-permission/addOrUpdate">
+            <div class="content_body panel_body edit_store">
+                <div class="panel_title">
+                    <h3><%=title%></h3>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row edit_box">
+                    <div class="col-sm-12">
+                        <div class="animate_form field">
+                            <span>Store Name </span>
+                            <input class="form-control" type="text" value="<%= storeName %>" readonly/>
+                            <input class="form-control" name="storeId" type="text" value="<%= storeId %>" hidden/>
+                        </div>
+                    </div>
+
+                    <% permissionGroupList.forEach(function(val) {
+                        let select=''
+                        if(logDetails.length>0){
+                            logDetails.forEach(function(val2){ 
+                                if(val2.id==val.id) {
+                                    select='checked';
+                                }
+                            })
+                        } %>
+                        <div class="col-sm-3">
+                            <div class="animate_form field">
+                                <span> <%=val.groupName%> </span>
+                                <input id="permission" type="checkbox" data-toggle="toggle" name="permission" value="<%=val.id%>" <%= select %>>
+                            </div>
+                        </div>
+                      <%  }) %>
+                </div>
+            </div>
+            <div class="btn_right mb-4">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<%- include ../partials/footer.html %>

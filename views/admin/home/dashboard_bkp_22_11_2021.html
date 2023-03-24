@@ -1,0 +1,74 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+	<div class="main_container">
+        <% if(messages!='' ) {%>
+            <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check" aria-hidden="true"></i>
+                <%=messages%>
+            </div>
+        <%}%>
+        <% if(errors!='' ) {%>
+            <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <%=errors%>
+            </div>
+        <% }%>
+        <div class="header_wraper">
+        	<h2>Welcome back</h2>
+            <p id="wel" onfocus="display1()">Here’s what’s happening with your store right now.</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+            	<div class="sales_card blue" >
+                    <h4>Orders Today</h4>
+                    <h2>0</h2>
+                </div>
+            </div>
+            <div class="col-lg-4">
+            	<div class="sales_card ylow">
+                    <h4>Sales Today</h4>
+                    <h2><i class="fa fa-inr"></i>0</h2>
+                </div>
+            </div>
+            <div class="col-lg-4">
+            	<div class="sales_card purple">
+                    <h4>Total Sales</h4>
+                    <h2><i class="fa fa-inr"></i>0</h2>
+                </div>
+            </div>
+        </div>        
+        <div class="row">        
+        	<div class="col-lg-6">
+            	<div class="content_body dash_table">
+                	<div class="panel_title">
+                        <h3>New Orders</h3>
+                    </div>
+                    <div class="table-responsive">
+                    	<table class="table table-bordered">
+                            <tr>
+                                <td colspan="3">No Data</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>            
+        </div>        
+    </div>
+</div>
+<%- include ../partials/footer.html %>
+<script type="text/javascript">
+function display1(){
+    var c=0;
+    var element=document.activeElement;
+    while(c<1){
+        responsiveVoice.speak(element.value,"Hindi Female");
+        c++;
+    }
+}
+window.onload = function() {
+    document.getElementById("wel").focus();
+};
+function savetext(){
+    var cookieValue = document.activeElement.innerHTML;
+    responsiveVoice.speak(cookieValue,"Hindi Female");
+}    
+</script>

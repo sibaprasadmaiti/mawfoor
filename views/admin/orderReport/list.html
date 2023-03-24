@@ -1,0 +1,405 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body">
+
+      <div class="table_heading mb-4">
+        <div class="float-left"><h3><%=title%></h3></div>
+          <div>
+            <form align="right" class="header-searchbox"  >
+              <div class="searchcom" >
+                  <input type="text" placeholder="Search.." name="search" />
+                  <button><i class="fa fa-search" aria-hidden="true"></i></button>
+                  <button style="margin-top: 7px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+              </div>
+            </form>
+          </div>
+      </div>
+
+      <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+        <!-- ======================================= List-per-page Start ========================================= -->
+        <div class="title_right text-right">
+          <div>
+            <span style="font-size: 16px;">Showing </span>
+            <select onchange="location = this.value" style="height: 25px; width: 60px;">
+              <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+
+              <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+    
+              <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+    
+              <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+            </select> 
+           
+            <span style="font-size: 16px;"> entries </span>      
+          </div>
+        </div>
+
+
+       
+        <div class="mb-4">
+          <div class="row">
+            <div class="mr-1">
+              <label for="orderNo" class="font-weight-bold">OrderNo</label>
+              <input style="height: 28px;" type="text" class="form-control" name="orderNo" id="orderNo" value="<%=orderFilter %>" />
+              <!-- <input type="text" class="form-control" name="orderNo" id="orderNo" placeholder="Enter Order No"  value="<%=orderFilter %>" /> -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="mr-1">
+              <label for="customerId" class="font-weight-bold">Customer</label><br>
+              <select name="customerId" id="customerId" class="form-control selectpicker" data-live-search="true" onchange="location = this.value">
+                <option value="" selected disabled>Select Customer</option>
+                <% ordersCustomers.forEach(function(customerist) { %>
+                  <% arrCustomer.forEach(function(customer) {
+                    if(customer.id==customerist.customerId){ %>
+                      <option value="?pagesize=<%=pageSize%>&customer=<%= customer.id %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(customerFilter==customer.id){ %>selected <% }%>><%= customer.firstName %> <%= customer.lastName %></option>
+                  <% } }); %>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mr-1">
+              <label for="fdate" class="font-weight-bold">From Date</label>
+              <input style="height: 28px;" type="date" class="form-control" name="fdate" id="fdate" value="<%=fdateFilter %>" />
+            </div>
+            <div class="mr-1">
+              <label for="tdate" class="font-weight-bold">To Date</label>
+              <input style="height: 28px;" type="date" class="form-control" name="tdate" id="tdate" value="<%=tdateFilter %>" />
+            </div>
+            <div>
+              <label for="status" class="font-weight-bold">Status</label><br>
+              <select id="status" name='orderStatus' onchange="location = this.value" style="height: 30px;">
+                <% statusList.forEach(function(statusName){%>
+                    <% if(statusName.name == 'orderStatus'){ %>
+                        <% statusName.dropdownSettingsOptions.forEach(function(status){%>
+                            <option value="1?<% if(pageSize!=''){ %>&pagesize=<%=pageSize %><% } %>&status=<%=status.optionValue %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(statusFilter== status.optionValue ){ %>selected <% }%> ><%=status.optionLabel %></option>
+                        <% })%>
+                    <% } %>
+                <% })%>
+                <option value="1?<% if(pageSize!=''){ %>&pagesize=<%=pageSize %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(statusFilter==''){ %>selected <% }%> >All</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="mt-0">
+          <a href="<%= adminbaseurl %>orderReport/downloadOrderReport?pagesize=<%=pageSize%><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" class="btn btn-success btn-sm right">Export List</a>
+        </div>
+       
+    </div>
+   
+
+
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+            <tr>
+              <th class="checkbox_cell"></th>
+              
+              <% if(orderType=='DESC'){%>
+                <th data-column="id" data-order="ASC" class="text-center theading" >Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="id" data-order="DESC" class="text-center theading" >Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="orderId" data-order="ASC" class="text-center theading" >OrderNo <% if(columnName=='orderId'){%> <i class="fa fa-sort fa-lg text-success"></i><%}else{%><i class="fa fa-sort fa-lg"></i> <%}%> </th>
+              <% }else{ %>
+                <th data-column="orderId" data-order="DESC" class="text-center theading" >OrderNo <% if(columnName=='orderId'){%> <i class="fa fa-sort fa-lg text-success"></i><%}else{%><i class="fa fa-sort fa-lg"></i> <%}%></th>
+              <% } %>
+
+    
+              <% if(sessionStoreId=='') {%>
+                <th>Store</th>
+              <% }%>
+
+              
+              <% if(orderType=='DESC'){%>
+                <th data-column="customerId" data-order="ASC" class="text-center theading" >Customer <% if(columnName=='customerId'){%> <i class="fa fa-sort fa-lg text-success"></i><%}else{%><i class="fa fa-sort fa-lg"></i> <%}%> </th>
+              <% }else{ %>
+                <th data-column="customerId" data-order="DESC" class="text-center theading" >Customer <% if(columnName=='customerId'){%> <i class="fa fa-sort fa-lg text-success"></i><%}else{%><i class="fa fa-sort fa-lg"></i> <%}%></th>
+              <% } %>
+
+
+              <th>Mobile</th>
+
+              <% if(orderType =='DESC') {%>
+                <th data-column="createdAt" data-order="ASC" class="theading">Date <% if(columnName =='createdAt') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }else{ %>
+                <th data-column="createdAt" data-order="DESC" class="theading">Date <% if(columnName =='createdAt') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }%>
+
+              
+              <% if(orderType=='DESC'){%>
+                <th data-column="orderStatus" data-order="ASC" class="text-center theading">OrderStatus
+                  <% if(columnName=='orderStatus'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="orderStatus" data-order="DESC" class="text-center theading">OrderStatus
+                  <% if(columnName=='orderStatus'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="total" data-order="ASC" class="text-center theading">Total
+                  <% if(columnName=='total'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="total" data-order="DESC" class="text-center theading">Total
+                  <% if(columnName=='total'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th>Shipping Address</th>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="paymentStatus" data-order="ASC" class="text-center theading">PaymentStatus
+                  <% if(columnName=='paymentStatus'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="paymentStatus" data-order="DESC" class="text-center theading">PaymentStatus
+                  <% if(columnName=='paymentStatus'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="deliveryStatus" data-order="ASC" class="text-center theading">DeliveryStatus
+                  <% if(columnName=='deliveryStatus'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="deliveryStatus" data-order="DESC" class="text-center theading">DeliveryStatus
+                  <% if(columnName=='deliveryStatus'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% var i=1; if(arrData.length>0){
+              arrData.forEach(function(val) { %>
+              <tr>
+                <td class="checkbox_cell"></td>
+                <td><%= i %></td>
+
+                <td class="text-center"> 
+                  #<%= val.orderNo %>
+                  <% if(val.shippingMethod=='Free Shipping'){ %> <br><img src="<%= baseurl %>admin/images/free_shipping.png" height="25px">  
+                  <% }else if(val.shippingMethod=='Shipping Charge'){ %><br><img src="<%= baseurl %>admin/images/shipping-charges.png" height="25px">
+                  <% }else if(val.shippingMethod=='Express Shipping'){ %><br><img src="<%= baseurl %>admin/images/express.png" height="25px">
+                  <% }%>
+                </td>
+                
+                <% if(sessionStoreId=='') {%>
+                  <td><% arrStore.forEach(function(store) { if(store.id==val.storeId){ %> <%= store.storeName %></ <% } }) %></td>
+                <% }%>
+
+                <td>
+                  <% arrCustomer.forEach(function(customer) {
+                        if(customer.id==val.customerId){ %>
+                  <%= customer.firstName %> <%= customer.lastName %></ <% } }); %>
+                </td>
+                <td>
+                  <% arrCustomer.forEach(function(customer) {
+                        if(customer.id==val.customerId){ %>
+                  <%= customer.mobile %></ <% } }); %>
+                </td>
+                <td> <%= moment(val.createdAt).format('DD MMM, YYYY') %><br>
+                  <span style="padding:2px; color:black; font-size: 15px"><%= moment(val.createdAt).format('HH:mm') %><span>
+                </td>
+                <td><%= val.orderStatus %></td>
+                <td>₹ <%= val.amountPaid %></td>
+                <td style="white-space: pre-wrap;"><%= val.shippingAddress %></td>
+                <td><%= val.paymentStatus %></td>
+                <td><%= val.deliveryStatus %></td>
+              
+
+                <td>&nbsp;</td>
+              </tr>
+            <% i++; }) } %>
+          </tbody>
+        </table>
+
+         <!--====================================== Pagination Start ======================================-->
+         <% if(listCount>0) {%>
+          <div class="pagination_sec">
+              <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+              <% if(currentPage>1) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>orderReport/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" >Prev</a></li>
+                  </ul>
+              <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                  </ul>
+              <% } %>
+              <% for(var i=1; i<=pageCount; i++) { %>
+                  <ul>
+                  <% if(currentPage==i) {%>
+                  <li><a href="<%= adminbaseurl%>orderReport/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>"  class="active"><%=i %></a></li>
+                  <% }else{ %>
+                  <li><a href="<%= adminbaseurl%>orderReport/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" class=""><%=i %></a></li>
+                  <% } %>
+                  </ul>
+              <% } %>
+              <% if(currentPage < pageCount) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>orderReport/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>"  >Next</a></li>
+                  </ul>
+                  <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                  </ul>
+              <% } %>
+          </div>
+      <% } %>
+      <!--====================================== Pagination End ======================================-->
+
+      </div>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+
+
+<script>
+  $(document).ready(() => {
+    $('.theading').on('click',function(){
+      var column = $(this).data('column');
+      var order = $(this).data('order');
+
+      if(order == 'DESC'){
+        $(this).data('order', 'ASC');        
+        window.location.href = `<%= adminbaseurl%>orderReport/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+      }else{
+        $(this).data('order', 'DESC');
+        window.location.href = `<%= adminbaseurl%>orderReport/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+      }
+    })
+});
+</script>
+
+<script>
+  $('#orderNo').on('blur', function(){
+        let orderNo = $('#orderNo').val()
+        if(orderNo != ''){
+            window.location.href = `<%= adminbaseurl%>orderReport/list/1?pagesize=<%= pageSize %>&orderNo=${orderNo}<% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+        }else{
+            window.location.href = `<%= adminbaseurl%>orderReport/list/1?pagesize=<%= pageSize %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+        }
+    })
+
+  $('#customerId').on('blur', function(){
+      let customerId = $('#customerId').val()
+      if(customerId != ''){
+          window.location.href = `<%= adminbaseurl%>orderReport/list/1?pagesize=<%= pageSize %>&customer=${customerId}<% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>`
+      }
+  })
+
+  $('#fdate').on('blur', function(){
+      let fdate = $('#fdate').val()
+      if(fdate != ''){
+          window.location.href = `<%= adminbaseurl%>orderReport/list/1?pagesize=<%= pageSize %>&fdate=${fdate}<% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>`
+      }
+  })
+
+  $('#tdate').on('blur', function(){
+      let tdate = $('#tdate').val()
+      if(tdate != ''){
+          window.location.href = `<%= adminbaseurl%>orderReport/list/1?pagesize=<%= pageSize %>&tdate=${tdate}<% if(orderFilter!=''){ %>&orderNo=<%=orderFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>`
+      }
+  })
+</script>
+
+<!-- <script>
+  var counter = 60;
+  // The countdown method.
+  window.setInterval(function () {
+      counter--;
+      if (counter >= 0) {
+          var span;
+          span = document.getElementById("cnt");
+          span.innerHTML = "This page will be refreshed after "+counter+" seconds";
+      }
+      if (counter === 0) {
+          clearInterval(counter);
+      }
+
+  }, 1000);
+
+  window.setInterval('refresh()', 60000);
+
+  // Refresh or reload page.
+  function refresh() {
+      window.location.href = window.location.href;
+  }
+</script> -->
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#customerId').select2();
+    $('#status').select2();
+  });
+</script>

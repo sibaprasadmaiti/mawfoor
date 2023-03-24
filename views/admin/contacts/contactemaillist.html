@@ -1,0 +1,385 @@
+<%- include ../partials/header_new.html %>
+    <%- include ../partials/sidebar.html %>
+
+        <style>
+            .addStore {
+                padding: 10px;
+                float: right;
+                font-size: 15px;
+            }
+
+            .product_list025 {
+                border: solid 1px #ccc;
+            }
+
+            .table_wraper table tr td a {
+                font-size: 15px;
+                font-weight: 500;
+                color: #4483a7;
+            }
+
+            .card {
+                padding: 30px 10px;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+
+            .card p {
+                font-size: 30px;
+                font-weight: 600;
+                color: #4483a7;
+                margin-bottom: 5px;
+            }
+
+            .card span {
+                font-size: 15px;
+                font-weight: 500;
+                text-transform: uppercase;
+                color: #555;
+            }
+
+            @media (max-width: 767px) {
+                .table_heading {
+                    padding: 0px;
+                }
+            }
+        </style>
+        <div class="content_wraper">
+            <div class="main_container">
+                <div class="header_wraper">
+                    <ul>
+                        <li><a href="<%= adminbaseurl %>dashboard">Dashboard</a></li>
+                        <li><a href="<%= adminbaseurl %>contacts/contactlist/1">Contacts</a></li>
+                        <li>
+                            <h4>
+                                <%=title%><small></small>
+                            </h4>
+                        </li>
+                    </ul>
+                    <h2>
+                        <%=title%>
+                    </h2>
+                </div>
+
+                <% if(messages!='' ) {%>
+                    <div class="succ_msg msg" id="succ_msg">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                        <%=messages%>
+                    </div>
+                    <%}%>
+                        <% if(errors!='' ) {%>
+                            <div class="succ_err msg" id="err_msg">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <%=errors%>
+                            </div>
+                            <% }%>
+
+                                <div class="content_body">
+                                    <div class="table_heading mb-4">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="card">
+                                                    <p>
+                                                        <%=total%>
+                                                    </p>
+                                                    <span>Total</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="card">
+                                                    <p>
+                                                        <%=totalActive%>
+                                                    </p>
+                                                    <span>Active</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="card">
+                                                    <p>
+                                                        <%=totalInactive%>
+                                                    </p>
+                                                    <span>Inactive</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="card">
+                                                    <p>
+                                                        <%=totalUnsubscribe%>
+                                                    </p>
+                                                    <span>Unsubscribe</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table_heading mb-2 pb-5">
+                                        <div class="mt-3">
+                                            <div class="float-left">
+                                                <span style="font-size: 14px;">Showing </span>
+                                                <select onchange="location = this.value"
+                                                    style="height: 25px; width: 60px;">
+                                                    <option
+                                                        value="1?id=<%= contactId%>&pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                        <% if(pageSize=='10' ){ %>selected <% }%> >10</option>
+                                                    <option
+                                                        value="1?id=<%= contactId%>&pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                        <% if(pageSize=='25' ){ %>selected <% }%>>25</option>
+                                                    <option
+                                                        value="1?id=<%= contactId%>&pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                        <% if(pageSize=='50' ){ %>selected <% }%>>50</option>
+                                                    <option
+                                                        value="1?id=<%= contactId%>&pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                        <% if(pageSize=='100' ){ %>selected <% }%>>100</option>
+                                                </select>
+                                                <span style="font-size: 14px;"> entries </span>
+                                            </div>
+
+                                            <div class="float-right">
+                                                <a href="<%= adminbaseurl %>contacts/emaillist/1/export?id=<%= contactId%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                    class="btn btn_theme01 btn-sm">Export List</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table_heading mb-4 pb-4">
+                                        <div class="float-left">
+                                            <form class="header-searchbox">
+                                                <div class="searchcom">
+                                                    <input type="text" placeholder="Search.." id="search" />
+                                                    <button type="button" id="submit"><i
+                                                            class="fa fa-search" aria-hidden="true"></i></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive table_wraper">
+                                        <table class="table product_list025">
+                                            <thead>
+                                                <tr style="cursor: pointer;">
+                                                    <% if(orderType=='DESC' ) {%>
+                                                        <th data-column="id" data-order="ASC"
+                                                            class="text-center theading">Sl No <% if(columnName=='id' )
+                                                                {%><i class="fa fa-sort fa-lg text-success"></i>
+                                                                <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                                                    <% }%>
+                                                        </th>
+                                                        <% }else{ %>
+                                                            <th data-column="id" data-order="DESC"
+                                                                class="text-center theading">Sl No <%
+                                                                    if(columnName=='id' ) {%><i
+                                                                        class="fa fa-sort fa-lg text-success"></i>
+                                                                    <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                                                        <% }%>
+                                                            </th>
+                                                            <% }%>
+
+                                                                <% if(orderType=='DESC' ) {%>
+                                                                    <th data-column="email" data-order="ASC"
+                                                                        class="theading">Email <% if(columnName=='email'
+                                                                            ) {%><i
+                                                                                class="fa fa-sort fa-lg text-success"></i>
+                                                                            <% }else{ %><i class="fa fa-sort fa-lg"></i>
+                                                                                <% }%>
+                                                                    </th>
+                                                                    <% }else{ %>
+                                                                        <th data-column="email" data-order="DESC"
+                                                                            class="theading">Email <%
+                                                                                if(columnName=='email' ) {%><i
+                                                                                    class="fa fa-sort fa-lg text-success"></i>
+                                                                                <% }else{ %><i
+                                                                                        class="fa fa-sort fa-lg"></i>
+                                                                                    <% }%>
+                                                                        </th>
+                                                                        <% }%>
+
+                                                                            <% if(orderType=='DESC' ) {%>
+                                                                                <th data-column="createdAt"
+                                                                                    data-order="ASC" class="theading">
+                                                                                    Added <% if(columnName=='createdAt'
+                                                                                        ) {%><i
+                                                                                            class="fa fa-sort fa-lg text-success"></i>
+                                                                                        <% }else{ %><i
+                                                                                                class="fa fa-sort fa-lg"></i>
+                                                                                            <% }%>
+                                                                                </th>
+                                                                                <% }else{ %>
+                                                                                    <th data-column="createdAt"
+                                                                                        data-order="DESC"
+                                                                                        class="theading">Added <%
+                                                                                            if(columnName=='createdAt' )
+                                                                                            {%><i
+                                                                                                class="fa fa-sort fa-lg text-success"></i>
+                                                                                            <% }else{ %><i
+                                                                                                    class="fa fa-sort fa-lg"></i>
+                                                                                                <% }%>
+                                                                                    </th>
+                                                                                    <% }%>
+
+                                                                                        <% if(orderType=='DESC' ) {%>
+                                                                                            <th data-column="status"
+                                                                                                data-order="ASC"
+                                                                                                class="theading">Status
+                                                                                                <% if(columnName=='status'
+                                                                                                    ) {%><i
+                                                                                                        class="fa fa-sort fa-lg text-success"></i>
+                                                                                                    <% }else{ %><i
+                                                                                                            class="fa fa-sort fa-lg"></i>
+                                                                                                        <% }%>
+                                                                                            </th>
+                                                                                            <% }else{ %>
+                                                                                                <th data-column="status"
+                                                                                                    data-order="DESC"
+                                                                                                    class="theading">
+                                                                                                    Status <%
+                                                                                                        if(columnName=='status'
+                                                                                                        ) {%><i
+                                                                                                            class="fa fa-sort fa-lg text-success"></i>
+                                                                                                        <% }else{ %><i
+                                                                                                                class="fa fa-sort fa-lg"></i>
+                                                                                                            <% }%>
+                                                                                                </th>
+                                                                                                <% }%>
+
+                                                                                                    <th
+                                                                                                        class="text-center">
+                                                                                                        Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% var i=1; arrData.forEach(function(val) { %>
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <%= i %>
+                                                        </td>
+                                                        <td>
+                                                            <%= val.email %>
+                                                        </td>
+                                                        <td>
+                                                            <%= moment(val.createdAt).format('DD/MM/YYYY') %> at <%=
+                                                                    moment(val.createdAt).format('hh:mm A') %>
+                                                        </td>
+                                                        <td class="font-weight-bold">
+                                                            <%if(val.status=='Active') {%> <span
+                                                                    class="text-success">Active</span>
+                                                                <% }%>
+                                                                    <%if(val.status=='Inactive') {%> <span
+                                                                            class="text-warning">Inactive</span>
+                                                                        <% }%>
+                                                                            <%if(val.status=='Unsubscribe') {%> <span
+                                                                                    class="text-danger">Unsubscribe</span>
+                                                                                <% }%>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <%if(val.status=='Active' || val.status=='Inactive' ) {%>
+                                                                <a href="<%= adminbaseurl%>contacts/emaillist/statuschange/<%= val.id %>"
+                                                                    class="edit_btn">
+                                                                    <%if(val.status=='Active') {%><i
+                                                                            class="fa fa-toggle-on"
+                                                                            title="Change to Inactive"></i>
+                                                                        <% }%>
+                                                                            <%if(val.status=='Inactive') {%><i
+                                                                                    class="fa fa-toggle-off"
+                                                                                    title="Change to Active"></i>
+                                                                                <% } %>
+                                                                </a>
+                                                                <% } else {%>
+                                                                    <a class="edit_btn"><i
+                                                                            class="fa fa-toggle-off"></i></a>
+                                                                    <% } %>
+                                                                        <a href="<%= adminbaseurl%>contacts/emaillist/delete/<%= val.id %>"
+                                                                            class="edit_btn"
+                                                                            onclick="return(confirm('Do you really want to delete? '));"><i
+                                                                                class="fa fa-trash"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    <% i++; }) %>
+                                            </tbody>
+                                        </table>
+                                        <!--====================================== Pagination Start ======================================-->
+                                        <% if(listCount>0) {%>
+                                            <div class="pagination_sec">
+                                                <div class="table_info">Showing <%
+                                                        if(((currentPage-1)*pageSize)+1==listCount) {%>
+                                                        <%= listCount %>
+                                                            <% }else{ %>
+                                                                <%= ((currentPage-1)*pageSize)+1 %> to <%=
+                                                                        currentPage==pageCount ? listCount :
+                                                                        (currentPage*pageSize) %>
+                                                                        <% } %> of <%= listCount %> entries</div>
+                                                <% if(currentPage>1) {%>
+                                                    <ul>
+                                                        <li><a
+                                                                href="<%= adminbaseurl%>contacts/emaillist/<%=currentPage-1 %>?id=<%= contactId%>&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>">Prev</a>
+                                                        </li>
+                                                    </ul>
+                                                    <% }else{ %>
+                                                        <ul>
+                                                            <li><a href="javascript:void(0)" class="disable">Prev</a>
+                                                            </li>
+                                                        </ul>
+                                                        <% } %>
+                                                            <% for(var i=1; i<=pageCount; i++) { %>
+                                                                <ul>
+                                                                    <% if(currentPage==i) {%>
+                                                                        <li><a href="<%= adminbaseurl%>contacts/emaillist/<%=i %>?id=<%= contactId%>&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                                                class="active">
+                                                                                <%=i %>
+                                                                            </a></li>
+                                                                        <% }else{ %>
+                                                                            <li><a href="<%= adminbaseurl%>contacts/emaillist/<%=i %>?id=<%= contactId%>&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>"
+                                                                                    class="">
+                                                                                    <%=i %>
+                                                                                </a></li>
+                                                                            <% } %>
+                                                                </ul>
+                                                                <% } %>
+                                                                    <% if(currentPage < pageCount) {%>
+                                                                        <ul>
+                                                                            <li><a
+                                                                                    href="<%= adminbaseurl%>contacts/emaillist/<%=currentPage+1 %>?id=<%= contactId%>&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>">Next</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                        <% }else{ %>
+                                                                            <ul>
+                                                                                <li><a href="javascript:void(0)"
+                                                                                        class="disable">Next</a></li>
+                                                                            </ul>
+                                                                            <% } %>
+                                            </div>
+                                            <% } %>
+                                                <!--====================================== Pagination End ======================================-->
+                                    </div>
+                                </div>
+            </div>
+        </div>
+
+
+        <%- include ../partials/footer.html %>
+
+            <script>
+                $(document).ready(() => {
+                    $('.theading').on('click', function () {
+                        var column = $(this).data('column');
+                        var order = $(this).data('order');
+
+                        if (order == 'DESC') {
+                            $(this).data('order', 'ASC');
+                            window.location.href = `<%= adminbaseurl%>contacts/emaillist/1?id=<%= contactId%>&column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+                        } else {
+                            $(this).data('order', 'DESC');
+                            window.location.href = `<%= adminbaseurl%>contacts/emaillist/1?id=<%= contactId%>&column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+                        }
+                    })
+                })
+            </script>
+            <script>
+                $('#submit').on('click', function () {
+                    let search = $('#search').val()
+                    if (search != '') {
+                        window.location.href = `<%= adminbaseurl%>contacts/emaillist/1?id=<%= contactId%>&search=${search}`
+                    } else {
+                        window.location.href = `<%= adminbaseurl%>contacts/emaillist/1?id=<%= contactId%>`
+                    }
+                })
+            </script>

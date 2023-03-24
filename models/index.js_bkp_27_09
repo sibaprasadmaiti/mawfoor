@@ -1,0 +1,282 @@
+'use strict';
+var fs        = require('fs');
+var path      = require('path');
+var Sequelize = require('sequelize');
+var basename  = path.basename(module.filename);
+var env       = process.env.NODE_ENV || 'development';
+var config    = require(__dirname + '/../config/config.json')[env];
+var db        = {};
+if (config.use_env_variable) {
+  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  var sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
+fs.readdirSync(__dirname).filter(function(file) {
+  return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+}).forEach(function(file) {
+  var model = sequelize['import'](path.join(__dirname, file));
+  db[model.name] = model;
+});
+Object.keys(db).forEach(function(modelName) {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+/*Associate Start*/
+/*Associate Relation with admin and Store*/
+db.stores.hasMany(db.admins);
+db.admins.belongsTo(db.stores);
+/*Associate Relation with Category and Store*/
+db.stores.hasMany(db.categories);
+db.categories.belongsTo(db.stores);
+/*Associate Relation with Product and Store*/
+db.stores.hasMany(db.products);
+db.products.belongsTo(db.stores);
+/*Associate Relation with Product Category and Store*/
+db.stores.hasMany(db.productCategory);
+db.productCategory.belongsTo(db.stores);
+/*Associate Relation with Product Category and Category*/
+db.categories.hasMany(db.productCategory);
+db.productCategory.belongsTo(db.categories);
+/*Associate Relation with Product Category and Product*/
+db.products.hasMany(db.productCategory);
+db.productCategory.belongsTo(db.products);
+/*Associate Relation with Product Category and Cart*/
+db.carts.hasMany(db.productCategory);
+db.productCategory.belongsTo(db.carts);
+
+/*Associate Relation with Product Image and Stores*/
+db.stores.hasMany(db.productImages);
+db.productImages.belongsTo(db.stores);
+/*Associate Relation with Product Image and Product*/
+db.products.hasMany(db.productImages);
+db.productImages.belongsTo(db.products);
+/*Associate Relation with Related Product and Store*/
+db.stores.hasMany(db.relatedProduct);
+db.relatedProduct.belongsTo(db.stores);
+/*Associate Relation with Related Product and Product*/
+db.products.hasMany(db.relatedProduct);
+db.relatedProduct.belongsTo(db.products);
+/*Associate Relation with Option Master and Store*/
+db.stores.hasMany(db.optionMaster);
+db.optionMaster.belongsTo(db.stores);
+/*Associate Relation with Option Value and Store*/
+db.stores.hasMany(db.optionValue);
+db.optionValue.belongsTo(db.stores);
+/*Associate Relation with Option Value and Option Master*/
+db.optionMaster.hasMany(db.optionValue, { foreignKey: 'optionId' });
+db.optionValue.belongsTo(db.optionMaster, { foreignKey: 'optionId', targetKey: 'id' });
+/*Associate Relation with Option Product and Store*/
+db.stores.hasMany(db.optionProduct);
+db.optionProduct.belongsTo(db.stores);
+/*Associate Relation with Option Product and Option Master*/
+db.optionMaster.hasMany(db.optionProduct, { foreignKey: 'optionId' });
+db.optionProduct.belongsTo(db.optionMaster, { foreignKey: 'optionId', targetKey: 'id' });
+/*Associate Relation with Option Product and Product*/
+db.products.hasMany(db.optionProduct);
+db.optionProduct.belongsTo(db.products);
+/*Associate Relation with Role and Store*/
+db.stores.hasMany(db.roles);
+db.roles.belongsTo(db.stores);
+/*Associate Relation with Users and Store*/
+db.stores.hasMany(db.users);
+db.users.belongsTo(db.stores);
+/*Associate Relation with Site Setting and Store*/
+db.stores.hasMany(db.siteSettings);
+db.siteSettings.belongsTo(db.stores);
+/*Associate Relation with site Setting  and site Setting Group */
+db.siteSettingsGroups.hasMany(db.siteSettings);
+db.siteSettings.belongsTo(db.siteSettingsGroups);
+/*Associate Relation with site Setting Group and Store*/
+db.stores.hasMany(db.siteSettingsGroups);
+db.siteSettingsGroups.belongsTo(db.stores);
+/*Associate Relation with faq Group and Store*/
+db.stores.hasMany(db.faqGroups);
+db.faqGroups.belongsTo(db.stores);
+/*Associate Relation with faq and Store*/
+db.stores.hasMany(db.faq);
+db.faq.belongsTo(db.stores);
+/*Associate Relation with faq and Faq Groups*/
+db.faqGroups.hasMany(db.faq);
+db.faq.belongsTo(db.faqGroups);
+/*Associate Relation with ContentBlocks and Store*/
+db.stores.hasMany(db.contentBlocks);
+db.contentBlocks.belongsTo(db.stores);
+db.contentBlocks.hasMany(db.contentBlocks, { foreignKey: 'parentId', onDelete: 'cascade', onUpdate: 'cascade' });
+/*Associate Relation with Pages and Store*/
+db.stores.hasMany(db.pages);
+db.pages.belongsTo(db.stores);
+/*Associate Relation with Subscribers and Store*/
+db.stores.hasMany(db.subscribers);
+db.subscribers.belongsTo(db.stores);
+/*Associate Relation with DropdownSettings and Store*/
+db.stores.hasMany(db.dropdownSettings);
+db.dropdownSettings.belongsTo(db.stores);
+/*Associate Relation with DropdownSettingsOptions and Store*/
+db.stores.hasMany(db.dropdownSettingsOptions);
+db.dropdownSettingsOptions.belongsTo(db.stores);
+/*Associate Relation with DropdownSettingsOptions and DropdownSettings*/
+db.dropdownSettings.hasMany(db.dropdownSettingsOptions);
+db.dropdownSettingsOptions.belongsTo(db.dropdownSettings);
+/*Associate Relation with shippingMethods and Store*/
+db.stores.hasMany(db.shippingMethods);
+db.shippingMethods.belongsTo(db.stores);
+/*Associate Relation with Brand and Store*/
+db.stores.hasMany(db.brands);
+db.brands.belongsTo(db.stores);
+/*Associate Relation with Brand Iso Image and Store*/
+db.stores.hasMany(db.brandsIsoImage);
+db.brandsIsoImage.belongsTo(db.stores);
+/*Associate Relation with Brand Iso Image and Brand*/
+db.brands.hasMany(db.brandsIsoImage);
+db.brandsIsoImage.belongsTo(db.brands);
+/*Associate Relation with Testimonial and Store*/
+db.stores.hasMany(db.testimonials);
+db.testimonials.belongsTo(db.stores);
+/*Associate Relation with FormMasters and Store*/
+db.stores.hasMany(db.formMasters);
+db.formMasters.belongsTo(db.stores);
+/*Associate Relation with Customer and Store*/
+db.stores.hasMany(db.customers);
+db.customers.belongsTo(db.stores);
+/*Associate Relation with Customer Address and Store*/
+db.stores.hasMany(db.customerAddresses);
+db.customerAddresses.belongsTo(db.stores);
+/*Associate Relation with Customer Address and Customer*/
+db.customers.hasMany(db.customerAddresses, { foreignKey: 'customerId' });
+db.customerAddresses.belongsTo(db.customers, { foreignKey: 'customerId', targetKey: 'id' });
+/*Associate Relation with Customer Wishlist and Store*/
+db.stores.hasMany(db.customerWishlist, { foreignKey: 'storeId' });
+db.customerWishlist.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+/*Associate Relation with Customer Wishlist and Customer*/
+db.customers.hasMany(db.customerWishlist, { foreignKey: 'customerId' });
+db.customerWishlist.belongsTo(db.customers, { foreignKey: 'customerId', targetKey: 'id' });
+
+/*Associate Relation with ProductImages and Product*/
+db.products.hasMany(db.productImages, { foreignKey: 'productId' });
+db.productImages.belongsTo(db.products, { foreignKey: 'productId', targetKey: 'id' });
+
+/*Associate Relation with Customer Wishlist and Product*/
+db.products.hasMany(db.customerWishlist, { foreignKey: 'productId' });
+db.customerWishlist.belongsTo(db.products, { foreignKey: 'productId', targetKey: 'id' });
+/*Associate Relation with Order and Store*/
+db.stores.hasMany(db.orders);
+db.orders.belongsTo(db.stores);
+/*Associate Relation with Order and Customer*/
+db.customers.hasMany(db.orders);
+db.orders.belongsTo(db.customers);
+/*Associate Relation with Order Item and Store*/
+db.stores.hasMany(db.orderItems, { foreignKey: 'storeId' });
+db.orderItems.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+/*Associate Relation with Order Item and Order*/
+db.orders.hasMany(db.orderItems, { foreignKey: 'orderId' });
+db.orderItems.belongsTo(db.orders, { foreignKey: 'orderId', targetKey: 'id' });
+/*Associate Relation with Order Item and Product*/
+db.products.hasMany(db.orderItems, { foreignKey: 'productId' });
+db.orderItems.belongsTo(db.products, { foreignKey: 'productId', targetKey: 'id' });
+/*Associate Relation with Order Item and Store*/
+db.stores.hasMany(db.orderStatusHistory, { foreignKey: 'storeId' });
+db.orderStatusHistory.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+/*Associate Relation with Order Item and Order*/
+db.orders.hasMany(db.orderStatusHistory, { foreignKey: 'orderId' });
+db.orderStatusHistory.belongsTo(db.orders, { foreignKey: 'orderId', targetKey: 'id' });
+/*Associate Relation with Wallet and Store*/
+db.stores.hasMany(db.wallets);
+db.wallets.belongsTo(db.stores);
+/*Associate Relation with Wallet and customer*/
+db.customers.hasMany(db.wallets);
+db.wallets.belongsTo(db.customers);
+/*Associate Relation with Wallet Transaction and Store*/
+db.stores.hasMany(db.walletTransaction, { foreignKey: 'storeId' });
+db.walletTransaction.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+/*Associate Relation with Wallet Transaction and Wallet*/
+db.wallets.hasMany(db.walletTransaction, { foreignKey: 'walletId' });
+db.walletTransaction.belongsTo(db.wallets, { foreignKey: 'walletId', targetKey: 'id' });
+/*Associate Relation with Wallet Transaction and customer*/
+db.customers.hasMany(db.walletTransaction, { foreignKey: 'customerId' });
+db.walletTransaction.belongsTo(db.customers, { foreignKey: 'customerId', targetKey: 'id' });
+/*Associate Relation with Cart and Store*/
+db.stores.hasMany(db.carts);
+db.carts.belongsTo(db.stores);
+/*Associate Relation with Cart and Product*/
+db.products.hasMany(db.carts);
+db.carts.belongsTo(db.products);
+/*Associate Relation with Cart and customer*/
+db.customers.hasMany(db.carts);
+db.carts.belongsTo(db.customers);
+/*Associate Relation with Delivery Time Slot and Store*/
+db.stores.hasMany(db.deliveryTimeSlot, { foreignKey: 'storeId' });
+db.deliveryTimeSlot.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+
+/*Associate Relation with Role and Store*/
+db.roles.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+//*****Permission Table
+db.permissions.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+//*****Role Has Permissions Table
+db.roleHasPermissions.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+db.roleHasPermissions.belongsTo(db.permissions, { foreignKey: 'permissionId', targetKey: 'id' });
+db.roleHasPermissions.belongsTo(db.roles, { foreignKey: 'roleId', targetKey: 'id' });
+//*****Model Has Roles Table
+db.modelHasRoles.belongsTo(db.stores, { foreignKey: 'storeId', targetKey: 'id' });
+db.modelHasRoles.belongsTo(db.roles, { foreignKey: 'roleId', targetKey: 'id' });
+db.modelHasRoles.belongsTo(db.admins, { foreignKey: 'userId', targetKey: 'id' });
+//***/
+db.admins.belongsTo(db.admins, { foreignKey: 'parentId', targetKey: 'id' });
+
+/*Associate Relation with Franchise and Store*/
+db.stores.hasMany(db.franchise, { foreignKey: 'storeId' });
+
+/*Associate Relation with CMS and Store*/
+db.stores.hasMany(db.cms, { foreignKey: 'storeId' });
+
+/*Associate Relation with City and Store*/
+db.stores.hasMany(db.city, { foreignKey: 'storeId' });
+
+/*Associate Relation with Zipcode and Store*/
+db.stores.hasMany(db.zipcode, { foreignKey: 'storeId' });
+
+/*Associate Relation with BannerSection and Store*/
+db.stores.hasMany(db.bannersection, { foreignKey: 'storeId' });
+
+/*Associate Relation with BannerDisplay and Store*/
+db.stores.hasMany(db.bannerdisplay, { foreignKey: 'storeId' });
+
+/*Associate Relation with Banner and Store*/
+db.stores.hasMany(db.banner, { foreignKey: 'storeId' });
+
+/*Associate Relation with Blog Author and Store*/
+db.stores.hasMany(db.blogauthor, { foreignKey: 'storeId' });
+/*Associate Relation with Blog Category and Store*/
+db.stores.hasMany(db.blogcategory, { foreignKey: 'storeId' });
+/*Associate Relation with Blogs and Store*/
+db.stores.hasMany(db.blogs, { foreignKey: 'storeId' });
+/*Associate Relation with Blog Author and Blogs*/
+db.blogauthor.hasMany(db.blogs, { foreignKey: 'authorId' });
+/*Associate Relation with Blog Comment and Store*/
+db.stores.hasMany(db.blogcomments, { foreignKey: 'storeId' });
+/*Associate Relation with Blog Comment and Blogs*/
+db.blogs.hasMany(db.blogcomments, { foreignKey: 'blogId', onDelete: 'cascade' });
+/*Associate Relation with Blog Selected Category and Store*/
+db.stores.hasMany(db.blogselectedcategory, { foreignKey: 'storeId' });
+/*Associate Relation with Blog Selected Category and Blog Category*/
+db.blogcategory.hasMany(db.blogselectedcategory, { foreignKey: 'categoryId' });
+/*Associate Relation with Blog Selected Category and Blogs*/
+db.blogs.hasMany(db.blogselectedcategory, { foreignKey: 'blogId' });
+/*Associate Relation with Dynamic Form and Store*/
+db.stores.hasMany(db.dynamicforms, { foreignKey: 'storeId', onDelete: 'cascade' });
+/*Associate Relation with Dynamic Form and Dynamic Form Field*/
+db.dynamicforms.hasMany(db.dynamicformfields, { foreignKey: 'dynamicFormId', onDelete: 'cascade' });
+/*Associate Relation with Dynamic Form Field and Dynamic Form Field Value*/
+db.dynamicformfields.hasMany(db.dynamicformfieldvalues, { foreignKey: 'dynamicFormFieldId', onDelete: 'cascade' });
+/*Associate Relation with Attribute Setting and Store*/
+db.stores.hasMany(db.attributesetting, { foreignKey: 'storeId', onDelete: 'cascade' });
+/*Associate Relation with Attribute Value and Store*/
+db.stores.hasMany(db.attributevalue, { foreignKey: 'storeId', onDelete: 'cascade' });
+/*Associate Relation with Attribute Setting and Attribute Value*/
+db.attributesetting.hasMany(db.attributevalue, { foreignKey: 'attrSettingId', onDelete: 'cascade' });
+/*Associate Relation with couponTransaction and Store*/
+db.stores.hasMany(db.couponTransaction, { foreignKey: 'storeId', onDelete: 'cascade' });
+/*Associate End*/
+module.exports = db;

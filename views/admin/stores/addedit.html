@@ -1,0 +1,317 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>stores">Stores</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>stores/addOrUpdate">
+      <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>" />
+      <div class="content_body panel_body edit_store">
+        <div class="clearfix"></div>
+        
+        <div class="panel_title">
+          <h3 id="span1" style="cursor: pointer;">General Informations</h3>
+          <hr class="mt-1" style="background-color: rgba(192, 190, 190, 0.651);">
+        </div>
+
+        <div id="div1" class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Store Name<span>*</span></span>
+              <input id="storeName" class="form-control"  name="storeName" type="text" onkeypress="return blockother(event)" required="required" value="<%= arrData ? arrData.storeName : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Slug<span>*</span></span>
+              <input id="slug" class="form-control" name="slug" type="text" onkeypress="return blockother(event)" required="required" readonly value="<%= arrData ? arrData.slug : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Host Name <span>*</span></span>
+                <input id="cCode" class="form-control" name="cCode" type="text" onkeyup="this.value = this.value.toUpperCase()" required="required" value="<%= arrData ? arrData.cCode : '' %>"/>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Company Name</span>
+                <input id="company" class="form-control"  name="company" type="text" onkeypress="return blockother(event)"  value="<%= arrData ? arrData.company : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Store Owner Name</span>
+              <input id="sOwnerName" class="form-control"  name="sOwnerName" type="text" onkeypress="return blockother(event)" value="<%= arrData ? arrData.storeOwner : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Email<span>*</span></span>
+              <input id="sEmail" class="form-control" name="sEmail" type="email" required="required" value="<%= arrData ? arrData.email : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Mobile<span>*</span></span>
+              <input id="mobile" class="form-control" name="mobile" type="text" maxlength="10" minlength="10" pattern="^[6-9]\d{9}$" onkeypress="return blockChar(event)" required="required" value="<%= arrData ? arrData.mobile : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>GST No </span>
+              <input id="gstn" class="form-control" name="gstn" type="text" value="<%= arrData ? arrData.gstn : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Status</span>
+              <select name="status" class="form-control">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                <option <% if(arrData.status=='Archive'){ %>selected="selected" <% }%> value="Archive">Archive</option> 
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel_title">
+          <h3 id="span2" style="cursor: pointer;">Contact Details</h3>
+          <hr class="mt-1" style="background-color: rgba(192, 190, 190, 0.651);">
+        </div>
+
+        <div id="div2" class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Location </span>
+              <input id="location" class="form-control" name="location" type="text" value="<%= arrData ? arrData.location : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Country </span>
+              <input id="country" class="form-control" name="country" type="text" value="<%= arrData ? arrData.country : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Address </span>
+              <input id="address" class="form-control" name="address" type="text" value="<%= arrData ? arrData.address : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Latitude </span>
+              <input id="latitude" class="form-control" name="latitude" type="text" value="<%= arrData ? arrData.latitude : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Longitude </span>
+              <input id="longitude" class="form-control" name="longitude" type="text" value="<%= arrData ? arrData.longitude : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>FAX </span>
+              <input id="fax" class="form-control" name="fax" type="text" value="<%= arrData ? arrData.fax : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel_title my-0">
+          <h3 id="span4" style="cursor: pointer;">Social Links</h3>
+          <hr class="mt-1" style="background-color: rgba(192, 190, 190, 0.651);">
+        </div>
+
+        <div id="div4" class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Facebook Link </span>
+              <input id="facebookLink" class="form-control" name="facebookLink" type="text" value="<%= arrData ? arrData.facebookLink : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Instagram Link </span>
+              <input id="instagramLink" class="form-control" name="instagramLink" type="text" value="<%= arrData ? arrData.instagramLink : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Twitter Link </span>
+              <input id="twitterLink" class="form-control" name="twitterLink" type="text" value="<%= arrData ? arrData.twitterLink : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>YouTube Link </span>
+              <input id="youtubeLink" class="form-control" name="youtubeLink" type="text" value="<%= arrData ? arrData.youtubeLink : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Other Link </span>
+              <input id="otherLink" class="form-control" name="otherLink" type="text" value="<%= arrData ? arrData.otherLink : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel_title">
+          <h3 id="span5" style="cursor: pointer;">Assign Permission</h3>
+          <hr class="mt-1" style="background-color: rgba(192, 190, 190, 0.651);">
+        </div>
+
+        <div id="div5" class="row edit_box">
+          <% permissionGroupList.forEach(function(val) {
+            let select=''
+            if(logDetails.length>0){
+                logDetails.forEach(function(val2){ 
+                    if(val2.id==val.id) {
+                        select='checked';
+                    }
+                })
+            } %>
+            <div class="col-sm-3">
+                <div class="animate_form field">
+                    <span> <%=val.groupName%> </span>
+                    <input id="permission" type="checkbox" data-toggle="toggle" name="permission" value="<%=val.id%>" <%= select %>>
+                </div>
+            </div>
+          <%  }) %>
+        </div>
+        
+        <div class="panel_title">
+          <h3 id="span3" style="cursor: pointer;">Site Informations</h3>
+          <hr class="mt-1" style="background-color: rgba(192, 190, 190, 0.651);">
+        </div>
+
+        <div id="div3" class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Site URL </span>
+              <input id="siteURL" class="form-control" name="siteURL" type="text" value="<%= arrData ? arrData.siteURL : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>SSL Redirect </span>
+              <input id="sslRedirect" class="form-control" name="sslRedirect" type="text" value="<%= arrData ? arrData.sslRedirect : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Copyright </span>
+              <input id="copyright" class="form-control" name="copyright" type="text" value="<%= arrData ? arrData.copyright : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Version </span>
+              <input id="version" class="form-control" name="version" type="text" value="<%= arrData ? arrData.version : '' %>">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Logo </span>
+              <input id="logo" class="form-control" name="logo" type="file">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Fab Icon </span>
+              <input id="fabIcon" class="form-control" name="fabIcon" type="file">
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="btn_right mb-4">
+        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<%- include ../partials/footer.html %>
+<script type="text/javascript">
+  function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+  $(document).keyup(function(){
+    var name = $('#storeName').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug+= "-"+(name.length+1);	
+    $('#slug').val(slug);
+  })
+</script>
+
+<script>
+  $(document).ready(() => {
+    $('#div1').show()
+    $('#div2').hide()
+    $('#div3').hide()
+    $('#div4').hide()
+    $('#div5').hide()
+  })
+  $('#span1').on('click', function () {
+      $('#div1').toggle()
+  })
+  $('#span2').on('click', function () {
+      $('#div2').toggle()
+  })
+  $('#span3').on('click', function () {
+      $('#div3').toggle()
+  })
+  $('#span4').on('click', function () {
+      $('#div4').toggle()
+  })
+  $('#span5').on('click', function () {
+      $('#div5').toggle()
+  })
+</script>

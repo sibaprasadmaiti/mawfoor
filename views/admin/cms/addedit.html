@@ -1,0 +1,235 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %> 
+
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+
+
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>cms/list/1">About Us</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>cms/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>About Us Details</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Title <span class="text-danger">*</span></span>
+              <input id="title" class="form-control" name="title" type="text" value="<%= arrData ? arrData.title : '' %>" />
+            </div>
+            <span class="text-danger font-weight-bold" id="title_error"></span>
+          </div>
+
+          <!-- <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Slug<span>*</span></span>
+              <input id="slug" class="form-control" name="slug" type="text" onkeypress="return blockother(event)" required="required" readonly value="<%= arrData ? arrData.slug : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div> -->
+
+          <% if(sessionStoreId!='') {%>
+            <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+          <% } else {%>
+              <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1">
+                      <span>Select Store <span class="text-danger">*</span></span>
+                      <select name="storeId" id="storeId" class="form-control">
+                          <% stores.forEach(function(store){%>
+                          <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                          <% })%>
+                      </select>
+                  </div>
+              </div>
+          <% }%>
+
+        <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Status <span class="text-danger">*</span></span>
+              <select name="status" class="form-control" id="status">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="status_error"></span>
+        </div>
+
+        <div class="col-sm-6 mb-5">
+          <div class="animate_form field mb-1">
+            <span>Content Description <span class="text-danger">*</span></span>
+            <textarea id="contentDescription" class="form-control"  name="contentDescription" type="text"><%= arrData ? arrData.contentDescription : '' %></textarea>
+          </div>
+          <span class="text-danger font-weight-bold" id="contentDescription_error"></span>
+      </div>
+
+        <div class="col-sm-12 mb-5">
+            <div class="animate_form field">
+              <span>About Us Content</span>
+              <textarea id="content" class="form-control" name="content" type="text"><%= arrData ? arrData.content : '' %></textarea>
+            </div>
+        </div>
+
+        
+
+        </div>
+      </div>
+      <div class="btn_right mb-4">        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<%- include ../partials/footer.html %>
+<script type="text/javascript">
+function blockChar(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return (k >= 48 && k <= 57);
+  }
+  function  blockother(e){
+    var k;
+    document.all ? k = e.keyCode : k = e.which;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+  }
+  $('#title').keyup(function(){
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    var storeId = $('#storeId').val();
+    var randomNumber = Math.floor(1000 + Math.random()*9000);
+    $('#slug').val(slug+ storeId+'-'+ randomNumber);
+  });
+  $('#storeId').change(function(){
+    var name = $('#title').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g,'-');
+    var randomNumber = Math.floor(1000+Math.random()*9000);
+    var storeId = $('#storeId').val();
+    $('#slug').val(slug+storeId+'-'+randomNumber);
+  });
+</script>
+
+<script>            
+  CKEDITOR.editorConfig = function (config) {
+    config.language = 'es';
+    config.uiColor = '#F7B42C';
+    config.height = 300;
+    config.toolbarCanCollapse = true;
+  };
+  CKEDITOR.replace('content');
+  CKEDITOR.config.startupMode = 'source';
+</script>
+
+
+<!-- -------------------------------------- validation --------------------------------  -->
+
+<script>
+
+  $(document).ready(function () {
+      $("#title_error").hide();
+      err_name = true;
+      $("#status_error").hide();
+      err_status = true;
+      $("#contentDescription_error").hide();
+      err_contentDescription = true;
+
+      $("#title").keyup(function () {
+          title_check_fun();
+      });
+
+      $("#contentDescription").keyup(function () {
+        contentDescription_check_fun();
+      });
+
+      $("#status").change(function () {
+          status_check_fun();
+      });
+
+
+
+      function title_check_fun() {
+          let k = $("#title").val();
+          if (k.length == "") {
+              $("#title_error").show();
+              $("#title_error").html("Title is required");
+              err_title = false;
+              return false;
+          }
+          else {
+              err_title = true;
+              $("#title_error").html("");
+              $("#title_error").hide();
+          }
+      }
+
+      function contentDescription_check_fun() {
+          let k = $("#contentDescription").val();
+          if (k.length == "") {
+              $("#contentDescription_error").show();
+              $("#contentDescription_error").html("Content description is required");
+              err_contentDescription = false;
+              return false;
+          }
+          else {
+              err_contentDescription = true;
+              $("#contentDescription_error").html("");
+              $("#contentDescription_error").hide();
+          }
+      }
+
+      function status_check_fun() {
+          let k = $("#status").val();
+          if (k.length == ""  ) {
+              $("#status_error").show();
+              $("#status_error").html("Please select status");
+              err_status = false;
+              return false;
+          }
+          else {
+              err_status = true;
+              $("#status_error").html("");
+              $("#status_error").hide();
+
+          }
+      }
+
+
+      $("#send").click(function () {
+          err_title = true;
+          err_status = true;
+          err_contentDescription = true;
+          title_check_fun();
+          status_check_fun();
+          contentDescription_check_fun();
+
+          if ((err_title == true) && (err_contentDescription == true) && (err_status == true) ) {
+              return true;
+          }
+          else {
+              return false;
+
+          }
+
+      });
+
+
+  });
+
+</script>

@@ -1,0 +1,80 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>fileUpload/list">Banner List</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>fileUpload/add">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>File</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Customer</span>
+                <select name="customerId" id="customerId" class="form-control" required="required">
+                    <option value=""  <% if(arrData.customerId == ''){ %> selected="selected" <% }%>>Select</option>
+                    <% customers.forEach(function(customer){%>
+                      <option value="<%=customer.id%>"  <% if(arrData.customerId == customer.id){ %> selected="selected" <% }%>><%=customer.firstName; %> <%=customer.lastName; %></option>
+                    <% })%>
+                  </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <label>Image</label>
+              <input type="file" class="form-control" id="image" name="files" accept="image/*" onchange="preView()" multiple />
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="btn_right mb-4">        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+
+<!-- <script type="text/javascript">
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script> -->
+

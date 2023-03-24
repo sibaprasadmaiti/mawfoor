@@ -1,0 +1,253 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>         
+<!-- page content -->
+<div class="content_wraper">
+      <div class="main_container">
+        
+            <div class="header_wraper">
+                <h2><%=title%></h2>
+                <ul>
+                    <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                    <li><h4><%=title%><small></small></h4></li>
+                    <!-- <li><%= messages ? messages: ''%></li>  -->
+                </ul>
+            </div>
+
+            <% if(messages!='') {%>
+            <div class="succ_msg msg" id="succ_msg">    
+                <i class="fa fa-check"  aria-hidden="true"></i>        
+                <%=messages%>
+            </div>
+            <%}%>                
+            <% if(errors!='') {%>
+            <div class="succ_err msg" id="err_msg">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+                <%=errors%>
+            </div>
+            <% }%>
+            
+            <div class="content_body">
+        <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+          <h3>Manage Products</h3>
+
+
+          
+    
+            <!-- filter product 11/07/2019 start -->
+            <!-- <form align="right" class="example" id="filterResultForm" action="<%= adminbaseurl %>product" style=" display: flex;" > -->
+           
+                <!-- <button  type="submit" ><i class="fa fa-search"></i></button> -->
+            <!-- </form> -->
+                <!-- filter product 11/07/2019 end -->
+
+            <!-- search product by name 10/07/2019 start -->
+            <form align="right" class="example" id="searchResultForm" action="<%= adminbaseurl %>product" style=" display: flex;" >
+                <input id="serProduct" type="text" placeholder="Search.." name="search" class="form-control">
+                <button  type="submit" ><i class="fa fa-search"></i></button>
+            </form>
+            <!-- search product by name 10/07/2019 end -->
+            <ul>
+            </ul>
+        </div>
+  
+        <div class="table-responsive table_wraper">
+          <table class="table">
+              <thead>
+                    <tr>
+                        <th class="checkbox_cell">
+                            <!-- <label class="checkbox"><input type="checkbox" id="checkAll" name="check"><span></span></label> -->
+                            </th>
+                            <th style="width:15px">Sl No</th>
+                            <!-- <th>Sku</th> -->
+							<th>Title</th>
+							<th>Category</th>
+							<!-- <th>Short Description</th>  -->
+							
+                            <th>Price</th>
+                            <!-- <th style="width: 50px" width="50px">Url</th> -->
+                            <th>Image</th>
+                            <th>Status</th>
+                            
+                            <th>Action</th>
+                            
+                            
+                            <th width="100px"><a href="<%= adminbaseurl %>product/addedit" class="add_btn"><span>+</span></a></th>
+                        </tr>
+                      </thead>
+
+
+                      <tbody>
+                        
+                        <% var i= startingNumber ? startingNumber : 1;
+                        arrData.forEach(function(val) { %>	
+	
+                                <tr>
+                                    <td class="checkbox_cell">
+                                        <!-- <label class="checkbox"><input type="checkbox" value="<%= val.id %>"><span></span></label> -->
+                                    </td>
+                                      <td> <%= i %></td>
+                                     <!-- <td><%= val.sku %>  </td> -->
+                                     <td><%= val.title %>  </td>
+                                      <td>
+                                        <% arrCategory.forEach(function(category) {
+                                                                                if(category.id==val.category_id){ %>
+                                        <%= category.title %></ <% } }); %>
+                                      </td>
+                                    
+                                     <!-- <td><%= val.description %>  </td>
+                                     <td><%= val.short_description %>  </td> -->
+
+                                     <td>  
+                                     <%  if(val.special_price >0){ %>  <%= val.special_price %> 
+                                     <% }else if(val.special_price <= 0){ %> <%= val.price %>
+                                        <% }%>
+                                     </td>
+                                     
+                                     <!-- <td ><%= val.url %></td> -->
+                                    <td> <img <% if(val.image && val.image!=''){%>src="<%= val.image %>" <%} else{%> src="<%= adminbaseurl %>myimages/no_photo.jpg"<%}%> height="50px" alt="">
+                                     </td>
+                                     <td><%= val.status %>  </td>
+                                     <td><a href="<%= adminbaseurl%>product/addedit/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                        <a href="<%= adminbaseurl%>product/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a></td>
+                                    
+                                </tr>
+						 <% i++; }) %>
+                      </tbody>
+                  </table>
+              </div>
+            </div>
+            
+            <%  if (paginate.hasPreviousPages || previousPage) { %>
+                <div class="pagination_sec">
+                    <div class="table_info">Showing <%= startingNumber ? startingNumber : '' %> to <%= endingNumber ? endingNumber : '' %> of <%= itemCount ? itemCount : ''%> entries</div>   
+                            <ul>
+                            <% if(paginate.hasPreviousPages) {%>
+                            <li><a href="<%= paginate.href(true) %>">Previous</a></li>
+                            <% }else{ %>
+                            <li><a href="javascript:void(0)" class="disable">Previous</a></li>
+                            <% } %>
+                            <% pages.forEach(function(page) { %>
+                            <li><a href="<%= page.url %>" <% if(currentPage && currentPage == page.number ) {%> class="active" <% } %>><%= page.number%></a></li>
+                            <%  }) %>
+                            <% if(previousPage) {%>
+                            <li><a href="<%= paginate.href() %>">Next</a></li>
+                            <% }else{ %>
+                            <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                            <% } %>
+                        </ul>
+                    </div>                  
+                </div>
+            <% } %>
+
+      </div>
+  </div>
+
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<!-- <style>
+    td{
+        width: 140px; 
+        height: 5px;
+        border: 1px solid #faefef;
+    }
+    td.container{
+        writing-mode: horizontal-rl; 
+        word-wrap: break-word;
+    }
+</style> -->
+<script>
+    $("#checkAll").click(function () {
+      $('input:checkbox').not(this).prop('checked', this.checked);
+  });
+ </script>
+<script>
+$(document).ready(function(){
+    var checkboxes = $('.checkbox input[type="checkbox"]'); 
+    checkboxes.change(function(){
+        var countCheckedCheckboxes = checkboxes.filter(':checked').length;
+        if(countCheckedCheckboxes > 0){
+            $('.label_info').text(countCheckedCheckboxes+' item(s) selected');
+            
+        }else{
+            $('.label_info').text('No item selected');
+        } 
+    });
+});
+
+ function deleteProduct() {  
+var chkArray = []; 
+/* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
+$(".checkbox input:checked").each(function() {
+chkArray.push($(this).val());
+});
+	var chkArraylengh = chkArray.length;
+    if(chkArraylengh > 0){
+console.log(chkArray)
+    var productData = { 'check' :chkArray}
+	var answer = confirm ("Are you sure you want to delete from the database?");
+    if(answer){
+$.ajax({ 
+    url: "<%= apiurl %>productmul/delete",
+    type:'POST',
+    data: productData,
+    success:function(response){
+        console.log(response)
+        //alert('')
+        if(response.value==1) 
+        window.location.reload();
+    },
+    error: function (e) {
+        console.log("ERROR : ", e);
+    }
+    });
+    }
+	}else{
+	  alert('For delete select first ');
+     }
+}
+</script>
+
+<script>
+    // search product 10/07/2019 start 
+    $(document).ready(function() {
+        $('#searchResultForm').on('submit', function(e){
+            // validation code here
+            var data  =  document.getElementById("serProduct").value;  
+            if(!data || data == ''){
+                // alert('Empty Search');
+                e.preventDefault();
+            }
+            // else{
+                // alert(data);
+                // alert('Available Search');
+                // e.preventDefault();    
+            // }
+        });
+    });
+    // search product 10/07/2019 end 
+
+    // filter product 11/07/2019 start 
+    $(document).ready(function() {
+        $('#filterResultForm').on('submit', function(e){
+            // validation code here
+            var data  =  document.getElementById("filter").value;  
+            if(!data || data == ''){
+                // alert('Empty Search');
+                e.preventDefault();
+            }
+            //alert(data);
+            // else{
+                // alert(data);
+                // alert('Available Search');
+                // e.preventDefault();    
+            // }
+        });
+    });
+    // filter product 11/07/2019 end 
+
+function getval(cat)
+{
+  window.open('<%= adminbaseurl %>product?filter='+cat.value,"_self");
+   
+}
+</script>

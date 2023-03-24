@@ -1,0 +1,102 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body">
+      <div class="table_heading">
+        <h3>Manage Admin User </h3>
+
+        <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{
+          userPermission=!!permissions.find(permission=> {
+          return permission === 'AdminUserAddEdit'
+          })
+          }
+          if(userPermission==true){ %>
+          <a href="<%= adminbaseurl %>adminUser/view" class="btn btn-info btn-lg addStore"><i class="fa fa-plus1">+</i> Add Admin
+            User</a>
+          <% } %>
+      
+         
+        <div class="table_search">
+          <input type="text" placeholder="Search Stores...">
+            <a href="javascript:void(0)" data-toggle="tooltip" title="Close" class="close_search">&times;</a>
+        </div>
+      </div>
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+            <tr>
+              <th class="checkbox_cell"></th>
+              <th style="width:15px">Sl No</th>
+              <th>Store</th>
+              <th>Role</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>              
+              <th>Status</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% var i=1;
+            arrData.forEach(function(val) { %>
+              <tr>
+                <td class="checkbox_cell"></td>
+                <td> <%= i %></td>
+                <td>
+                  <%= val.storeName %>
+                </td>
+                <td>
+                  <%= val.name %>
+                </td>
+                <td> <%= val.adminName %></td>
+                <td> <%= val.email %></td>
+                <td> <%= val.mobile %></td>                
+                <td> <%= val.status %></td>
+                <td>
+
+                  <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'AdminUserView'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <a href="<%= adminbaseurl%>adminUser/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                    <% } %>
+
+                  <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'AdminUserDelete'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <a href="<%= adminbaseurl%>adminUser/delete/<%= val.id %>" class="edit_btn"
+                      onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                    <% } %>                                    
+                </td>
+                <td>&nbsp;</td>
+              </tr>
+            <% i++; }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>

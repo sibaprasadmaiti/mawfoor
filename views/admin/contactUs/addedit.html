@@ -1,0 +1,100 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>contactus/list/1">ContactUs</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+
+      <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>contactus/addOrUpdate">
+          <div class="content_body panel_body edit_store">
+              <div class="panel_title">
+                  <h3>Contact-Us</h3>
+              </div>
+            <div class="clearfix"></div>
+            <div class="row edit_box">
+                <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                        <span>Name <span class="text-danger">*</span></span>
+                        <input id="firstName" class="form-control"  name="firstName" type="text" value="<%= arrData ? arrData.firstName : '' %>">
+                    </div>
+                </div>
+
+                <!-- <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                        <span>Last Name</span>
+                        <input id="lastName" class="form-control"  name="lastName" type="text" value="<%= arrData ? arrData.lastName : '' %>">
+                    </div>
+                </div> -->
+
+                <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                        <span>Email</span>
+                        <input id="email" class="form-control"  name="email" type="text" value="<%= arrData ? arrData.email : '' %>">
+                    </div>
+                </div>
+
+                <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                        <span>Contact No</span>
+                        <input id="contactNo" class="form-control"  name="contactNo" type="text" value="<%= arrData ? arrData.contactNo : '' %>">
+                    </div>
+                </div>
+
+                <!-- <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                      <span>Address</span>
+                      <textarea id="address" class="form-control" name="address" type="text" ><%= arrData ? arrData.address : '' %></textarea>
+                    </div>
+                </div> -->
+
+                <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                      <span>Message</span>
+                      <textarea id="message" class="form-control" name="message" type="text" ><%= arrData ? arrData.message : '' %></textarea>
+                    </div>
+                </div>
+                
+                <% if(sessionStoreId!='') {%>
+                    <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                <% } else {%>
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field mb-1">
+                            <span>Select Store <span class="text-danger">*</span></span>
+                            <select name="storeId" id="storeId" class="form-control">
+                                <% stores.forEach(function(store){%>
+                                <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                <% })%>
+                            </select>
+                        </div>
+                    </div>
+                <% }%>
+                
+             </div>
+          </div>
+          <div class="btn_right mb-4">
+              <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>">
+              <button id="send" type="submit" class="submit_btn">Submit</button>
+          </div>
+      </form>
+    </div>
+</div>
+<%- include ../partials/footer.html %>

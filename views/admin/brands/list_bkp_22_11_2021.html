@@ -1,0 +1,193 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body">
+      <div class="table_heading">
+        <h3>Manage Brands</h3>
+        <a href="<%= adminbaseurl %>brands/view" class="btn btn-info btn-lg addStore"  ><i class="fa fa-plus1">+</i> Add Brand</a> 
+        <div class="table_search">
+          <input type="text" placeholder="Search Stores...">
+            <a href="javascript:void(0)" data-toggle="tooltip" title="Close" class="close_search">&times;</a>
+        </div>
+      </div>
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+            <tr style="cursor: pointer;">
+              <th class="checkbox_cell"></th>
+              
+              <% if(orderType=='DESC'){%>
+                <th data-column="id" data-order="ASC" >Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="id" data-order="DESC" >Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="title" data-order="ASC" >Title
+                  <% if(columnName=='title'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="title" data-order="DESC" >Title
+                  <% if(columnName=='title'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>            
+              
+              <th>Image</th>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="status" data-order="ASC" >Status
+                  <% if(columnName=='status'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="status" data-order="DESC" >Status
+                  <% if(columnName=='status'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% var i=1;
+            if(currentPage!=1){
+              currentPage = ((currentPage-1)*limit)+1;
+              i=currentPage;
+            }
+            if(arrData.length>0){
+            arrData.forEach(function(val) { %>
+              <tr>
+                <td class="checkbox_cell"></td>
+                <td> <%= i %></td>
+                <td> <%= val.title %></td>
+                  <td> 
+                    <% if(val.image !='' && val.image != null){%>
+                        <img src="<%= baseurl+ 'admin/brands/'+ val.image %>" class="product_img" height="50px" width="50px" >
+                    <% }else{ %>
+                        <img src="<%= baseurl + 'admin/brands/no_image.jpg' %>" class="product_img" height="50px" width="50px" >
+                    <% } %>
+                </td>
+                <td> <%= val.status %></td>
+                <td><a href="<%= adminbaseurl%>brands/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a><a href="<%= adminbaseurl%>brands/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a></td>
+                <td>&nbsp;</td>
+              </tr>
+            <% i++; })
+             } %>
+          </tbody>
+        </table>
+      </div>
+      <%  if (paginate.hasPreviousPages || previousPage) { %>
+        <div class="pagination_sec">
+            <div class="table_info">Showing <%= startingNumber ? startingNumber : '' %> to <%= endingNumber ? endingNumber : '' %> of <%= itemCount ? itemCount : ''%> entries</div>
+            <select id="limit">
+              <option value="10" <% if(limit==10){%>selected<%}%> >10</option>
+              <option value="20" <% if(limit==20){%>selected<%}%> >20</option>
+              <option value="30" <% if(limit==30){%>selected<%}%> >30</option>
+            </select>
+            <ul>
+                <% if(paginate.hasPreviousPages) {%>
+                    <li><a href="<%= paginate.href(true) %>">Previous</a></li>
+                <% } else { %>
+                    <li><a href="javascript:void(0)" class="disable">Previous</a></li>
+                <% } %>
+                <% pages.forEach(function(page) { %>
+                    <li><a href="<%= page.url %>" <% if(currentPage && currentPage == page.number ) {%> class="active" <% } %>><%= page.number%></a></li>
+                <%  }) %>
+                <% if(previousPage) {%>
+                    <li><a href="<%= paginate.href() %>">Next</a></li>
+                <% }else{ %>
+                    <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                <% } %>
+            </ul>
+        </div> 
+    <% } %>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+<script>
+  $(document).ready(() => {
+    $("input[name=search]").val('<%=keyword%>');
+
+    $('th').on('click',function(){
+      var column =$(this).data('column');
+      var order = $(this).data('order');
+      var keyword = '<%=keyword%>';
+      var limit = $('#limit').val();
+      if(order=='DESC'){
+        $(this).data('order','ASC');
+        if(keyword){
+          window.location.href=`<%= adminbaseurl%>brands/list/<%=currentPage%>?search=${keyword}&limit=${limit}&column=${column}&order=${order}`;
+        }else{
+          window.location.href=`<%= adminbaseurl%>brands/list/<%=currentPage%>?limit=${limit}&column=${column}&order=${order}`;
+        }        
+      }
+      if(order=='ASC'){
+        $(this).data('order','DESC');
+        if(keyword){
+          window.location.href=`<%= adminbaseurl%>brands/list/<%=currentPage%>?search=${keyword}&limit=${limit}&column=${column}&order=${order}`;
+        }else{
+          window.location.href=`<%= adminbaseurl%>brands/list/<%=currentPage%>?limit=${limit}&column=${column}&order=${order}`;
+        }
+      }
+    });
+
+    $('#limit').on('change',function(){
+      //console.log($('.product_list025 thead tr').find('th').data('column'));
+      var column ='<%=columnName %>';
+      var order = '<%=orderType %>';
+      var keyword = '<%=keyword %>';
+      var limit = $('#limit').val();
+      if(keyword){
+        window.location.href=`<%= adminbaseurl%>brands/list/<%=currentPage%>?search=${keyword}&limit=${limit}&column=${column}&order=${order}`;
+      }else{
+        window.location.href=`<%= adminbaseurl%>brands/list/<%=currentPage%>?limit=${limit}&column=${column}&order=${order}`;
+      }
+    });
+
+  });
+</script>

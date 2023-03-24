@@ -1,0 +1,236 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body">
+      <div class="table_heading mb-4">
+        <div class="float-left"><h3><%=title%></h3></div>
+            
+        <div class="float-right">
+          <form class="header-searchbox"  >
+            <div class="searchcom" >
+                <input type="text" placeholder="Search.." name="search" />
+                <button style="margin-top: 7px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+        <!-- ======================================= List-per-page Start ========================================= -->
+        <div class="title_right text-right">
+          <div>
+            <span style="font-size: 16px;">Showing </span>
+            <select onchange="location = this.value" style="height: 25px; width: 60px;">
+              <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+
+              <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+
+              <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+
+              <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+            </select> 
+            <span style="font-size: 16px;"> entries </span>      
+          </div>
+        </div>
+        <!-- ======================================= List-per-page End ========================================= -->
+        <!-- ======================================= Filter Start ========================================= -->
+        <div class="mb-4">
+          <div class="row">
+            <div class="mr-1">
+              <label for="customerName" class="font-weight-bold">Customer</label><br>
+              <select style="height: 28px;" id="customerName" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Customer</option>
+                <% customerName.forEach(function(customer) { %>
+                    <option value="?pagesize=<%=pageSize%>&customer=<%= customer.id %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(customerFilter==customer.id){ %>selected <% }%>><%= customer.firstName %> <%= customer.lastName %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mr-1">
+              <label for="fdate" class="font-weight-bold">From Date</label>
+              <input style="height: 28px;" type="date" class="form-control" name="fdate" id="fdate" value="<%=fdateFilter %>" />
+            </div>
+            <div class="mr-1">
+              <label for="tdate" class="font-weight-bold">To Date</label>
+              <input style="height: 28px;" type="date" class="form-control" name="tdate" id="tdate" value="<%=tdateFilter %>" />
+            </div>
+            <div>
+              <label for="status" class="font-weight-bold">Status</label><br>
+              <select style="height: 28px;" name="status" id="status" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Status</option>
+                <option value="?pagesize=<%=pageSize%>&status=Yes<% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(statusFilter=='Yes'){ %>selected <% }%>>Active</option>
+
+                <option value="?pagesize=<%=pageSize%>&status=No<% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(statusFilter=="No"){ %>selected <% }%>>Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- ======================================= Filter End ========================================= -->
+        <!-- ======================================= Export Start ========================================= -->
+        <div class="mt-0">
+          <a href="<%= adminbaseurl %>customersReport/downloadcsv?<% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="btn btn-success btn-sm right">Export List</a>
+        </div>
+        <!-- ======================================= Export End ========================================= -->
+      </div>
+
+
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+            <tr style="cursor: pointer;">
+              <% if(orderType =='DESC') {%>
+                <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }else{ %>
+                <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }%>
+
+              <% if(orderType =='DESC') {%>
+                <th data-column="firstName" data-order="ASC" class="theading">Name <% if(columnName =='firstName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }else{ %>
+                <th data-column="firstName" data-order="DESC" class="theading">Name <% if(columnName =='firstName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }%>
+
+              <% if(orderType =='DESC') {%>
+                <th data-column="email" data-order="ASC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }else{ %>
+                <th data-column="email" data-order="DESC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }%>
+
+              <% if(orderType =='DESC') {%>
+                <th data-column="mobile" data-order="ASC" class="theading">Contact No <% if(columnName =='mobile') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }else{ %>
+                <th data-column="mobile" data-order="DESC" class="theading">Contact No <% if(columnName =='mobile') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }%>
+              
+              <th >Address </th>
+
+              <% if(sessionStoreId=='') {%>
+                <th>Store</th>
+              <% }%>
+
+              <% if(orderType =='DESC') {%>
+                <th data-column="status" data-order="ASC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }else{ %>
+                <th data-column="status" data-order="DESC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+              <% }%>
+                 
+              <th class="text-center">Print</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% var i=1;
+            arrData.forEach(function(val) { %>
+              <tr>
+                <td  class="text-center"> <%= i %></td>
+                <td> <%= val.firstName %> <%= val.lastName %></td>
+                <td> <%= val.email %></td>
+                <td> <%= val.mobile %></td>
+                <td style="white-space: pre-wrap;"> <% if(val.address) {%> <%= val.address %>, <% } %> <% if(val.city) {%> <%= val.city %>, <% } %>  <% if(val.state) {%> <%= val.state %>, <% } %>  <% if(val.pin) {%> <%= val.pin %> <% } %> </td>
+                <% if(sessionStoreId=='') {%>
+                  <td><% storeList.forEach(function(store) { if(store.id==val.storeId){ %> <%= store.storeName %></ <% } }) %></td>
+                <% }%>
+                <td class="font-weight-bold"> 
+                  <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span> <% } else if(val.status=='No' || val.status=='no'){ %> <span class="text-warning">Inactive</span> <% } else {%> <span class="text-danger">Blocked</span> <% } %>
+                </td>
+                <td class="text-center">
+                    <a href="<%= adminbaseurl%>customersReport/downloadcsv/<%= val.id %>" class="edit_btn" title="Download PDF"><i class="fa fa-print"></i></a>
+                </td>
+              </tr>
+            <% i++; }) %>
+            
+          </tbody>
+        </table>
+        <!--====================================== Pagination Start ======================================-->
+          <% if(listCount>0) {%>
+          <div class="pagination_sec">
+            <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+          <% if(currentPage>1) {%>
+            <ul>
+              <li><a href="<%= adminbaseurl%>customersReport/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" >Prev</a></li>
+            </ul>
+          <% }else{ %>
+            <ul>
+              <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+            </ul>
+          <% } %>
+          <% for(var i=1; i<=pageCount; i++) { %>
+            <ul>
+              <% if(currentPage==i) {%>
+              <li><a href="<%= adminbaseurl%>customersReport/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" class="active"><%=i %></a></li>
+              <% }else{ %>
+              <li><a href="<%= adminbaseurl%>customersReport/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" class=""><%=i %></a></li>
+              <% } %>
+            </ul>
+          <% } %>
+          <% if(currentPage < pageCount) {%>
+            <ul>
+              <li><a href="<%= adminbaseurl%>customersReport/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" >Next</a></li>
+            </ul>
+            <% }else{ %>
+            <ul>
+              <li><a href="javascript:void(0)" class="disable">Next</a></li>
+            </ul>
+          <% } %>
+        </div>
+        <% } %>
+        <!--====================================== Pagination End ======================================-->
+     </div>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+
+<script>
+  $(document).ready(() => {
+    $('.theading').on('click',function(){
+      var column = $(this).data('column');
+      var order = $(this).data('order');
+
+      if(order == 'DESC'){
+        $(this).data('order', 'ASC');        
+        window.location.href = `<%= adminbaseurl%>customersReport/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+      }else{
+        $(this).data('order', 'DESC');
+        window.location.href = `<%= adminbaseurl%>customersReport/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+      }
+    })
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#customerName').select2();
+    $('#status').select2();
+  });
+</script>
+<script>
+  $('#fdate').on('blur', function(){
+    let fdate = $('#fdate').val()
+    if(fdate !=''){
+      window.location.href = `<%= adminbaseurl%>customersReport/list/1?pagesize=<%=pageSize%>&fdate=${fdate}<% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+    }
+  })
+  $('#tdate').on('blur', function(){
+    let tdate = $('#tdate').val()
+    if(tdate !=''){
+      window.location.href = `<%= adminbaseurl%>customersReport/list/1?pagesize=<%=pageSize%><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %>&tdate=${tdate}<% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+    }
+  })
+</script>

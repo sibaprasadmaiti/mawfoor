@@ -1,0 +1,263 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>       
+<!-- CSS Styles -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .speech {border: 1px solid #DDD; width: 300px; padding: 0; margin: 0}
+    .speech input {border: 0; width: 240px; display: inline-block; height: 30px;}
+    .speech img {float: right; width: 40px }
+    
+#statusChange {
+  background-color: black;
+  color: white;
+  padding: 2px 20px;
+  border: none;
+  font-size: 17px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  -webkit-appearance: button;
+  appearance: button;
+  outline: none;
+}
+
+</style>
+ 
+<!-- page content -->
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+         <h2><%=title%></h2>
+          <ul>
+             <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+             <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+          <% if(messages!='') {%>
+          <div class="succ_msg msg" id="succ_msg">    
+              <i class="fa fa-check"  aria-hidden="true"></i>        
+              <%=messages%>
+          </div>
+          <%}%>                
+          <% if(errors!='') {%>
+          <div class="succ_err msg" id="err_msg">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+              <%=errors%>
+          </div>
+          <% }%> 
+        <div class="content_body">
+          <div class="table_heading mb-4">
+            <div class="float-left"><h3><%=title%></h3></div>
+            <div class="float-right">
+              <form class="header-searchbox"  >
+                <div class="searchcom" >
+                    <input type="text" placeholder="Search.." name="search" />
+                    <button style="margin-top: 7px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+             <!-- ======================================= List-per-page Start ========================================= -->
+            <div class="title_right text-right">
+              <div>
+                <span style="font-size: 16px;">Showing </span>
+                <select onchange="location = this.value" style="height: 25px; width: 60px;">
+                  <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+
+                  <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+
+                  <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+
+                  <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+                </select> 
+                <span style="font-size: 16px;"> entries </span>      
+              </div>
+            </div>
+             <!-- ======================================= List-per-page End ========================================= -->
+             <!-- ======================================= Filter Start ========================================= -->
+            <!-- <div class="mb-4">
+              <div class="row">
+                <div class="mr-1">
+                  <label for="email" class="font-weight-bold">Email</label><br>
+                  <select style="height: 28px;" id="email" class="form-control selectpicker" data-live-search="true" onchange="location = this.value">
+                    <option value="" selected disabled>Select Email</option>
+                      <% subscribers.forEach(function(subscriber) { %>
+                          <option value="?pagesize=<%=pageSize%>&email=<%= subscriber.email %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(emailFilter==subscriber.email){ %>selected <% }%>><%= subscriber.email %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="mr-1">
+                  <label for="fdate" class="font-weight-bold">From Date</label>
+                  <input style="height: 28px;" type="date" class="form-control" name="fdate" id="fdate" value="<%=fdateFilter %>" />
+                </div>
+                <div class="mr-1">
+                  <label for="tdate" class="font-weight-bold">To Date</label>
+                  <input style="height: 28px;" type="date" class="form-control" name="tdate" id="tdate" value="<%=tdateFilter %>" />
+                </div>
+                <div>
+                  <label for="status" class="font-weight-bold">Status</label><br>
+                  <select style="height: 28px;" name="status" id="status" class="form-control" onchange="location = this.value">
+                    <option value="" selected disabled>Select Status</option>
+                    <option value="?pagesize=<%=pageSize%>&status=Yes<% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(statusFilter=='Yes'){ %>selected <% }%>>Active</option>
+    
+                    <option value="?pagesize=<%=pageSize%>&status=No<% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(statusFilter=="No"){ %>selected <% }%>>Inactive</option>
+
+                    <option value="?pagesize=<%=pageSize%>&status=Blocked<% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" <% if(statusFilter=="Blocked"){ %>selected <% }%>>Blocked</option>
+
+                  </select>
+                </div>
+              </div>
+            </div> -->
+            <!-- ======================================= Filter End ========================================= -->
+            <!-- ======================================= Export Start ========================================= -->
+            <!-- <div class="mt-0">
+              <a href="<%= adminbaseurl %>subscriber/download?<% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="btn btn-success btn-sm right">Export List</a>
+            </div> -->
+            <!-- ======================================= Export End ========================================= -->
+          </div>
+        <div class="table-responsive table_wraper">
+        <table class="table">
+            <thead>
+              <tr style="cursor: pointer;">
+                <% if(orderType =='DESC') {%>
+                    <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="email" data-order="ASC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="email" data-order="DESC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="status" data-order="ASC" class="theading text-center">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="status" data-order="DESC" class="theading text-center">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType=='DESC'){%>
+                  <th data-column="createdAt" data-order="ASC" class="theading">Date
+                    <% if(columnName=='createdAt'){%> 
+                      <i class="fa fa-sort fa-lg text-success"></i>
+                    <%}else{%>
+                      <i class="fa fa-sort fa-lg"></i> 
+                    <%}%>
+                  </th>
+                <% }else{ %>
+                  <th data-column="createdAt" data-order="DESC" class="theading">Date
+                    <% if(columnName=='createdAt'){%> 
+                      <i class="fa fa-sort fa-lg text-success"></i>
+                    <%}else{%>
+                      <i class="fa fa-sort fa-lg"></i> 
+                    <%}%>
+                  </th>
+                <% } %>
+
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% var i= 1;arrData.forEach(function(subscriber) { %>	
+            <tr>
+                <td class="text-center"><%= i %>.</td>
+                <td><%= subscriber.email %></td>
+                <td class="text-center">
+                <form action="<%= adminbaseurl %>subscriber/update-status" method="post" class="">
+                    <select id="statusChange" name="status" onchange="this.form.submit()">
+                    <option id="active" value="Yes" <%= (subscriber.status == "Yes" ? "selected=selected" : '') %>>Active</option>
+                    <option id="inactive" value="No" <%= (subscriber.status == "No" ? "selected=selected" : '') %>>Inactive</option>
+                    <option id="blocked" value="Blocked" <%= (subscriber.status == "Blocked" ? "selected=selected" : '') %>>Blocked</option>
+                    </select>
+                    <input type="hidden" name="subscriber_id" value="<%= subscriber.id %>"/>
+                </form>
+                </td>
+                <td><%= moment(subscriber.createdAt).format('DD MMM, YYYY') %></td>
+                <td class="text-center">
+                <a href="<%= adminbaseurl%>subscriber/delete/<%= subscriber.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+            <% i++; }) %>
+       </tbody>
+     </table>
+     <!--====================================== Pagination Start ======================================-->
+     <% if(listCount>0) {%>
+        <div class="pagination_sec">
+            <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+            <% if(currentPage>1) {%>
+                <ul>
+                <li><a href="<%= adminbaseurl%>subscriber/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" >Prev</a></li>
+                </ul>
+            <% }else{ %>
+                <ul>
+                <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                </ul>
+            <% } %>
+            <% for(var i=1; i<=pageCount; i++) { %>
+                <ul>
+                <% if(currentPage==i) {%>
+                <li><a href="<%= adminbaseurl%>subscriber/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" class="active"><%=i %></a></li>
+                <% }else{ %>
+                <li><a href="<%= adminbaseurl%>subscriber/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" class=""><%=i %></a></li>
+                <% } %>
+                </ul>
+            <% } %>
+            <% if(currentPage < pageCount) {%>
+                <ul>
+                <li><a href="<%= adminbaseurl%>subscriber/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>" >Next</a></li>
+                </ul>
+                <% }else{ %>
+                <ul>
+                <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                </ul>
+            <% } %>
+        </div>
+      <% } %>
+      <!--====================================== Pagination End ======================================-->
+    </div>   
+  </div>
+ </div>
+</div>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+
+<script>
+    $(document).ready(() => {
+      $('.theading').on('click',function(){
+        var column = $(this).data('column');
+        var order = $(this).data('order');
+  
+        if(order == 'DESC'){
+          $(this).data('order', 'ASC');        
+          window.location.href = `<%= adminbaseurl%>subscriber/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>`
+        }else{
+          $(this).data('order', 'DESC');
+          window.location.href = `<%= adminbaseurl%>subscriber/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %><% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>`
+        }
+      })
+  });
+  </script>
+
+<script>
+  $('#fdate').on('blur', function(){
+    let fdate = $('#fdate').val()
+    if(fdate !=''){
+      window.location.href = `<%= adminbaseurl%>subscriber/list/1?pagesize=<%=pageSize%>&fdate=${fdate}<% if(tdateFilter!=''){ %>&tdate=<%=tdateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>`
+    }
+  })
+
+  $('#tdate').on('blur', function(){
+    let tdate = $('#tdate').val()
+    if(tdate !=''){
+      window.location.href = `<%= adminbaseurl%>subscriber/list/1?pagesize=<%=pageSize%><% if(fdateFilter!=''){ %>&fdate=<%=fdateFilter %><% } %>&tdate=${tdate}<% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %>`
+    }
+  })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#email').select2();
+    $('#status').select2();
+  });
+</script>

@@ -1,0 +1,176 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><a href="<%= adminbaseurl %>dynamicform/list/1">Form</a></li>
+                <li><a href="<%= adminbaseurl %>dynamicform/fields?formId=<%=dynamicFormId%>">Fields</a></li>
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+  
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%> 
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+                <h3>Create choice for (<%=fieldDisplayName.displayName%>)</h3>
+                <div class="mt-3">
+                    <div class="float-right">
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#createmodal"><i class="fa fa-plus"></i> Create</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Sl No</th>
+                            <th>Name</th>
+                            <th>Label</th>
+                            <th>Value</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% var i= 1; arrData.forEach(function(val) { %>	
+                        <tr>
+                            <td class="text-center"> <%= i %></td>
+                            <td> <%=fieldDisplayName.displayName%></td>
+                            <td> <%= val.label %></td>
+                            <td> <%= val.values %></td>
+                            <td class="text-center">
+                                <a href="<%= adminbaseurl%>dynamicform/fields/choice/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        <% i++; }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../partials/footer.html %>
+
+  <!--////////////////////////// Field Create Modal Start //////////////////////////-->
+  <div class="modal fade" id="createmodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title text-dark" id="modalLabel" style="font-size: 20px;">Create</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>dynamicform/fields/choice/add">
+                <div class="animate_form field">
+                    <span>Name </span>
+                    <input id="dynamicFormFieldId" class="form-control"  name="dynamicFormFieldId" type="hidden" value="<%=dynamicFormFieldId%>">
+                    <input id="dynamicFormId" class="form-control"  name="dynamicFormId" type="hidden" value="<%=dynamicFormId%>">
+                    <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%=dynamicFormName.storeId%>">
+                    <input class="form-control"  readonly type="text" value="<%=fieldDisplayName.displayName%>">
+                </div>
+
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Label <span class="text-danger">*</span></span>
+                        <input class="form-control"  type="text" id="label" name="label">
+                    </div>
+                    <span id="label_err" class="text-danger font-weight-bold"></span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Value <span class="text-danger">*</span></span>
+                        <input class="form-control"  type="text" id="values" name="values">
+                    </div>
+                    <span id="value_err" class="text-danger font-weight-bold"></span>
+                </div>
+
+                <div class="btn_right mb-2">
+                    <button id="send" type="submit" class="btn btn-success submit_btn">Create</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--////////////////////////// Field Create Modal End //////////////////////////-->
+
+  <script>
+
+    $(document).ready(function () {
+        $("#value_err").hide();
+        err_value = true;
+        $("#label_err").hide();
+        err_label = true;
+        $("#values").keyup(function () {
+            value_check_function();
+        });
+        $("#label").keyup(function () {
+            label_check_function();
+        });
+        function value_check_function() {
+            let name = $("#values").val();
+            let value = name.trim();
+            if (value.length == "") {
+                $("#value_err").show();
+                $("#value_err").html("Value is required");
+                err_value = false;
+                return false;
+            }else {
+                err_value = true;
+                $("#value_err").html("");
+                $("#value_err").hide();
+            }
+        }
+        function label_check_function() {
+            let label = $("#label").val();
+            let lvalue = label.trim();
+            if (lvalue.length == "") {
+                $("#label_err").show();
+                $("#label_err").html("Label is required");
+                err_label = false;
+                return false;
+            }else {
+                err_label = true;
+                $("#label_err").html("");
+                $("#label_err").hide();
+            }
+        }
+        $("#send").click(function () {
+            err_value = true;
+            err_label = true;
+            value_check_function();
+            label_check_function()
+            if ((err_value == true && err_label == true)) {
+                return true;
+            }else {
+                return false;
+            }
+        });
+    });
+</script>

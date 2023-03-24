@@ -1,0 +1,97 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>faq/list/1">Faq</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>faq/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <div class="panel_title">
+          <h3>Faq Information</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Question<span>*</span></span>
+              <input id="question" class="form-control"  name="question" type="text"  required="required" value="<%= arrData ? arrData.question : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+          <div class="animate_form field">
+            <span>Select Faq Group id</span>
+            <input type="text" class="form-control catexample" id="example1" placeholder="Select" autocomplete="off" />
+            <input type="hidden" name="parentId" id="parentId" value="<%=arrData.faqGroupId %>" />
+          </div>
+        </div>
+
+        <% if(sessionStoreId!='') {%>
+          <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+        <% } else {%>
+            <div class="col-sm-6 mb-5">
+                <div class="animate_form field mb-1">
+                    <span>Select Store <span class="text-danger">*</span></span>
+                    <select name="storeId" id="storeId" class="form-control">
+                        <% stores.forEach(function(store){%>
+                        <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                        <% })%>
+                    </select>
+                </div>
+            </div>
+        <% }%>
+      
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Answer<span>*</span></span>
+                <textarea id="answer" class="form-control"  name="answer"   required="required"  ><%= arrData ? arrData.answer : '' %></textarea>
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+        <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>" />
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+    <input type="hidden" id="treeArraydrp"  value="<%=arrFaqGroup%>">
+  </div>
+</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>build/js/comboTreePlugin.js"></script>
+<script src="<%= adminbaseurl %>build/js/icontains.js"></script>
+<link href="<%= adminbaseurl %>build/css/combotree.css" rel="stylesheet">
+<script>
+    var myData = $("#treeArraydrp").val();
+    var parentId = $("#parentId").val() > 0 ? $("#parentId").val() : 0;
+    var comboTree2 = $('#example1').comboTree({
+      source : JSON.parse(myData),
+      selected: [parentId],
+      isMultiple: false
+    });
+    $('.comboTreeItemTitle').click(function () {
+      var storeId = $(this).attr("data-storeid");
+      var id = $(this).attr("data-id");
+      if(storeId > 0){
+        $("#storeId").val(storeId);
+        $("#parentId").val(id);
+      } else {
+        $("#storeId").val('');
+        $("#parentId").val('');
+      }
+    });
+</script>

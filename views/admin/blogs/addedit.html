@@ -1,0 +1,309 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>blogs/list/1">Blogs</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+
+        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>blogs/addOrUpdate">
+                <div class="content_body panel_body">
+                    <div class="panel_title">
+                        <h3>Blogs</h3>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row edit_box">
+                      <div class="col-sm-6 mb-4">
+                        <div class="animate_form field mb-1">
+                            <span>Blog Title <span class="text-danger">*</span></span>
+                            <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>">
+                            <input id="blogTitle" class="form-control"  name="blogTitle" type="text" value="<%= arrData ? arrData.blogTitle : '' %>">
+                            <input id="slug" class="form-control" name="slug" hidden type="text" onkeypress="return blockother(event)" required="required" readonly="readonly" value="<%= arrData ? arrData.slug : '' %>" />
+                        </div>
+                        <span class="text-danger font-weight-bold" id="name_error"></span>
+                    </div>
+
+                    <!-- <div class="col-sm-6 mb-4">
+                        <div class="animate_form field">
+                          <span>Slug <span class="text-danger">*</span></span>
+                          <input id="slug" class="form-control" name="slug" type="text" onkeypress="return blockother(event)" required="required" readonly="readonly" value="<%= arrData ? arrData.slug : '' %>" />
+                        </div>
+                    </div> -->
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Summary</span>
+                            <input id="summary" class="form-control"  name="summary" type="text" value="<%= arrData ? arrData.summary : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1" style="z-index: 3;">
+                            <span>Blog Category <span class="text-danger">*</span></span>
+
+                            <select name="categoryId" id="categoryId" class="form-control selectpicker w-100" data-live-search="true" data-actions-box="true" data-selected-text-format="count>3" multiple >
+                              <% category.forEach(function(cat) { 
+                                if(selectedCategory){
+                                  var select='';                     
+                                  selectedCategory.forEach(function(selectCat){ 
+                                      if(selectCat.categoryId==cat.id) {
+                                          select='selected="selected"';
+                                      }                                                     
+                                  });
+                                } %>
+                                <option <%= select %> value="<%= cat.id %>" ><%= cat.categoryName %> </option>
+                              <%  }) %>
+                            </select>
+
+                        </div>
+                        <span class="text-danger font-weight-bold" id="category_error"></span>
+                     </div>
+
+                     <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Blog Author <span class="text-danger">*</span></span>
+                            <select name="authorId" id="authorId" class="form-control">
+                              <option value=""  <% if(arrData.authorId == ''){ %> selected="selected" <% }%>>Select</option>
+                              <% author.forEach(function(auth){%>
+                                <option value="<%=auth.id%>"  <% if(arrData.authorId == auth.id){ %> selected="selected" <% }%>><%=auth.firstName %> <%=auth.lastName %></option>
+                              <% })%>
+                            </select>
+                        </div>
+                        <span class="text-danger font-weight-bold" id="author_error"></span>
+                     </div>
+
+                     <% if(sessionStoreId!='') {%>
+                      <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                      <% } else {%>
+                          <div class="col-sm-6 mb-5">
+                              <div class="animate_form field mb-1">
+                                  <span>Select Store <span class="text-danger">*</span></span>
+                                  <select name="storeId" id="storeId" class="form-control">
+                                      <% stores.forEach(function(store){%>
+                                      <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                      <% })%>
+                                  </select>
+                              </div>
+                          </div>
+                      <% }%>
+
+                     <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Status <span class="text-danger">*</span></span>
+                            <select name="status" class="form-control" id="status">
+                              <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                              <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                            </select>
+                        </div>
+                        <span class="text-danger font-weight-bold" id="status_error"></span>
+                     </div>
+
+                     <div class="col-sm-12 mb-5">
+                        <div class="animate_form field">
+                          <span>Blog Description</span>
+                          <textarea id="blogDescription" class="form-control" name="blogDescription" type="text" ><%= arrData ? arrData.blogDescription : '' %></textarea>
+                        </div>
+                    </div>
+
+                     <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Meta Title</span>
+                            <input id="metaTitle" class="form-control"  name="metaTitle" type="text" value="<%= arrData ? arrData.metaTitle : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Meta Keyword</span>
+                            <input id="metaKeywords" class="form-control"  name="metaKeywords" type="text" value="<%= arrData ? arrData.metaKeywords : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field">
+                          <span>Meta Description</span>
+                          <textarea id="metaDescription" class="form-control" name="metaDescription" type="text" ><%= arrData ? arrData.metaDescription : '' %></textarea>
+                        </div>
+                    </div>
+
+                     <div class="col-sm-6 mb-5">
+                        <div class="animate_form field">
+                          <label>Blog Image</label>
+                          <input type="file" class="form-control" id="blogImage" name="blogImage" accept="image/*" onchange="preView()" <% if(arrData && arrData.blogImage && arrData.blogImage==''){ %> required="required" <% }%> />
+                          <input type="hidden" name="update_image" value="<%= arrData ? arrData.blogImage : '' %>" />
+                          <div class="upload_img01">
+                            <% if(arrData.blogImage !='' && arrData.blogImage != null && helper.isFileExistsInBlogImages(arrData.storeId+'/' + arrData.id+'/'+arrData.blogImage)){%>
+                              <img id="preview" src="<%= baseurl+ 'admin/blogs/'+ arrData.storeId +'/' + arrData.id +'/' + arrData.blogImage %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                            <% } else { %>
+                              <img id="preview" src="<%= baseurl + 'admin/brands/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                            <% } %>
+                          </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+            <div class="btn_right mb-4">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+        </form>
+       </div>
+<%- include ../partials/footer.html %>
+
+<script type="text/javascript">  
+    function blockChar(e){
+      var k;
+      document.all ? k = e.keyCode : k = e.which;
+      return (k >= 48 && k <= 57);
+    }
+    function  blockother(e){
+      var k;
+      document.all ? k = e.keyCode : k = e.which;
+      return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+    }
+    $(document).keyup(function () {
+        var randomNumber = Math.floor(1000 + Math.random() * 9000);
+        var storeId = $('#storeId').val();
+        var name = $('#blogTitle').val();
+        var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+        slug += storeId + "-" + randomNumber;
+        $('#slug').val(slug);
+    });
+    $('#storeId').change(function(){
+      var randomNumber = Math.floor(1000 + Math.random() * 9000);
+      var storeId = $('#storeId').val();
+      var name = $('#blogTitle').val();
+      var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+      slug += storeId + "-" + randomNumber;
+      $('#slug').val(slug);
+    });
+</script>
+
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>            
+    CKEDITOR.editorConfig = function (config) {
+      config.language = 'es';
+      config.uiColor = '#F7B42C';
+      config.height = 300;
+      config.toolbarCanCollapse = true;
+    };
+    CKEDITOR.replace('blogDescription');
+    CKEDITOR.config.startupMode = 'source';
+</script>
+
+<script type="text/javascript">
+    function preView() {
+        var fileInput = document.getElementById('blogImage');
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+            fileInput.value = '';
+            return false;
+        } else {
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var output = document.getElementById('preview');
+                    output.src = reader.result;
+                };
+                reader.readAsDataURL(event.target.files[0]);
+                $("#icon-error").remove();
+            };
+        }
+    }
+</script>
+
+<!-- -------------------------------------- validation --------------------------------  -->
+<script>
+
+  $(document).ready(function () {
+      $("#name_error").hide();
+      err_name = true;
+      $("#status_error").hide();
+      err_status = true;
+
+      $("#blogTitle").keyup(function () {
+          name_check_fun();
+      });
+
+      $("#status").change(function () {
+          status_check_fun();
+      });
+
+
+
+      function name_check_fun() {
+          let k = $("#blogTitle").val();
+          if (k.length == "") {
+              $("#name_error").show();
+              $("#name_error").html("Blog title is required");
+              err_name = false;
+              return false;
+          }
+          else {
+              err_name = true;
+              $("#name_error").html("");
+              $("#name_error").hide();
+          }
+      }
+
+      function status_check_fun() {
+          let k = $("#status").val();
+          if (k.length == ""  ) {
+              $("#status_error").show();
+              $("#status_error").html("Please select status");
+              err_status = false;
+              return false;
+          }
+          else {
+              err_status = true;
+              $("#status_error").html("");
+              $("#status_error").hide();
+
+          }
+      }
+
+      $("#send").click(function () {
+          err_name = true;
+          err_status = true;
+          name_check_fun();
+          status_check_fun();
+
+          if ((err_name == true) && (err_status == true) ) {
+            return true;
+          }
+          else {
+            return false;
+          }
+      });
+  });
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.categoryId').selectpicker();
+  });
+</script>

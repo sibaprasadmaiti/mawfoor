@@ -1,0 +1,111 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+	<div class="main_container">
+        <% if(messages!='' ) {%>
+            <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check" aria-hidden="true"></i>
+                <%=messages%>
+            </div>
+        <%}%>
+        <% if(errors!='' ) {%>
+            <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                <%=errors%>
+            </div>
+        <% }%>
+        <div class="header_wraper">
+        	<h2>Welcome back</h2>
+            <p id="wel" onfocus="display1()">Here’s what’s happening with your store right now.</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+            	<div class="sales_card blue" >
+                    <h4>Orders Today</h4>
+                    <%  if(!arrtotalData[0].totalData || arrtotalData[0].totalData ==''){ %>
+                        <h2>0</h2>
+                    <% }else{ %>
+                        <h2 ></i><%= arrtotalData[0].totalData %></h2>
+                    <% } %>
+                </div>
+            </div>
+            <div class="col-lg-4">
+            	<div class="sales_card ylow">
+                    <h4>Sales Today</h4>
+                    <%  if(!arrtodayTotalAmound || arrtodayTotalAmound ==''){ %>
+                        <h2><i></i>AED 0</h2>
+                    <% }else{ %>
+                        <h2><i class=""></i>AED <%= arrtodayTotalAmound %></h2>
+                    <% } %>
+                </div>
+            </div>
+            <div class="col-lg-4">
+            	<div class="sales_card purple">
+                    <h4>Total Sales</h4>
+                    <%  if(!arrtotalAmound || arrtotalAmound ==''){ %>
+                        <!-- <h2><i class="fa fa-inr"></i>0</h2> -->
+                        <h2><i class=""></i>AED 0</h2>
+                    <% }else{ %>
+                        <h2 style=""><i class=""></i>AED <%= arrtotalAmound %></h2>
+                    <% } %>
+                </div>
+            </div>
+        </div>        
+        <div class="row">        
+        	<div class="col-lg-6">
+            	<div class="content_body dash_table">
+                	<div class="panel_title">
+                        <h3>New Orders</h3>
+                    </div>
+                    <div class="table-responsive">
+                    	<table class="table table-bordered">
+                            <% var i=1;
+                            arrNewOrder.forEach(function(newOrder) { %>
+                            <tr>
+                                <td><a href="<%= adminbaseurl%>order/view/<%= newOrder.id %>">#<%= newOrder.orderNo %></a></td>
+                                <%  if(newOrder.customerName==null || newOrder.customerName=='' ){ %>
+                                <td><%= newOrder.customerMobile %></td>
+                                <% }else{ %>
+                                <td><%= newOrder.customerName %></td>
+                                <% } %>
+                                <td><span class="price"><i class=""></i>AED <%= newOrder.amountPaid %></span></td>
+                                <%  if(newOrder.orderStatus=="Delivered"){ %>
+                                <td><span class="status btn-success">Delivered</span></td>
+                                <% }else if(newOrder.orderStatus=="Accepted"){ %>
+                                <td><span class="status btn-info">Accepted</span></td>
+                                <% }else if(newOrder.orderStatus=="Processing"){ %>
+                                <td><span class="status btn-secondary">Processing</span></td>
+                                <% }else if(newOrder.orderStatus=="Cancelled"){ %>
+                                <td><span class="status btn-danger">Cancelled</span></td>
+                                <% }else if(newOrder.orderStatus=="Prepared"){ %>
+                                <td><span class="status btn-warning">Prepared</span></td>
+                                <% }else if(newOrder.orderStatus=="Delivery Boy"){ %>
+                                <td><span class="status btn-primary">Delivery Boy</span></td>
+                                <% }else if(newOrder.orderStatus=="Payment Under Process"){ %>
+                                <td><span class="status btn-primary">Payment Under Process</span></td>
+                                <% }; %>
+                            </tr>
+                            <% i++; }) %>
+                        </table>
+                    </div>
+                </div>
+            </div>            
+        </div>        
+    </div>
+</div>
+<%- include ../partials/footer.html %>
+<script type="text/javascript">
+function display1(){
+    var c=0;
+    var element=document.activeElement;
+    while(c<1){
+        responsiveVoice.speak(element.value,"Hindi Female");
+        c++;
+    }
+}
+window.onload = function() {
+    document.getElementById("wel").focus();
+};
+function savetext(){
+    var cookieValue = document.activeElement.innerHTML;
+    responsiveVoice.speak(cookieValue,"Hindi Female");
+}    
+</script>

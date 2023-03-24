@@ -1,0 +1,165 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>dynamicform/list/1">Form</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>dynamicform/addOrUpdate">
+            <div class="content_body panel_body edit_store">
+                <div class="panel_title">
+                    <h3>Dynamic Form</h3>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row edit_box">
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span>Form Name <span class="text-danger">*</span></span>
+                            <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>">
+                            <input id="formName" class="form-control"  name="formName" type="text" value="<%= arrData ? arrData.formName : '' %>">
+                            <input id="tableName" class="form-control" name="tableName" type="hidden" value="<%= arrData ? arrData.tableName : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3">
+                      <div class="animate_form field">
+                          <span>Title <span class="text-danger">*</span></span>
+                          <input id="title" class="form-control" name="title" type="text" value="<%= arrData ? arrData.title : '' %>">
+                          <input id="slug" class="form-control" name="slug" type="hidden" value="<%= arrData ? arrData.slug : '' %>">
+                      </div>
+                    </div>
+
+                    <% if(sessionStoreId!='') {%>
+                      <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                    <% } else {%>
+                        <div class="col-sm-6 mb-5">
+                            <div class="animate_form field mb-1">
+                                <span>Select Store <span class="text-danger">*</span></span>
+                                <select name="storeId" id="storeId" class="form-control">
+                                    <% stores.forEach(function(store){%>
+                                    <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                    <% })%>
+                                </select>
+                            </div>
+                        </div>
+                    <% }%>
+
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span>Status <span class="text-danger">*</span></span>
+                            <select name="status" class="form-control" id="status">
+                              <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                              <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3">
+                      <div class="animate_form field">
+                          <span>Meta Title <span class="text-danger">*</span></span>
+                          <input id="metaTitle" class="form-control"  name="metaTitle" type="text" value="<%= arrData ? arrData.metaTitle : '' %>">
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3">
+                      <div class="animate_form field">
+                          <span>Meta Keyword <span class="text-danger">*</span></span>
+                          <input id="metaKeyword" class="form-control"  name="metaKeyword" type="text" value="<%= arrData ? arrData.metaKeyword : '' %>">
+                      </div>
+                    </div>
+
+                     <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                          <span>Form Description</span>
+                          <textarea id="description" class="form-control" name="description" type="text" ><%= arrData ? arrData.description : '' %></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3">
+                      <div class="animate_form field">
+                        <span>Meta Description</span>
+                        <textarea id="metaDescription" class="form-control" name="metaDescription" type="text" ><%= arrData ? arrData.metaDescription : '' %></textarea>
+                      </div>
+                    </div>
+
+                  <div class="col-sm-6 mb-3">
+                    <div class="animate_form field">
+                        <span>Image </span>
+                        <input id="image" class="form-control" accept="image/*" name="image" type="file" value="<%= arrData ? arrData.image : '' %>">
+                    </div>
+                  </div>
+                </div> 
+            </div>
+
+            <div class="btn_right mb-4">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<%- include ../partials/footer.html %>
+
+<script type="text/javascript"> 
+
+  $(document).keyup(function () {
+      let storeId = $('#storeId').val();
+      let name = $('#formName').val();
+      let table = name.toString().toLowerCase().replace(/\s+/g, '');
+      table += storeId;
+      $('#tableName').val(table);
+  });
+  $('#storeId').change(function(){
+    let storeId = $('#storeId').val();
+    let name = $('#formName').val();
+    let table = name.toString().toLowerCase().replace(/\s+/g, '');
+    table += storeId;
+    $('#tableName').val(table);
+  });
+
+</script>
+
+<script type="text/javascript">
+  function blockChar(e){
+      var k;
+      document.all ? k = e.keyCode : k = e.which;
+      return (k >= 48 && k <= 57);
+    }
+    function  blockother(e){
+      var k;
+      document.all ? k = e.keyCode : k = e.which;
+      return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+    }
+    $('#title').keyup(function(){
+      var name = $('#title').val();
+      var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+      var storeId = $('#storeId').val();
+      var randomNumber = Math.floor(1000 + Math.random()*9000);
+      $('#slug').val(slug+ storeId+'-'+ randomNumber);
+    });
+    $('#storeId').change(function(){
+      var name = $('#title').val();
+      var slug = name.toString().toLowerCase().replace(/\s+/g,'-');
+      var randomNumber = Math.floor(1000+Math.random()*9000);
+      var storeId = $('#storeId').val();
+      $('#slug').val(slug+storeId+'-'+randomNumber);
+    });
+  </script>

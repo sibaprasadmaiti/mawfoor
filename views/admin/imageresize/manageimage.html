@@ -1,0 +1,99 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><a href="<%= adminbaseurl %>image-resize/list" >Store List</a></li> 
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+  
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%> 
+        <div class="succ_msg msg" id="err_msg2">
+            <i class="fa check" aria-hidden="true" id="message"></i>
+        </div>
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+                <h3><%=title%></h3>
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Sl No </th>
+                            <th>Module Name</th>
+                            <th>Height</th>
+                            <th>Width</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% let i= 1; data.forEach(function(val) { %>
+                        <tr id="">
+                            <td class="text-center"> <%= i %></td>
+                            <td> <% if(val.moduleName.length>1){ %>
+                                <%= val.moduleName.charAt(0).toUpperCase() %><%= val.moduleName.slice(1) %>
+                                <% }else{ %>
+                                    <%= val.moduleName %>
+                                <% } %>
+                            </td>
+                            
+                            <td> 
+                                <input type="number" value="<%= val.height %>" id="height<%= val.id %>" class="form-control" style="width: 200px;" id="height">
+                            </td>
+                            <td> 
+                                <input type="number" value="<%= val.width %>" id="width<%= val.id %>" class="form-control" style="width: 200px;" id="width">
+                            </td>
+                            <td class="text-center"> 
+                                <button class="btn btn-info" onclick="edit_item(`<%= val.id %>`)">Submit</button>
+                            </td>
+                        </tr>
+                        <% i++ }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../partials/footer.html %>
+
+<script>
+    $(document).ready(function () {
+        $('#err_msg2').hide();
+    });
+
+    function edit_item(id) {
+      let height = $(`#height${id}`).val()
+      let width = $(`#width${id}`).val()
+      
+      $.ajax({
+          url: `<%= adminbaseurl %>image-resize/configuration/addedit`,
+          method: "POST",
+          data:{updateId:id,height:height,width:width },
+        success:function(data){
+            $('#err_msg2').show();
+            $('#message').html("Successfully Updated")
+            setTimeout(function() {
+                $("#err_msg2").fadeOut("slow"); 
+            }, 1000 );
+        }
+      });
+  }
+  
+</script>

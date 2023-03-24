@@ -1,0 +1,424 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>banner/list/1">Banner List</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>banner/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>Banner</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Title <span class="text-danger">*</span></span>
+              <input id="title" class="form-control"  name="title" type="text"  value="<%= arrData ? arrData.title : '' %>" />
+            </div>
+            <span class="text-danger font-weight-bold" id="title_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+                <span>Banner Type <span class="text-danger">*</span></span>
+                <input id="type" class="form-control"  name="type" type="text" value="<%= arrData ? arrData.type : '' %>" />
+            </div>
+            <span class="text-danger font-weight-bold" id="type_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Select Store <span class="text-danger">*</span></span>
+                <select name="storeId" id="storeId" class="form-control">
+                  <option value=""  <% if(arrData.storeId == ''){ %> selected="selected" <% }%>>Select Store</option>
+                  <% stores.forEach(function(store){%>
+                    <option value="<%=store.id%>" <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                  <% })%>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="store_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Select Category <span class="text-danger">*</span></span>
+                <select name="categoryId" id="categoryId" class="form-control">
+                  <option value=""  <% if(arrData.categoryId == ''){ %> selected="selected" <% }%>>Select Category</option>
+                  <% categories.forEach(function(categories){%>
+                    <option value="<%=categories.id%>" <% if(arrData.categoryId == categories.id){ %> selected="selected" <% }%>><%=categories.title; %></option>
+                  <% })%>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="category_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Select Section <span class="text-danger">*</span></span>
+                <select name="section" id="section" class="form-control">
+                  <option value=""  <% if(arrData.section == ''){ %> selected="selected" <% }%>>Select Section</option>
+                  <% bannerSection.forEach(function(bannerSection){%>
+                    <option value="<%=bannerSection.id%>" <% if(arrData.categoryId == bannerSection.id){ %> selected="selected" <% }%>><%=bannerSection.title; %></option>
+                  <% })%>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="section_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Select Display Type <span class="text-danger">*</span></span>
+                <select name="displayType" id="displayType" class="form-control">
+                  <option value=""  <% if(arrData.displayType == ''){ %> selected="selected" <% }%>>Select Display Type</option>
+                  <% bannerDisplay.forEach(function(bannerDisplay){%>
+                    <option value="<%=bannerDisplay.id%>" <% if(arrData.categoryId == bannerDisplay.id){ %> selected="selected" <% }%>><%=bannerDisplay.title; %></option>
+                  <% })%>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="displayType_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Sequence <span class="text-danger">*</span></span>
+              <input id="sequence" class="form-control"  name="sequence" type="number"  value="<%= arrData ? arrData.sequence : '' %>" />
+            </div>
+            <span class="text-danger font-weight-bold" id="sequence_error"></span>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Status <span class="text-danger">*</span></span>
+              <select name="status" id="status" class="form-control">
+                <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="status_error"></span>
+          </div>   
+
+          <div class="col-sm-12 mb-5">
+            <div class="animate_form field">
+              <span>Short Description</span>
+              <textarea id="shortDescription" class="form-control" name="shortDescription" type="text"><%= arrData ? arrData.shortDescription : '' %></textarea>
+            </div>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field">
+              <label>Banner Image</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+              <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+              <div class="upload_img01">
+                <% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInBannerImages(arrData.id+'/'+arrData.image)){%>
+                  <img id="preview" src="<%= baseurl+ 'admin/banner/image/'+ arrData.id +'/' + arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } else { %>
+                  <img id="preview" src="<%= baseurl + 'admin/brands/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field">
+              <label>Cover Image</label>
+              <input type="file" class="form-control" id="coverImage" name="coverImage" accept="image/*" onchange="preView2()" <% if(arrData && arrData.coverImage && arrData.coverImage==''){ %> required="required" <% }%> />
+              <input type="hidden" name="update_cover_image" value="<%= arrData ? arrData.coverImage : '' %>" />
+              <div class="upload_img01">
+                <% if(arrData.coverImage !='' && arrData.coverImage != null && helper.isFileExistsInCoverImages(arrData.id+'/'+arrData.coverImage)){%>
+                  <img id="preview2" src="<%= baseurl+ 'admin/banner/coverImage/'+ arrData.id +'/' + arrData.coverImage %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } else { %>
+                  <img id="preview2" src="<%= baseurl + 'admin/brands/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="btn_right mb-4">        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include ../partials/footer.html %>
+<!-- <script src="<%= adminbaseurl %>vendors/validator/validator.js"></script> -->
+
+<script type="text/javascript">
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#icon-error").remove();
+      };
+    }
+  }
+</script>
+
+<script type="text/javascript">
+    function preView2() {
+      var fileInput = document.getElementById('coverImage');
+      var filePath = fileInput.value;
+      var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+      if (!allowedExtensions.exec(filePath)) {
+        fileInput.value = '';
+        return false;
+      } else {
+        if (fileInput.files && fileInput.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function () {
+            var output = document.getElementById('preview2');
+            output.src = reader.result;
+          };
+          reader.readAsDataURL(event.target.files[0]);
+          $("#icon-error").remove();
+        };
+      }
+    }
+</script>
+
+
+<!-- -------------------------------------- validation --------------------------------  -->
+
+<script>
+
+  $(document).ready(function () {
+      $("#title_error").hide();
+      err_title = true;
+      $("#type_error").hide();
+      err_type = true;
+      $("#category_error").hide();
+      err_category = true;
+      $("#section_error").hide();
+      err_section = true;
+      $("#displayType_error").hide();
+      err_displayType = true;
+      $("#sequence_error").hide();
+      err_sequence = true;
+      $("#store_error").hide();
+      err_store = true;
+      $("#status_error").hide();
+      err_status = true;
+
+      $("#title").keyup(function () {
+          title_check_fun();
+      });
+
+      $("#type").keyup(function () {
+          type_check_fun();
+      });
+
+      $("#categoryId").change(function () {
+        category_check_fun();
+      });
+
+      $("#section").change(function () {
+          section_check_fun();
+      });
+
+      $("#displayType").change(function () {
+          displayType_check_fun();
+      });
+
+      $("#sequence").keyup(function () {
+        sequence_check_fun();
+      });
+
+      $("#storeId").change(function () {
+          store_check_fun();
+      });
+
+      $("#status").change(function () {
+          status_check_fun();
+      });
+      
+      function title_check_fun() {
+          let k = $("#title").val();
+          if (k.length == ""  ) {
+              $("#title_error").show();
+              $("#title_error").html("Title is required");
+              err_title = false;
+              return false;
+          }
+          else {
+              err_title = true;
+              $("#title_error").html("");
+              $("#title_error").hide();
+
+          }
+      }
+
+      function type_check_fun() {
+          let k = $("#type").val();
+          if (k.length == ""  ) {
+              $("#type_error").show();
+              $("#type_error").html("Banner type is required");
+              err_type = false;
+              return false;
+          }
+          else {
+              err_type = true;
+              $("#type_error").html("");
+              $("#type_error").hide();
+
+          }
+      }
+
+      function category_check_fun() {
+          let k = $("#categoryId").val();
+          if (k.length == ""  ) {
+              $("#category_error").show();
+              $("#category_error").html("Please select category");
+              err_category = false;
+              return false;
+          }
+          else {
+              err_category = true;
+              $("#category_error").html("");
+              $("#category_error").hide();
+
+          }
+      }
+
+      function section_check_fun() {
+          let k = $("#section").val();
+          if (k.length == ""  ) {
+              $("#section_error").show();
+              $("#section_error").html("Please select banner section");
+              err_section = false;
+              return false;
+          }
+          else {
+              err_section = true;
+              $("#section_error").html("");
+              $("#section_error").hide();
+
+          }
+      }
+
+      function displayType_check_fun() {
+          let k = $("#displayType").val();
+          if (k.length == ""  ) {
+              $("#displayType_error").show();
+              $("#displayType_error").html("Please select display type");
+              err_displayType = false;
+              return false;
+          }
+          else {
+              err_displayType = true;
+              $("#displayType_error").html("");
+              $("#displayType_error").hide();
+
+          }
+      }
+      
+
+      function sequence_check_fun() {
+          let k = $("#sequence").val();
+          if (k.length == "") {
+              $("#sequence_error").show();
+              $("#sequence_error").html("Sequence is required");
+              err_sequence = false;
+              return false;
+          }
+          else {
+              err_sequence = true;
+              $("#sequence_error").html("");
+              $("#sequence_error").hide();              
+          }
+      }
+
+
+      function store_check_fun() {
+          let k = $("#storeId").val();
+          if (k.length == ""  ) {
+              $("#store_error").show();
+              $("#store_error").html("Please select store");
+              err_store = false;
+              return false;
+          }
+          else {
+              err_store = true;
+              $("#store_error").html("");
+              $("#store_error").hide();
+
+          }
+      }
+
+      function status_check_fun() {
+          let k = $("#status").val();
+          if (k.length == ""  ) {
+              $("#status_error").show();
+              $("#status_error").html("Please select status");
+              err_status = false;
+              return false;
+          }
+          else {
+              err_status = true;
+              $("#status_error").html("");
+              $("#status_error").hide();
+
+          }
+      }
+
+
+      $("#send").click(function () {
+          err_title = true;
+          err_type = true;
+          err_category = true;
+          err_section = true;
+          err_displayType = true;
+          err_sequence = true;
+          err_store = true;
+          err_status = true;
+
+          title_check_fun();
+          type_check_fun();
+          section_check_fun();
+          displayType_check_fun();
+          category_check_fun();
+          sequence_check_fun();
+          store_check_fun();
+          status_check_fun();
+
+          if ((err_title == true) && (err_type == true) && (err_category == true) && (err_section == true) && (err_displayType == true) && (err_store == true) && (err_status == true) && (err_sequence == true) ) {
+              return true;
+          }
+          else {
+              return false;
+
+          }
+
+      });
+
+
+  });
+
+</script>

@@ -1,0 +1,192 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>blogs/list/1">Blogs</a></li>
+            <li><a href="<%= adminbaseurl %>blogauthor/list/1">Blog Author</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+
+        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>blogauthor/addOrUpdate">
+                <div class="content_body panel_body">
+                    <div class="panel_title">
+                        <h3>Blog Author</h3>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row edit_box">
+                      <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>First Name <span class="text-danger">*</span></span>
+                            <input id="firstName" class="form-control"  name="firstName" type="text" value="<%= arrData ? arrData.firstName : '' %>">
+                        </div>
+                        <span class="text-danger font-weight-bold" id="name_error"></span>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Last Name</span>
+                            <input id="lastName" class="form-control"  name="lastName" type="text" value="<%= arrData ? arrData.lastName : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Email</span>
+                            <input id="email" class="form-control"  name="email" type="text" value="<%= arrData ? arrData.email : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Facebook</span>
+                            <input id="facebook" class="form-control"  name="facebook" type="text" value="<%= arrData ? arrData.facebook : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Twitter</span>
+                            <input id="twitter" class="form-control"  name="twitter" type="text" value="<%= arrData ? arrData.twitter : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Linkedin</span>
+                            <input id="linkedin" class="form-control"  name="linkedin" type="text" value="<%= arrData ? arrData.linkedin : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Github</span>
+                            <input id="github" class="form-control"  name="github" type="text" value="<%= arrData ? arrData.github : '' %>">
+                        </div>
+                    </div>
+
+                    <% if(sessionStoreId!='') {%>
+                        <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                    <% } else {%>
+                        <div class="col-sm-6 mb-5">
+                            <div class="animate_form field mb-1">
+                                <span>Select Store <span class="text-danger">*</span></span>
+                                <select name="storeId" id="storeId" class="form-control">
+                                    <% stores.forEach(function(store){%>
+                                    <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                    <% })%>
+                                </select>
+                            </div>
+                        </div>
+                    <% }%>
+
+                     <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Status <span class="text-danger">*</span></span>
+                            <select name="status" class="form-control" id="status">
+                              <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                              <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                            </select>
+                        </div>
+                        <span class="text-danger font-weight-bold" id="status_error"></span>
+                     </div>
+
+                    </div>
+                </div>
+            <div class="btn_right mb-4">
+                <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+        </form>
+       </div>
+<%- include ../partials/footer.html %>
+
+
+<!-- -------------------------------------- validation --------------------------------  -->
+
+<script>
+
+  $(document).ready(function () {
+      $("#name_error").hide();
+      err_name = true;
+      $("#store_error").hide();
+      err_store = true;
+      $("#status_error").hide();
+      err_status = true;
+
+      $("#firstName").keyup(function () {
+          name_check_fun();
+      });
+
+      $("#status").change(function () {
+          status_check_fun();
+      });
+
+
+
+      function name_check_fun() {
+          let k = $("#firstName").val();
+          if (k.length == "") {
+              $("#name_error").show();
+              $("#name_error").html("First name is required");
+              err_name = false;
+              return false;
+          }
+          else {
+              err_name = true;
+              $("#name_error").html("");
+              $("#name_error").hide();
+          }
+      }
+
+
+      function status_check_fun() {
+          let k = $("#status").val();
+          if (k.length == ""  ) {
+              $("#status_error").show();
+              $("#status_error").html("Please select status");
+              err_status = false;
+              return false;
+          }
+          else {
+              err_status = true;
+              $("#status_error").html("");
+              $("#status_error").hide();
+
+          }
+      }
+
+      $("#send").click(function () {
+          err_name = true;
+          err_status = true;
+          name_check_fun();
+          status_check_fun();
+
+          if ((err_name == true) && (err_status == true) ) {
+            return true;
+          }
+          else {
+            return false;
+          }
+      });
+  });
+
+</script>

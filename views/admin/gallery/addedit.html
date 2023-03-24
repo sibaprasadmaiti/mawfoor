@@ -1,0 +1,128 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style> 
+
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    
+
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>gallery/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <div class="panel_title">
+          <h3>Gallery</h3>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+
+          <% if(sessionStoreId!='') {%>
+            <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+          <% } else {%>
+              <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1">
+                      <span>Select Store <span class="text-danger">*</span></span>
+                      <select name="storeId" id="storeId" class="form-control">
+                          <% stores.forEach(function(store){%>
+                          <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                          <% })%>
+                      </select>
+                  </div>
+              </div>
+          <% }%>
+
+          <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Select Brands <span class="text-danger">*</span></span>
+                <select name="catId" id="catId" class="form-control">
+                  <option value=""  <% if(arrData.catId == ''){ %> selected="selected" <% }%>>Select Brands</option>
+                  <% brands.forEach(function(bnd){%>
+                    <option value="<%=bnd.id%>" <% if(arrData.catId == bnd.id){ %> selected="selected" <% }%>><%=bnd.title; %></option>
+                  <% })%>
+              </select>
+            </div>
+            <span class="text-danger font-weight-bold" id="category_error"></span>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Status</span>
+                <select name="status" class="form-control" required="required">
+                    <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">Yes</option>
+                    <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">No</option>
+                </select>
+            </div>
+           </div>
+
+           <div class="col-sm-6 mb-5">
+            <div class="animate_form field mb-1">
+              <span>Sequence <span class="text-danger"></span></span>
+              <input id="sequence" class="form-control"  name="sequence" type="number"  value="<%= arrData ? arrData.sequence : '' %>" />
+            </div>
+            <span class="text-danger font-weight-bold" id="sequence_error"></span>
+          </div>
+           
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <label>Gallery Image</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+              <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+              <div class="upload_img01">
+                <% if(arrData.image !='' && arrData.image != null ){%>
+                  <img id="preview" src="<%= baseurl+ 'admin/gallery/image/'+ arrData.id +'/' + arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } else { %>
+                  <img id="preview" src="<%= baseurl + 'admin/brands/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn_right mb-4">
+          <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />        
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include ../partials/footer.html %>
+
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<script type="text/javascript">
+    function preView() {
+        var fileInput = document.getElementById('image');
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+          fileInput.value = '';
+          return false;
+        } else {
+          if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function () {
+              var output = document.getElementById('preview');
+              output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+            $("#icon-error").remove();
+          };
+        }
+      }
+</script>
+

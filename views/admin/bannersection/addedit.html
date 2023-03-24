@@ -1,0 +1,205 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<div class="content_wraper">
+    <div class="main_container">
+          
+      <div class="header_wraper">
+        <h2><%=title%></h2>
+          <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>bannerSection/list/1">Banner Section List</a></li>
+            <li><%=title%></li>
+          </ul>
+      </div>
+
+      <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg">    
+        <i class="fa fa-check"  aria-hidden="true"></i>        
+        <%=messages%>
+      </div>
+      <%}%>                
+      <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+        <%=errors%>
+      </div>
+      <% }%>
+
+        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>bannerSection/addOrUpdate">
+                    <div class="content_body panel_body edit_store">
+                      <div class="panel_title">
+                          <h3>Banner Section</h3>
+                      </div>
+                    <div class="clearfix"></div>
+                    <div class="row edit_box">
+                      <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Title <span class="text-danger">*</span></span>
+                            <input id="title" class="form-control"  name="title" type="text" value="<%= arrData ? arrData.title : '' %>">
+                        </div>
+                        <span class="text-danger font-weight-bold" id="title_error"></span>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Sequence <span class="text-danger">*</span></span>
+                            <input id="sequence" class="form-control"  name="sequence" type="number" value="<%= arrData ? arrData.sequence : '' %>">
+                        </div>
+                        <span class="text-danger font-weight-bold" id="sequence_error"></span>
+                    </div>
+
+                    <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Select Store <span class="text-danger">*</span></span>
+                            <select name="storeId" id="storeId" class="form-control">
+                              <option value=""  <% if(arrData.storeId == ''){ %> selected="selected" <% }%>>Select</option>
+                              <% stores.forEach(function(store){%>
+                                <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                              <% })%>
+                            </select>
+                        </div>
+                        <span class="text-danger font-weight-bold" id="store_error"></span>
+                     </div>
+
+                     <div class="col-sm-6 mb-5">
+                        <div class="animate_form field mb-1">
+                            <span>Status <span class="text-danger">*</span></span>
+                            <select name="status" class="form-control" id="status">
+                              <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                              <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                            </select>
+                        </div>
+                        <span class="text-danger font-weight-bold" id="status_error"></span>
+                     </div>
+
+                    </div>
+                </div>
+            <div class="btn_right mb-4">
+                <input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+        </form>
+       </div>
+<%- include ../partials/footer.html %>
+
+
+
+<!-- -------------------------------------- validation --------------------------------  -->
+
+<script>
+
+  $(document).ready(function () {
+      $("#title_error").hide();
+      err_title = true;
+      $("#sequence_error").hide();
+      err_sequence = true;
+      $("#store_error").hide();
+      err_store = true;
+      $("#status_error").hide();
+      err_status = true;
+
+      $("#title").keyup(function () {
+          title_check_fun();
+      });
+
+      $("#sequence").keyup(function () {
+        sequence_check_fun();
+      });
+
+      $("#storeId").change(function () {
+          store_check_fun();
+      });
+
+      $("#status").change(function () {
+          status_check_fun();
+      });
+      
+      function title_check_fun() {
+          let k = $("#title").val();
+          if (k.length == ""  ) {
+              $("#title_error").show();
+              $("#title_error").html("Title is required");
+              err_title = false;
+              return false;
+          }
+          else {
+              err_title = true;
+              $("#title_error").html("");
+              $("#title_error").hide();
+
+          }
+      }
+
+      function sequence_check_fun() {
+          let k = $("#sequence").val();
+          if (k.length == "") {
+              $("#sequence_error").show();
+              $("#sequence_error").html("Sequence is required");
+              err_sequence = false;
+              return false;
+          }
+          else {
+              err_sequence = true;
+              $("#sequence_error").html("");
+              $("#sequence_error").hide();              
+          }
+      }
+
+
+      function store_check_fun() {
+          let k = $("#storeId").val();
+          if (k.length == ""  ) {
+              $("#store_error").show();
+              $("#store_error").html("Please select store");
+              err_store = false;
+              return false;
+          }
+          else {
+              err_store = true;
+              $("#store_error").html("");
+              $("#store_error").hide();
+
+          }
+      }
+
+      function status_check_fun() {
+          let k = $("#status").val();
+          if (k.length == ""  ) {
+              $("#status_error").show();
+              $("#status_error").html("Please select status");
+              err_status = false;
+              return false;
+          }
+          else {
+              err_status = true;
+              $("#status_error").html("");
+              $("#status_error").hide();
+
+          }
+      }
+
+
+      $("#send").click(function () {
+          err_title = true;
+          err_sequence = true;
+          err_store = true;
+          err_status = true;
+          sequence_check_fun();
+          title_check_fun();
+          store_check_fun();
+          status_check_fun();
+
+          if ((err_title == true) && (err_store == true) && (err_status == true) && (err_sequence == true) ) {
+              return true;
+          }
+          else {
+              return false;
+
+          }
+
+      });
+
+
+  });
+
+</script>

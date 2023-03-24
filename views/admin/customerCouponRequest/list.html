@@ -1,0 +1,297 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+         <div class="header_wraper">
+              <h2><%=title%></h2>
+              <ul>
+                  <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                  <li><h4><%=title%><small></small></h4></li>
+              </ul>
+          </div>
+  
+          <% if(messages!='') {%>
+          <div class="succ_msg msg" id="succ_msg">    
+              <i class="fa fa-check"  aria-hidden="true"></i>        
+              <%=messages%>
+          </div>
+          <%}%>                
+          <% if(errors!='') {%>
+          <div class="succ_err msg" id="err_msg">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+              <%=errors%>
+          </div>
+          <% }%> 
+          
+      <div class="content_body">
+          <div class="table_heading mb-5">
+          <h3><%=title%></h3>
+
+          <div class="mt-3">
+            <div class="float-left">
+              <span style="font-size: 16px;">Showing </span>
+              <select onchange="location = this.value" style="height: 25px; width: 60px;">
+                <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+                <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+                <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+                <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+              </select> 
+              <span style="font-size: 16px;"> entries </span>        
+            </div>
+    
+            <div class="float-right">
+                <!-- <a href="<%= adminbaseurl %>customerCouponRequest/view" class="btn btn-info btn-sm"  ><i class="fa fa-plus"></i> Add ContactUs</a> -->
+                <!-- <span class="bg-light p-2 font-weight-bold" style="cursor: pointer; border: 1px solid rgb(199, 199, 199); border-radius: 4px;" onclick="showhide()"><i class="fa fa-cog"></i> Columns</span> -->
+                <div class="bg-light" id="columns" style="position:absolute; z-index: 1; padding: 10px; border: 1px solid rgb(199, 199, 199); border-radius: 4px;">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="address" id="address">
+                        <label class="form-check-label" for="address">Address</label> 
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="message" id="message"> 
+                        <label class="form-check-label" for="message">Message</label> 
+                    </div>
+                </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="table-responsive table_wraper">
+      <table class="table product_list025">
+          <thead>
+              <tr style="cursor: pointer;">
+                <!-- <% if(orderType =='DESC') {%>
+                    <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="firstName" data-order="ASC" class="theading">Name <% if(columnName =='firstName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="firstName" data-order="DESC" class="theading">Name <% if(columnName =='firstName') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="email" data-order="ASC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="email" data-order="DESC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="contactNo" data-order="ASC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="contactNo" data-order="DESC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%> -->
+                <th >Sl No</th>
+                <th >Name</th>
+                <th >Email</th>
+                <th >Mobile</th>
+                <th >Status</th>
+                <th >Action</th>
+              </tr>
+          </thead>
+      <tbody>
+      
+          <% var i= 1;
+              arrData.forEach(function(val) { %>	
+          <tr>
+              <td class="text-center"> <%= i %></td>
+              <td> <%= val.fullName %></td>
+              <td> <%= val.email %></td>
+              <td> <%= val.mobile %></td>
+              <td> <%= val.status %></td>
+              <td class="text-center">
+                <!-- <a href="<%= adminbaseurl%>customerCouponRequest/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a> -->
+                <a href="<%= adminbaseurl%>customerCouponRequest/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+              </td>
+          </tr>
+          <% i++; }) %>
+          </tbody>
+          </table>
+           <!--====================================== Pagination Start ======================================-->
+          <% if(listCount>0) {%>
+            <div class="pagination_sec">
+                <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+                <% if(currentPage>1) {%>
+                    <ul>
+                    <li><a href="<%= adminbaseurl%>customerCouponRequest/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Prev</a></li>
+                    </ul>
+                <% }else{ %>
+                    <ul>
+                    <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                    </ul>
+                <% } %>
+                <% for(var i=1; i<=pageCount; i++) { %>
+                    <ul>
+                    <% if(currentPage==i) {%>
+                    <li><a href="<%= adminbaseurl%>customerCouponRequest/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="active"><%=i %></a></li>
+                    <% }else{ %>
+                    <li><a href="<%= adminbaseurl%>customerCouponRequest/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class=""><%=i %></a></li>
+                    <% } %>
+                    </ul>
+                <% } %>
+                <% if(currentPage < pageCount) {%>
+                    <ul>
+                    <li><a href="<%= adminbaseurl%>customerCouponRequest/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Next</a></li>
+                    </ul>
+                    <% }else{ %>
+                    <ul>
+                    <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                    </ul>
+                <% } %>
+            </div>
+         <% } %>
+          <!--====================================== Pagination End ======================================-->
+         </div>
+      </div>
+  </div>
+</div>
+  
+
+<%- include ../partials/footer.html %>
+
+<script>
+    $(document).ready(() => {
+      $('.theading').on('click',function(){
+        var column = $(this).data('column');
+        var order = $(this).data('order');
+  
+        if(order == 'DESC'){
+          $(this).data('order', 'ASC');        
+          window.location.href = `<%= adminbaseurl%>customerCouponRequest/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+        }else{
+          $(this).data('order', 'DESC');
+          window.location.href = `<%= adminbaseurl%>customerCouponRequest/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+        }
+      })
+  })
+</script>
+
+<script>
+  $("input:checkbox").prop("checked",false).ready(function(){
+      $(".address").hide();
+      $(".message").hide();
+  });
+  
+  $("input:checkbox").attr("checked",false).click(function(){
+      let shcolumn = "."+$(this).attr('name');
+      $(shcolumn).toggle();
+  });
+</script>
+
+<script>
+  $(document).ready(function(){
+      $("#columns").hide();
+  });
+  function showhide(){
+      $("#columns").toggle();
+  }
+</script>
+
+<!-- <script>
+    $("#checkAll").click(function () {
+      $('input:checkbox').not(this).prop('checked', this.checked);
+  });
+</script> -->
+
+<!-- <script>
+  $(document).ready(function(){
+        var checkboxes = $('.checkbox input[type="checkbox"]'); 
+        checkboxes.click(function(){
+            var countCheckedCheckboxes = checkboxes.filter(':checked').length;
+            if(countCheckedCheckboxes > 0){
+                $('.label_info').text(countCheckedCheckboxes-1+' item(s) selected');
+                
+            }else{
+                $('.label_info').text('No item selected');
+            } 
+        });
+    });
+
+    $(".checkSelect").change(function () {
+  
+    var lenghtCheck= $('input[class="checkSelect"]:checked').filter(':checked').length
+    console.log(lenghtCheck);
+            if( lenghtCheck > 0){
+                $('.label_info').text(lenghtCheck+' item(s) selected');
+            }else{
+                $('.label_info').text('No item selected');
+            }
+   });
+
+   
+	 function deleteCategory() {  
+    var chkArray = []; 
+    /* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
+    $('input[class="checkSelect"]:checked').each(function() {
+    chkArray.push($(this).val());
+    });
+	var chkArraylengh = chkArray.length;
+    if(chkArraylengh > 0){
+    console.log(chkArray)
+        var adminData = { 'check' :chkArray}
+        var answer = confirm ("Are you sure you want to delete from the database?");
+            if(answer){
+    $.ajax({ 
+        url: "<%= apiurl %>categorymul/delete",
+        type:'POST',
+        data: adminData,
+        success:function(response){
+            //console.log(response)
+            //alert('')
+            window.location.reload();
+            //if(response.value==1) 
+           
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+        }
+        });   
+    }
+	}else{
+	  alert('For delete select first ');
+     }
+
+}
+</script> -->
+
+
+
+
+  <!-- HTML5 Speech Recognition API -->
+  <!-- <script>
+    function startDictation() {
+  
+      if (window.hasOwnProperty('webkitSpeechRecognition')) {
+  
+        var recognition = new webkitSpeechRecognition();
+  
+        recognition.continuous = false;
+        recognition.interimResults = false;
+  
+        recognition.lang = "en-US";
+        recognition.start();
+  
+        recognition.onresult = function(e) {
+          document.getElementById('transcript').value
+                                   = e.results[0][0].transcript;
+          recognition.stop();
+          document.getElementById('labnol').submit();
+        };
+  
+        recognition.onerror = function(e) {
+          recognition.stop();
+        }
+  
+      }
+    }
+  </script> -->

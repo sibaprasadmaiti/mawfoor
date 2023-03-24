@@ -1,0 +1,74 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><a href="<%= adminbaseurl %>dynamicform/list/1">Form</a></li>
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+  
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%> 
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+                <h3><%=title%></h3>
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr>
+                            <th class="text-center">SL No</th>
+                            <% let i= 1; dynamicforms.forEach(function(val) { %>	
+                            <th><%= val.displayName %></th>
+                            <% i++; }) %>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <% let j= 1; arrData.forEach(function(val3,key) { %>	
+                        <tr>
+                            <td class="text-center"> <%= j %></td>
+                            <% let k= 1; dynamicforms.forEach(function(val2) { %>
+
+                            <td><%= val3[val2.fieldName] %></td>
+
+                            <% k++; }) %>
+                            <td class="text-center"><a href="<%= adminbaseurl%>dynamicform/viewdata/delete/<%= val3.id %>?tid=<%= tableId %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash" title="Delete Data"></i></a></td>
+                        </tr>
+                        <% j++; }) %>
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+  
+
+<%- include ../partials/footer.html %>
+

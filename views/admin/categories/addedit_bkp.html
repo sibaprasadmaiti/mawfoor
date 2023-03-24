@@ -1,0 +1,644 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.4.1/flatly/bootstrap.min.css">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<link href="<%= adminbaseurl %>build/css/bstreeview.css" rel="stylesheet">
+<link href="<%= adminbaseurl %>build/css/bstreeview.min.css" rel="stylesheet">
+<script src="<%= adminbaseurl %>build/js/bstreeview.js"></script>
+<style type="text/css">
+  .content{display: none;}
+  .switch {position: relative;display: inline-block;width: 60px;height: 34px;}
+  .switch input {opacity: 0;width: 0;height: 0;}
+  .slider {position: absolute;cursor: pointer;top: 0;left: 0;right: 0;bottom: 0;background-color: #ccc;-webkit-transition: .4s;transition: .4s;}
+  .slider:before {position: absolute;content: "";height: 26px;width: 26px;left: 4px;bottom: 4px;background-color: white;-webkit-transition: .4s;transition: .4s;}
+  input:checked + .slider {background-color: #2196F3;}
+  input:focus + .slider {box-shadow: 0 0 1px #2196F3;}
+  input:checked + .slider:before {-webkit-transform: translateX(26px);-ms-transform: translateX(26px);transform: translateX(26px);}
+  .slider.round {border-radius: 34px;}
+  .slider.round:before {border-radius: 50%;}
+  .addCategory{padding: 4px;float: right;font-size: 15px;}
+  #productTable_wrapper{padding-left: 26px;}
+  .bstreeview{height:400px;overflow-y: scroll;}
+  .form-group {margin-bottom: 0px;clear: both;}
+</style>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body panel_body">
+      <div class="panel_title category_head06">
+        <h3>Category Info</h3>
+        <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+          permissions.find(permission=> {
+          return permission === 'CategoryAddEdit'
+          })
+          }
+          if(userPermission==true){ %>
+            <div class="addcat55">
+              <button type="button" class="btn btn-info btn-lg addCategory" data-toggle="modal" data-target="#addCategory">
+                <i class="fa fa-plus1">+</i> Add category</button>
+            </div>
+          <% } %>
+        
+      </div>
+      <div class="container">
+        <div class="col-sm-3">
+          <div class="">
+            <h5>List of category</h5><hr class="no-margin">
+            <% if(arrCategoryDetails !='' && arrCategoryDetails !=''){ %>
+              <input type="hidden" id="treeArray" name="treeArray" value="<%=arrTree%>" />
+              <div id="tree"></div>
+            <% } %>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-9">
+          <% if(arrSelectCategoryDetails!=''  && arrSelectCategoryDetails !=null) { %>
+            <h4 id=""><%=arrSelectCategoryDetails.title%></h4><hr>
+            <div class="switch_cat_wrap">
+              <div class="switch_cat056">
+                <label>Enable Category</label>
+                <div>
+                  <label class="switch">
+                    <input type="hidden" id="statusCategoryId" value="<%=arrSelectCategoryDetails.id%>" />
+                    <input type="checkbox" id="status" value="" <% if(arrSelectCategoryDetails.status=='Yes'){ %> checked="checked" <% }%> />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="switch_cat056">
+                <label>Include in Menu</label>
+                <div>
+                  <label class="switch">
+                    <input type="hidden" id="includeMenuCategoryId" value="<%=arrSelectCategoryDetails.id%>">
+                    <input type="checkbox" id="includeInMenu" value="" <% if(arrSelectCategoryDetails.includeInMenu=='yes'){ %> checked="checked" <% }%>>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="switch_cat056">
+                <label>Include in Footer</label>
+                <div>
+                  <label class="switch">
+                    <input type="hidden" id="includeFooterCategoryId" value="<%=arrSelectCategoryDetails.id%>">
+                    <input type="checkbox" id="includeInFooter" value="" <% if(arrSelectCategoryDetails.includeInFooter=='yes'){ %> checked="checked" <% }%>>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="switch_cat056">
+                <label>Include in Home</label>
+                <div>
+                  <label class="switch">
+                    <input type="hidden" id="includeHomeCategoryId" value="<%=arrSelectCategoryDetails.id%>">
+                    <input type="checkbox" id="includeInHome" value="" <% if(arrSelectCategoryDetails.includeInHome=='yes'){ %> checked="checked" <% }%>>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="switch_cat056">
+                <label>Is Anchor</label>
+                <div>
+                  <label class="switch">
+                    <input type="hidden" id="includeAnchorCategoryId" value="<%=arrSelectCategoryDetails.id%>">
+                    <input type="checkbox" id="includeInAnchor" value="" <% if(arrSelectCategoryDetails.anchor=='yes'){ %> checked="checked" <% }%>>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="cat_acc05">
+              <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                      <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Content</a>
+                    </h4>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                      <div class="">
+                        <form name="admin-form" id="" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>categories/contentAdd">
+                          <div class="form-group">
+                            <div class="col-sm-12">
+                              <div class="animate_form field">
+                                <span>Category Name</span>
+                                <input type="text" class="form-control" value="<%=arrSelectCategoryDetails.title %>" id="name" name="name" placeholder="Category Name" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="col-sm-4">
+                              <div class="animate_form field">
+                                <span>Parent Category</span>
+                                <input type="text" class="form-control catexample" id="example1" placeholder="Select" autocomplete="off" />
+                                <input type="hidden" name="editParentCategoryId" id="editParentCategoryId" value="<%=arrSelectCategoryDetails.parentCategoryId %>" />
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="animate_form field">
+                                <span>Category Store</span>
+                                <select name="editStoreIds" id="editStoreIds" class="form-control catexample" required="required" disabled="disabled">
+                                  <option value="" <% if(arrSelectCategoryDetails.storeId==''){ %> selected="selected" <% }%>>Select Store</option>
+                                  <% stores.forEach(function(store){%>
+                                    <option value="<%=store.id%>" <% if(arrSelectCategoryDetails.storeId==store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                  <% })%>
+                                </select>
+                                <input type="hidden" name="editStoreId" id="editStoreId" value="<%=arrSelectCategoryDetails.storeId %>" />
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="animate_form field">
+                                <span>Category Position</span>
+                                <input type="text" class="form-control" value="<%=arrSelectCategoryDetails.position %>" id="position" name="position" placeholder="Category Position" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="col-sm-12">
+                              <div class="animate_form field">
+                                <span>Category Description</span>
+                                <textarea class="form-control" name="description" id="description" placeholder="Category Description" required="required"><%=arrSelectCategoryDetails.description%></textarea>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="animate_form field">
+                              <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                  <label>Category Image</label>
+                                  <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrSelectCategoryDetails && arrSelectCategoryDetails.image && arrSelectCategoryDetails.image==''){ %> required="required" <% }%> />
+                                  <input type="hidden" name="update_image" value="<%= arrSelectCategoryDetails ? arrSelectCategoryDetails.image : '' %>" />
+                                  <div class="upload_img01">
+                                    <% if(arrSelectCategoryDetails.image !='' && arrSelectCategoryDetails.image != null && helper.isFileExistsInCategory(arrSelectCategoryDetails.id+'/'+arrSelectCategoryDetails.image)){%>
+                                      <img id="preview" src="<%= baseurl+ 'admin/category/'+ arrSelectCategoryDetails.id +'/' + arrSelectCategoryDetails.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                                    <% }else{ %>
+                                      <img id="preview" src="<%= baseurl + 'user_contents/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                                    <% } %>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="btn_right mb-4">
+                            <input type="hidden" name="contentCategory" id="contentCategory" value="<%=arrSelectCategoryDetails.id%>" />
+                            <button id="send" type="submit" class="submit_btn">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                      <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Search Engine Optimization</a>
+                    </h4>
+                  </div>
+                  <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                      <div class="">
+                        <form name="admin-form" id="" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>categories/addSEO">
+                          <div class="form-group">
+                            <div class="col-sm-12">
+                              <div class="animate_form field">
+                                <span>Meta Title</span>
+                                <input type="text" class="form-control" value="<%=arrSelectCategoryDetails.metaTitle %>" id="metaTitle" name="metaTitle" required="required" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="col-sm-12">
+                              <div class="animate_form field">
+                                <span>Meta Keywords</span>
+                                <input type="text" class="form-control" value="<%=arrSelectCategoryDetails.metaKey %>" id="metaKey" name="metaKey" required="required" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="input-group">
+                              <div class="col-sm-12">
+                                <div class="animate_form field">
+                                  <span>Meta Description</span>
+                                  <textarea class="form-control" name="metaDescription" id="metaDescription" required="required"><%=arrSelectCategoryDetails.metaDescription%></textarea>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="animate_form field">
+                              <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                  <label>Meta Image</label>
+                                  <input type="file" class="form-control" id="metaImage" name="metaImage" accept="image/*" onchange="preView1()" />
+                                  <input type="hidden" name="update_image" value="<%= arrSelectCategoryDetails ? arrSelectCategoryDetails.metaImage : '' %>" />
+                                  <div class="upload_img01">
+                                    <% if(arrSelectCategoryDetails.metaImage !='' && arrSelectCategoryDetails.metaImage != null && helper.isFileExistsInCategoryMetaImage(arrSelectCategoryDetails.id+'/'+arrSelectCategoryDetails.metaImage)){%>
+                                      <img id="preview1" src="<%= baseurl+ 'admin/category/metaimage/'+ arrSelectCategoryDetails.id +'/' + arrSelectCategoryDetails.metaImage %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                                    <% }else{ %>
+                                      <img id="preview1" src="<%= baseurl + 'user_contents/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                                    <% } %>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="btn_right mb-4">
+                            <input type="hidden" name="seoCategory" id="seoCategory" value="<%=arrSelectCategoryDetails.id%>" />
+                            <button id="send" type="submit" class="submit_btn">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                      <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Product List</a>
+                    </h4>
+                  </div>
+                  <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                      <%if(arrProductListCatWise !=''){%>
+                        <table id=productTable class="ui celled table" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th class="th-sm text-center">Title</th>
+                              <th class="th-sm text-center" style="width:100px">Price</th>
+                              <th class="th-sm text-center" style="width:15px">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% var i= 1; arrProductListCatWise.forEach(function(val) { %>
+                              <tr>
+                                <td class="text-center"><%= val.title %></td>
+                                <td class="text-center"><%= val.price %></td>
+                                <td class="text-center"><%= val.status %></td>
+                              </tr>
+                            <% i++; }) %>
+                          </tbody>
+                        </table>
+                      <%}else{%>
+                        <h5 class="dontHave"><%= arrSelectCategoryDetails.title %> did not have any product yet.</h5>
+                      <%}%>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="heading4">
+                    <h4 class="panel-title">
+                      <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">Other Information</a>
+                    </h4>
+                  </div>
+                  <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+                    <div class="panel-body">
+                      <div class="">
+                        <form name="admin-form" id="" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>categories/addOther">
+                          <div class="form-group">
+                            <div class="col-sm-12">
+                              <div class="animate_form field">
+                                <span>URL</span>
+                                <input type="text" class="form-control" value="<%=arrSelectCategoryDetails.url %>" id="url" name="url" required="required" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="btn_right mb-4">
+                            <input type="hidden" name="otCategory" id="otCategory" value="<%=arrSelectCategoryDetails.id%>">
+                            <button id="send" type="submit" class="submit_btn">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+<div class="modal" id="addCategory" class="addCategory" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa fa-plus" aria-hidden="true"></i> Add Category</h4>
+      </div>
+      <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>categories/saveNew">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="">
+                <span>Name</span>
+                <input id="catName" class="form-control" name="catName" type="text" value="" required="required" />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="">
+                <span>Slug</span>
+                <input id="catSlug" class="form-control" name="catSlug" type="text" value="" readonly="readonly" required="required" />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Select Parent Category</span>
+                <input type="hidden" id="treeArraydrp"  value="<%=arrtreeForDropDown%>">
+                <input type="text" class="form-control catexample" id="example" placeholder="Select" autocomplete="off" />
+                <input type="hidden" name="currentCategoryId" id="currentCategoryId" value="" />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Select Store</span>
+                <select name="addstoreId" id="addstoreId" class="form-control catexample" required="required">
+                  <option value="">Select Store</option>
+                  <% stores.forEach(function(store){%>
+                    <option value="<%=store.id%>"><%=store.storeName; %></option>
+                  <% })%>
+                </select>
+                <input type="hidden" name="storeId" id="storeId" value="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer trsubs">
+          <button type="submit" class="btn btn-primary ">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<link rel="stylesheet" href="<%= adminbaseurl %>catTree\bootstrap-treeview.css" />
+<script src="<%= adminbaseurl %>catTree\bootstrap-treeview.js"></script>
+<script type="text/javascript">
+  var json = $('#treeArray').val();
+  $('#tree').treeview({
+    data: json,
+    // expanded to 2 levels
+    levels: 1,
+    // custom icons
+    expandIcon: 'glyphicon glyphicon-plus',
+    collapseIcon: 'glyphicon glyphicon-minus',
+    emptyIcon: 'glyphicon',
+    nodeIcon: 'glyphicon glyphicon-file',
+    selectedIcon: '',
+    checkedIcon: 'glyphicon glyphicon-check',
+    uncheckedIcon: 'glyphicon glyphicon-unchecked',
+    // colors
+    color: 'orange', // '#000000',
+    backColor: '#FFFFFF', // '#FFFFFF',
+    borderColor: '#FFFFFF', // '#dddddd',
+    onhoverColor: '#F5F5F5',
+    selectedColor: '#FFFFFF',
+    selectedBackColor: '#428bca',
+    searchResultColor: '#D9534F',
+    searchResultBackColor: undefined, //'#FFFFFF',
+    // enables links
+    enableLinks: true,
+    // highlights selected items
+    highlightSelected: true,
+    // highlights search results
+    highlightSearchResults: true,
+    // shows borders
+    showBorder: true,
+    // shows icons
+    showIcon: true,
+    // shows checkboxes
+    showCheckbox: false,
+    // shows tags
+    showTags: false,
+    // enables multi select
+    multiSelect: false
+  });
+</script>
+<script src="<%= adminbaseurl %>build/js/comboTreePlugin.js"></script>
+<script src="<%= adminbaseurl %>build/js/icontains.js"></script>
+<link href="<%= adminbaseurl %>build/css/combotree.css" rel="stylesheet">
+<script type="text/javascript">
+  var myData = $("#treeArraydrp").val();
+  var editParentCategoryId = $("#editParentCategoryId").val() > 0 ? $("#editParentCategoryId").val() : 0;
+  var comboTree1 = $('#example').comboTree({
+    source : JSON.parse(myData),
+    selected: ['0'],
+    isMultiple: false
+  });
+  var comboTree2 = $('#example1').comboTree({
+    source : JSON.parse(myData),
+    selected: [editParentCategoryId],
+    isMultiple: false
+  });
+  $('.trsubs').click(function () {
+    var selectedIds = comboTree1.getSelectedIds();
+    $("#currentCategoryId").val(selectedIds);
+  });
+  $('.comboTreeItemTitle').click(function () {
+    var storeId = $(this).attr("data-storeid");
+    var id = $(this).attr("data-id");
+    if(storeId > 0){
+      $("#storeId").val(storeId);
+      $("#addstoreId").val(storeId);
+      $("#addstoreId").attr('disabled','disabled');
+      $("#currentCategoryId").val(id);
+      $("#editStoreId").val(storeId);
+      $("#editStoreIds").val(storeId);
+      $("#editStoreIds").attr('disabled','disabled');
+      $("#editParentCategoryId").val(id);
+    } else {
+      $("#storeId").val('');
+      $("#addstoreId").val('');
+      $("#addstoreId").removeAttr("disabled");
+      $("#currentCategoryId").val('');
+      $("#editStoreId").val('');
+      $("#editStoreIds").val('');
+      $("#editStoreIds").removeAttr("disabled");
+      $("#editParentCategoryId").val('');
+    }
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#addstoreId').change(function(){
+      $("#storeId").val($(this).val());
+    });
+    var ckboxS = $('#status');
+    $('#status').on('click',function () {
+      // var box= confirm("Are you sure you want to do this?");
+      if (ckboxS.is(':checked')) { 
+        $('#status').val("Yes");
+      } else {
+        $('#status').val("No");
+      }
+      var value = $('#status').val();
+      var categoryId = $('#statusCategoryId').val();
+      $.ajax({
+        type: "post",
+        url: "<%= adminbaseurl %>categories/statusChange/",
+        data: {categoryId: categoryId, statusValue : value},
+      });
+    });
+    var ckbox = $('#includeInMenu');
+    var ckbox1 = $('#includeInFooter');
+    var ckbox2 = $('#includeInHome');
+    var ckbox3 = $('#includeInAnchor');
+    $('#includeInMenu').on('click',function () {
+      if (ckbox.is(':checked')) {
+        $('#includeInMenu').val("yes");
+      } else {
+        $('#includeInMenu').val("no");
+      }
+      var value = $('#includeInMenu').val();
+      var categoryId = $('#includeMenuCategoryId').val();
+      $.ajax({
+        type: "post",
+        url: "<%= adminbaseurl %>categories/includeMenuChange/",
+        data: {categoryId: categoryId, statusValue : value},
+      });
+    });
+    $('#includeInFooter').on('click',function () {
+      if (ckbox1.is(':checked')) {
+        $('#includeInFooter').val("yes");
+      } else {
+        $('#includeInFooter').val("no");
+      }
+      var value = $('#includeInFooter').val();
+      var categoryId = $('#includeFooterCategoryId').val();
+      $.ajax({
+        type: "post",
+        url: "<%= adminbaseurl %>categories/includeFooterChange/",
+        data: {categoryId: categoryId, statusValue : value},
+      });
+    });
+    $('#includeInHome').on('click',function () {
+      if (ckbox2.is(':checked')) {
+        $('#includeInHome').val("yes");
+      } else {
+        $('#includeInHome').val("no");
+      }
+      var value = $('#includeInHome').val();
+      var categoryId = $('#includeHomeCategoryId').val();
+      $.ajax({
+        type: "post",
+        url: "<%= adminbaseurl %>categories/includeHomeChange/",
+        data: {categoryId: categoryId, statusValue : value},
+      });
+    });
+    $('#includeInAnchor').on('click',function () {
+      if (ckbox3.is(':checked')) {
+        $('#includeInAnchor').val("yes");
+      } else {
+        $('#includeInAnchor').val("no");
+      }
+      var value = $('#includeInAnchor').val();
+      var categoryId = $('#includeAnchorCategoryId').val();
+      $.ajax({
+        type: "post",
+        url: "<%= adminbaseurl %>categories/includeAnchorChange/",
+        data: {categoryId: categoryId, statusValue : value},
+      });
+    });
+  });
+</script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.semanticui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('.list-group.collapse').removeClass('collapse');
+    $('#productTable').DataTable();
+    $('.heading').on('click',function(){
+      $(this).next().slideToggle(150);
+      $(this).toggleClass('active');
+      $('.content').not($(this).next()).hide();
+    });
+  });
+  function preView() {
+    var fileInput = document.getElementById('image');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#image-error").remove();
+      };
+    }
+  }
+  function preView1() {
+    var fileInput = document.getElementById('metaImage');
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+      fileInput.value = '';
+      return false;
+    } else {
+      if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById('preview1');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+        $("#metaImage-error").remove();
+      };
+    }
+  }
+  $(document).keyup(function(){
+    var storeId = '<%=storeId%>';
+    var randomNumber = Math.floor(1000 + Math.random() * 9000);
+    if(storeId==''){
+      storeId =$('#addstoreId').val();
+    }
+    var name = $('#catName').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug+= storeId+"-"+randomNumber;
+    $('#catSlug').val(slug);
+  });
+  $('#addstoreId').change(function(){
+    var storeId = '<%=storeId%>';
+    var randomNumber = Math.floor(1000 + Math.random() * 9000);
+    if (storeId == '') {
+      storeId = $('#addstoreId').val();
+    }
+    var name = $('#catName').val();
+    var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+    slug += storeId + "-" + randomNumber;
+    $('#catSlug').val(slug);
+  })
+</script>
+<% if(arrSelectCategoryDetails!=''  && arrSelectCategoryDetails !=null) { %>
+<script src="<%= adminbaseurl %>ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+  CKEDITOR.editorConfig = function (config) {
+    config.language = 'es';
+    config.uiColor = '#F7B42C';
+    config.height = 300;
+    config.toolbarCanCollapse = true;
+  };
+  CKEDITOR.replace('description');
+</script>
+<% } %>

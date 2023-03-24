@@ -1,0 +1,876 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %> 
+<!-- page content -->
+<style>
+  .address {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #008CBA;
+  }
+
+  .nsvDes {
+    color: #222f3c;
+    border-radius: 6px;
+    font-size: 17px;
+    background-color: #222f3c;
+  }
+  .custName{
+    padding: 6px;
+    padding-bottom: 13px;
+    padding-left: 17px;
+  }
+  .posDiv{
+    padding: 5px;
+  }
+  .modalButton{
+    background-color: #ffffff;
+    border: none;
+    color: #070707;
+    text-align: center;
+    padding: 4px;
+    font-size: 15px;
+    margin-top: 3px;
+    
+  }
+  .modaleditAddressButton{
+    background-color: #ffffff;
+    border: none;
+    color: #000000;
+    padding: 10px;
+    float: right;
+    font-size: 26px;
+  }
+  .modalAddAddressButton{
+    background-color: #ffffff;
+    text-transform: uppercase;
+    border: none;
+    color: #030303;
+    padding: 0px;
+    float: right;
+  }
+  table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+#t01 {
+  width: 100%;    
+  background-color: #f1f1c1;
+}
+.dontHave{
+  padding: 100px;
+  margin-left: 90px;
+
+}
+  
+</style>
+
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard">Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>customers">Customers</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check" aria-hidden="true"></i><%=messages%></div>
+    <%}%>                
+		<% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <!--Arrtibute info start-->
+    <div class="content_body panel_body">
+      <div class="clearfix"></div>
+      <div class="row edit_box">
+        <% if(arrData !='' || arrData != null)%>
+            <% if( arrData.firstName !='' && arrData.lastName !=''){%>
+              <div class="custName">
+                <h2><%= arrData.firstName %> <%= arrData.lastName %></h2>
+              </div>
+            <%}%>
+            <div class="container">
+              <div>
+                <div id="customer_addedit" class="row" style="min-height:300px;">
+                  <hr/>
+                  <div class="col-xs-3">
+                    <!-- required for floating -->
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tabs-left">
+                      <li class="active"><a href="#General_Info" data-toggle="tab">General</a></li>
+                      <li><a href="#Addresses_Info" data-toggle="tab">Addresses</a></li>
+                      <li><a href="#Orders_info" data-toggle="tab">Orders</a></li>
+                      <li><a href="#Wallet_Transactions_Info" data-toggle="tab">Wallet Transactions</a></li>
+                      <li><a href="#Review_Info" data-toggle="tab">Review</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-xs-9">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="General_Info">
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <span> <b><i class="fa fa-user"></i></b></span>  <%= arrData.firstName %> <%= arrData.lastName %>
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-envelope"></i></b></span> <%= arrData.email  %>
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-phone-square"></i></b></span> <%= arrData.mobile  %>
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-calendar"></i></b></span> <%= arrData.dob  %> (DOB)
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-venus-mars"></i></b></span> 
+                                <%= arrData.gender %>  (Gender)                        
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-calendar"></i></b></span> <%= arrData.doa %> (DOA)
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-circle"></i></b></span> <%= arrData.lastOrder  %> (Last Order)
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-circle"></i></b></span> <%= arrData.referredBy  %> (Reference By)
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-circle"></i></b></span> <%= arrData.orderValue  %> (Order Value)
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-circle"></i></b></span> <%= arrData.mobileVerified  %> (Mobile Verified)
+                              </div>
+                              <div class="col-sm-6 posDiv">
+                                <span><b><i class="fa fa-circle"></i></b></span> <%= arrData.emailVerified  %> (E-mail Verified)
+                              </div>
+                            </div>
+                          </div>
+                          <div  class="col-sm-4">
+                            <ul>
+                              <li>
+                                <button type="button" class="modalButton" data-toggle="modal" data-target="#myEditModal"><i class="fa fa-edit"></i> Edit</button>
+                              </li>
+                              <li>                                
+                                <button type="button" class="modalButton" data-toggle="modal" data-target="#myPasswordModal"><i class="fa fa-lock"></i> Reset Password</button>
+                              </li>
+                              <li>
+                                <div class="activebox">
+                                  <input type="hidden" id="cusId" value="<%=arrData.id%>">
+                                  <select name="status" class="form-control" id="statusChange">
+                                    <option <% if(arrData.status=='active'){ %>selected="selected" <% }%> value="Yes">Active</option>
+                                    <option <% if(arrData.status=='inactive'){ %>selected="selected" <% }%> value="No">Inactive</option>
+                                    <option <% if(arrData.status=='Blocked'){ %>selected="selected" <% }%> value="Blocked">Blocked</option>
+                                  </select>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                          <div class="col-sm-12 posDiv">
+                            <span>Last login time : <%= arrData.lastLogin  %></span>
+                          </div>
+                          <div class="col-sm-12 posDiv">
+                            <span>Last Account check : <%= arrData.lastLogin  %></span>
+                          </div>
+                          <div class="col-sm-12 posDiv">
+                            <span>Number of order :0 </span>
+                          </div> 
+                        </div>                        
+                      </div>
+                      <div class="tab-pane" id="Addresses_Info">
+                        <div>
+                          <button type="button" class="modalAddAddressButton" data-toggle="modal" data-target="#myAddAddressModal"><i class="fa fa-plus"> Add</i></button>
+                        </div>
+                        <% if(arrAddress!=null) { %>
+                          <% var l=1; %>
+                          <% arrAddress.forEach(function(val) { %>
+                            <div class="titlehead">
+                              <h5 class="address"><b>Address <%=l++%></b></h5>
+                              <button type="button" class="modaleditAddressButton" data-addressId="<%=val.id%>" data-customerID="<%=val.customerId%>" data-target="#myAddressEditModal" data-toggle="modal"><i class="fa fa-edit"></i></button>
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-4">
+                                <div class="add_row05">
+                                  <span>Name: <%= val.fullName %></span>  
+                                </div>
+                              </div>
+                              <div class="col-sm-4 posDiv">
+                                <div class="add_row05">
+                                  <span>Label: <%= val.label %></span>  
+                                </div>
+                              </div>
+                              <div class="col-sm-4 posDiv">
+                                  <div class="add_row05">
+                                    <span>Mobile: <%= val.mobile  %></span> 
+                                  </div>
+                              </div> 
+                              <div class="col-sm-4 posDiv">
+                                <div class="add_row05">
+                                  <span>Locality: <%= val.locality  %></span> 
+                                </div>
+                              </div> 
+                              <div class="col-sm-4 posDiv">
+                                  <div class="add_row05">
+                                    <span>City: <%= val.city  %></span> 
+                                  </div>
+                              </div>
+                              <div class="col-sm-4 posDiv">
+                                  <div class="add_row05">
+                                    <span>State: <%= val.state  %></span> 
+                                  </div>
+                              </div>
+                              <div class="col-sm-4 posDiv">
+                                  <div class="add_row05">
+                                    <span>Pin Code: <%= val.pin  %></span>
+                                  </div> 
+                              </div>
+                              <div class="col-sm-4 posDiv">
+                                  <div class="add_row05">
+                                    <span>Country:<%= val.country  %></span> 
+                                  </div>
+                              </div>                                
+                              <div class="col-sm-4 posDiv">
+                                <div class="add_row05">
+                                    <span><b>Is Primary</b></span>
+                                    <input type="checkbox" readonly disabled value="<%= val.isPrimary %>" class="check_address" name="checkAddress" <% if(val.isPrimary == 'yes'){ %> checked="checked" <% } %> />
+                                  </div>
+                              </div>
+                              <div class="col-sm-12 posDiv">
+                                <div class="add_row05">
+                                  <span>Address: <%= val.address  %></span> 
+                                </div>
+                              </div>
+                            </div>
+                            <hr/>
+                          <% }) %>
+                        <% }else{ %>
+                          <div>
+                            <h5 class="dontHave"><%= arrData.firstName %> <%= arrData.lastName %> don't add any address yet. Please add new address.</h5>
+                          </div>
+                        <% } %>
+                      </div>
+                      <div class="tab-pane" id="Orders_info">
+                        <form name="Orders_info-form" id="common_form" name="Orders_info" class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>customers/save/Orders_info">
+                              <%if(customerOrder !=''){ %>
+                                <table id="myTable" class="ui celled table" style="width:100%">
+                                  <thead>
+                                    <tr>
+                                      <th class="th-sm">Order ID</th>
+                                      <th class="th-sm">Date</th>
+                                      <th class="th-sm">Shipping Address</th>
+                                      <th class="th-sm">Phone</th>
+                                      <th class="th-sm">Total Amount</th>
+                                      <th class="th-sm">Status</th>
+                                      <th class="th-sm">Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <% var i= 1;
+                                    customerOrder.forEach(function(val) { %>
+                                    <tr>
+                                      <td>
+                                        #<%= val.order_id %>
+                                        <%  if(val.shipping_method=='Free Shipping'){ %> 
+                                          <br><img src="<%= adminbaseurl %>images/free_shipping.png" height="25px" />
+                                        <% }else if(val.shipping_method=='Shipping Charge'){ %>
+                                          <br><img src="<%= adminbaseurl %>images/shipping-charges.png" height="25px" />
+                                        <% }else if(val.shipping_method=='Express Shipping'){ %>
+                                          <br><img src="<%= adminbaseurl %>images/express.png" height="25px" />
+                                        <% }%>
+                                      </td>
+                                      <td>
+                                        <%= moment(val.createdAt).format('LL') %><br>
+                                        <span style="padding:2px; color:black; font-size: 15px"><%= moment(val.createdAt).format('HH:mm:ss') %><span>
+                                      </td>
+                                      <td style="white-space: pre-wrap;"> <%=  val.shipping_address %></td>
+                                      <td> <%= val.customer_mobile %></td>
+                                      <td><%= val.grand_total ? val.grand_total : 0.00 %></td>
+                                      <td><%= val.order_status %></td>
+                                      <td>
+                                        <a href="<%= adminbaseurl%>order/addedit/<%= val.id %>" target="_blank" class="edit_btn"><i class="fa fa-eye"></i></a>
+                                        <a target="_blank" href="<%= adminbaseurl%>order/otgInvoice/<%= val.id %>" class="edit_btn"><i class="fa fa-download"></i></a>
+                                      </td>
+                                    </tr>
+                                  <% i++; }) %>
+                                </tbody>
+                              </table>
+                            <% }else{ %>
+                              <h5 class="dontHave"><%= arrData.first_name %> <%= arrData.last_name %> did not place any order</h5>
+                            <%}%>
+                          </form>
+                        </div>
+                        <div class="tab-pane" id="Wallet_Transactions_Info">
+                          <%if(customerWallet !=''){%>
+                            <table id="" class="table">
+                              <thead>
+                                <tr>
+                                  <th  class="th-sm text-center">Total Credit</th>
+                                  <th  class="th-sm text-center">Total Debit</th>
+                                  <th  class="th-sm text-center">Balance</th>                   
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td class="text-center"><%= totalCredit[0].total_credit %></td>
+                                  <td class="text-center"><%= totalDebit[0].total_debit %></td>
+                                  <td class="text-center"><%= availableBalance %></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table id="mywalletTable" class="table" cellspacing="0" width="100%">
+                              <thead>
+                                <tr>
+                                  <th  class="th-sm">Date</th> 
+                                  <th  class="th-sm">Amount</th>       
+                                  <th  class="th-sm">Balance Amount</th>
+                                  <th  class="th-sm">Amount Type</th>                 
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% var i= 1;
+                                customerWallet.forEach(function(val) { %>
+                                  <tr>
+                                    <td><%= moment(val.createdAt).format( 'LL') %></td>
+                                    <td><%= val.amount %></td>
+                                    <td><%= val.balance_amount %></td>
+                                    <td><%= val.amount_type %></td>
+                                  </tr>
+                                <% i++; }) %>
+                              </tbody>
+                            </table>
+                          <% }else{ %>
+                            <h5 class="dontHave"><%= arrData.first_name %> <%= arrData.last_name %> don't have any wallet transactions.</h5>
+                          <%}%>
+                        </div>
+                    <div class="tab-pane" id="Review_Info">
+                      <form novalidate name="Review_Info-form" id="common_form" name="Review_Info"
+                          class="form-horizontal form-label-left" method="post" enctype="multipart/form-data"
+                          action="<%= adminbaseurl %>customer/save/Review_Info">
+                          <%if(customefeedback !=''){%>
+                            <table id=reviewTable class="ui celled table" style="width:100%">
+                              <thead>
+                                <tr>
+                                  <th class="th-sm text-center" style="width:100px">Date</th>
+                                  <th class="th-sm text-center"  style="width:100px">Order</th>
+                                  <th class="th-sm text-center"  style="width:15px">Rating</th>
+                                  <th class="th-sm text-center">Message</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% var i= 1;
+                                customefeedback.forEach(function(val) { %>
+                                  <tr>
+                                    <td class="text-center"><%= moment(val.createdAt).format( 'LL') %></td>
+                                    <td class="text-center"><%= val.order_id %></td>
+                                    <td class="text-center"><%= val.rating %></td>                                
+                                    <td class="text-center"><%= val.message %></td>
+                                  </tr>
+                                <% i++; }) %>
+                              </tbody>
+                            </table>
+                          <%}else{%>
+                            <h5 class="dontHave"><%= arrData.first_name %> <%= arrData.last_name %> did not give any review yet.</h5>
+                          <%}%>
+                      </form>
+                    </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Customer Edit Modal start -->
+<div class="modal fade" id="myEditModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+        <h4 class="modal-title"><i class="fa fa-edit" aria-hidden="true"></i> Edit Customer</h4>
+      </div>
+      <form novalidate name="General_Info-form" id="common_form" name="General_Info"
+        class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>customers/addOrUpdate">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="firstName" class="form-control" name="firstName" required="required" onkeyup="this.value=this.value.replace(/[^0-9A-Za-z ]/g,'');" type="text" value="<%= arrData ? arrData.firstName : '' %>" />
+                <span>First Name<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="lastName" class="form-control" name="lastName" required="required"
+                  onkeyup="this.value=this.value.replace(/[^0-9A-Za-z ]/g,'');" type="text"
+                  value="<%= arrData ? arrData.lastName : '' %>" />
+                <span>Last Name<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="email" class="form-control" name="email" type="email"
+                  value="<%= arrData ? arrData.email : '' %>" />
+                <span>Email<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="mobile" class="form-control" name="mobile" placeholder="10 digit mobile number" type="text" value="<%= arrData ? arrData.mobile : '' %>" data-validate-length-range="10,10" maxlength="10" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" />
+                <span>Phone<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="dob" class="form-control" name="dob" type="date" value="<%= arrData ? arrData.dob : '' %>" >
+                <span>Date Of Birth<span></span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                  <select name="gender" id="gender" class="form-control" required="required">
+                    <option value=""  <% if(arrData.gender == ''){ %> selected="selected" <% }%>>Select Gender</option>
+                    <option value="Male"  <% if(arrData.gender == 'Male'){ %> selected="selected" <% }%>>Male</option>
+                    <option value="Female"  <% if(arrData.gender == 'Female'){ %> selected="selected" <% }%>>Female</option>
+                    <option value="Other"  <% if(arrData.gender == 'Other'){ %> selected="selected" <% }%>>Other</option>
+                  </select>
+                  <span>Gender<span></span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="doa" class="form-control" name="doa" type="date" value="<%= arrData ? arrData.doa : '' %>" >
+                <span>Date of Anniversary<span></span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Last Order</span>
+                <input type="text" id="lastOrder" class="form-control" name="lastOrder" readonly="readonly" value="<%= arrData ? arrData.lastOrder : '' %>" />
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Last Login</span>
+                <input type="datetime-local" readonly="readonly" id="lastLogin" class="form-control" name="lastLogin" value="<%= arrData ? arrData.lastLogin : '' %>" />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Referred By</span>
+                <input type="text" id="referredBy" class="form-control" name="referredBy" readonly="readonly" value="<%= arrData ? arrData.referredBy : '' %>" />
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Order Value</span>
+                <input type="text" id="orderValue" class="form-control" name="orderValue" readonly="readonly" value="<%= arrData ? arrData.orderValue : '' %>" />
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>Mobile Verified</span>
+                <select name="mobileVerified" id="mobileVerified" class="form-control">
+                  <option <% if(arrData.mobileVerified=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+                  <option <% if(arrData.mobileVerified=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                </select>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <span>E-mail Verified</span>
+                <select name="emailVerified" id="emailVerified" class="form-control">
+                  <option <% if(arrData.emailVerified=='No'){ %>selected="selected" <% }%> value="No">NO</option>
+                  <option <% if(arrData.emailVerified=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                </select>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <label>Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+                <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+                <div class="upload_img01">
+                  <% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInCustomersImage(arrData.id+'/'+arrData.image)){%>
+                    <img id="preview" src="<%= baseurl+ 'admin/customers/'+ arrData.id +'/' + arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                  <% } else { %>
+                    <img id="preview" src="<%= baseurl + 'admin/customers/user.png' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Customer Edit Modal ends-->
+<!-- Customer password Modal start -->
+<div class="modal fade" id="myPasswordModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa fa-lock" aria-hidden="true"></i> Reset Password</h4>
+      </div>
+      <form novalidate class="form-horizontal form-label-left" method="post" onSubmit="return checkPassword(this)" enctype="multipart/form-data" action="<%= adminbaseurl %>customers/password">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="password" class="form-control" name="password" required="required"
+                  value="">
+                <span>New Password<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="animate_form field">
+                <input id="conPassword" class="form-control" name="conPassword" required="required">
+                <span>Confirm Password<span>*</span></span>
+                <div class="alert_msg"></div>
+              </div>
+            </div>
+            <div class="form-group field">
+              <input type="hidden" name="updateId" value="<%= arrData.id%>">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  function checkPassword(form) {
+    password1 = form.password.value;
+    password2 = form.conPassword.value;
+    if (password1 == ''){
+      alert("Please enter Password");
+      return false;
+    }else if (password2 == ''){
+      alert("Please enter confirm password");
+      return false;
+    }else if (password1 != password2) {
+      alert("\nPassword did not match: Please try again...")
+      return false;
+    } else {
+      return true;
+    }
+  } 
+</script>
+<!-- Customer password Modal ends-->
+<!-- Customer Add Address Modal start -->
+<div class="modal fade" id="myAddAddressModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa fa-plus" aria-hidden="true"></i> Add Customer Address</h4>
+      </div>
+      <form name="Addresses_Info-form" id="common_form" name="Addresses_Info" class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>customers/addressesInfo">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="addFullName" class="form-control" name="fullName" type="text" value="" />
+                <span>Full Name<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="addLabel" class="form-control" name="label" type="text" value="" />
+                <span>Label<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input type="text" id="addMobile" name="mobile" placeholder="10 digit mobile number" value="" class="form-control" required="required" data-validate-length-range="10,10" maxlength="10" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" />
+                <span>Mobile Number<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="animate_form field">
+                <textarea rows="4" type="text" id="addAddress" name="address" required="required" class="form-control"></textarea>
+                  <span>Address</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="addLocality" class="form-control" name="locality" type="text" value="" />
+                <span>Locality</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="addCity" class="form-control" name="city" required="required" type="text" value="" />
+                <span>City</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="addState" class="form-control" required="required" name="state" type="text" value="" />
+                <span>State</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="addPin" class="form-control" required="required" type="text" maxlength="6" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" name="pin" value="" />
+                <span>Pin<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form ">
+                <select id="addCountry" name="country" class="form-control" required="required">
+                  <option value="india">India</option>
+                </select>
+                <span>Country</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form ">
+                <select id="addIsPrimary" name="isPrimary" class="form-control">
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+                <span>Is Primary</span>
+              </div>
+            </div>
+          </div> 
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="AddCustomerAddressId" name="customerAddressId" value="" />
+          <input type="hidden" id="AddUpdateId" name="updateId" value="<%= arrData.id%>" />
+          <input type="hidden" id="AddStoreId" name="storeId" value="<%= arrData.storeId%>" />
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Customer Add Address Modal ends-->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".modaleditAddressButton").click(function(e){
+      var customerAddressId= $(this).attr("data-addressId");
+      var customerId =  $(this).attr("data-customerID");
+      e.preventDefault();
+      $.ajax({
+        type: "POST",
+        url: "<%= adminbaseurl %>customers/addressDetails/",
+        data: {customerAddressId:customerAddressId,customerId:customerId},
+        success:function(res){
+          if(res.errorNode.errorCode==0){
+            let result = res.data.details!='' ? res.data.details : '';
+            if(result!=''){
+              $('#editFullName').val(result.fullName);              
+              $('#editLabel').val(result.label);              
+              $('#editMobile').val(result.mobile);
+              $('#editAddress').val(result.address);
+              $('#editLocality').val(result.locality);
+              $('#editCity').val(result.city);              
+              $('#editState').val(result.state);
+              $('#editPin').val(result.pin);              
+              $('#editCountry').val(result.country);              
+              $('#editIsPrimary').val(result.isPrimary);              
+              $('#editCustomerAddressId').val(result.id);             
+              $('#editUpdateId').val(result.customerId);
+              $('#editStoreId').val(result.storeId);
+            } else {
+              alert('No Data Found');
+            }
+          } else {
+            alert(res.errorNode.errorMsg);
+          }
+        }
+      });
+    });
+  });
+</script>
+<!-- Customer edit Address Modal start -->
+<div class="modal" id="myAddressEditModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa fa-edit" aria-hidden="true"></i> Edit Customer Address</h4>
+      </div>
+      <form name="Addresses_Info-form" id="common_form" name="Addresses_Info" class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>customers/addressesInfo">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="editFullName" class="form-control" name="fullName" type="text" value="" />
+                <span>Full Name<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="editLabel" class="form-control" name="label" type="text" value="" />
+                <span>Label<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input type="text" id="editMobile" name="mobile" placeholder="10 digit mobile number" value="" class="form-control" required="required" data-validate-length-range="10,10" maxlength="10" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" />
+                <span>Mobile Number<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="animate_form field">
+                <textarea rows="4" type="text" id="editAddress" name="address" required="required" class="form-control"></textarea>
+                  <span>Address</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="editLocality" class="form-control" name="locality" type="text" value="" />
+                <span>Locality</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="editCity" class="form-control" name="city" type="text" value="" />
+                <span>City</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="editState" class="form-control" name="state" type="text" value="" />
+                <span>State</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form field">
+                <input id="editPin" class="form-control" required="required" type="text" maxlength="6" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" name="pin" value="" />
+                <span>Pin<span>*</span></span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form ">
+                <select id="editCountry" name="country" class="form-control">
+                  <option value="india">India</option>
+                </select>
+                <span>Country</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="animate_form ">
+                <select id="editIsPrimary" name="isPrimary" class="form-control">
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+                <span>Is Primary</span>
+              </div>
+            </div>
+          </div> 
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="editCustomerAddressId" name="customerAddressId" value="" />
+          <input type="hidden" id="editUpdateId" name="updateId" value="" />
+          <input type="hidden" id="editStoreId" name="storeId" value="" />
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Customer edit Address Modal ends-->
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+<script type="text/javascript">
+  $(function () {
+    var hash = window.location.hash;
+    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+    $('.nav-tabs a').click(function (e) {
+      $('.tab-pane').removeClass('show');
+      $(this).tab('show');
+      var scrollmem = $('body').scrollTop();
+      window.location.hash = this.hash;
+      $('html,body').scrollTop(scrollmem);
+    });
+  });
+  var lastValue;
+  $("#statusChange").bind("click", function(e) {
+    lastValue = $(this).val();
+  }).bind("change", function(e) {
+    changeConfirmation = confirm("Are you sure?");
+    if (changeConfirmation) {
+    } else {
+      $(this).val(lastValue);
+    }
+  });
+  $('#statusChange').change(function(){
+    var selectValue = $(this).val(); 
+    var Id = $('#cusId').val();
+    $.ajax({
+      type: "post",
+      url: "<%= adminbaseurl %>customers/statusChange/",
+      data: {cusID : Id, statuValue : selectValue},
+      success: function(data) {
+        console.log(data);
+      }
+    });
+  });
+</script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.semanticui.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.semanticui.min.css" />
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#myTable').DataTable();
+  });
+  $(document).ready(function () {
+    $('#mywalletTable').DataTable();
+  });
+  $(document).ready(function () {
+    $('#reviewTable').DataTable();
+  }); 
+</script>

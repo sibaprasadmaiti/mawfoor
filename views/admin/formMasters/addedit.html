@@ -1,0 +1,127 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+<!-- page content -->
+<div class="content_wraper">
+	<div class="main_container">          
+		<div class="header_wraper">
+			<h2><%=title%></h2>
+			<ul>
+			<li><a href="<%= adminbaseurl %>dashboard">Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>form_master"></i> Form Master</a></li> 
+            <li><%=title%></li>
+			</ul>
+		</div> 
+		<% if(messages!='') {%>
+		<div class="succ_msg msg" id="succ_msg">    
+			<i class="fa fa-check"  aria-hidden="true"></i>        
+			<%=messages%>
+		</div>
+		<%}%>                
+		<% if(errors!='') {%>
+		<div class="succ_err msg" id="err_msg">
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+			<%=errors%>
+		</div>
+		<% }%>
+		<form id="category-info" class="form-horizontal form-label-left" novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>formMasters/addOrUpdate">
+			<div class="content_body panel_body">
+				<div class="panel_title">
+					<h3><%=title%> Info</h3>
+				</div>												
+				<div class="clearfix"></div>
+				<div class="tab-content">
+					<!--category content start-->
+					<div id="gen-info" class="tab-pane fade in active show">
+						<div class="row edit_box">
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+											<input id="title" required="required" class="form-control" name="title" type="text" value="<%= arrData ? arrData.title : '' %>">
+											<span>Title<span>*</span></span>
+										<div class="alert_msg"></div>
+									</div>
+								</div>
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+											<input id="title" required="required" class="form-control" name="description" type="text" value="<%= arrData ? arrData.description : '' %>">
+											<span>Description<span>*</span></span>
+										<div class="alert_msg"></div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="animate_form field">
+									<span>Select Store</span>
+										<select name="storeId" id="storeId" class="form-control" required="required">
+										<option value=""  <% if(arrData.storeId == ''){ %> selected="selected" <% }%>>Select Store</option>
+										<% stores.forEach(function(store){%>
+										<option value="<%=store.id%>" <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+										<% })%>
+									</select>
+									</div>
+								</div>
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+									  <input type="email" class="form-control" id="notifyEmailId" name="notifyEmailId" value="<%= arrData ? arrData.notifyEmailId : '' %>" >
+									  <span>Notify Email Id<span></span></span>
+									</div>
+								</div>
+								 <div class="col-sm-6">
+									<div class="animate_form field">
+									  <input id="notifyMobileNo" class="form-control" name="notifyMobileNo" type="text" maxlength="10" minlength="10" pattern="^[6-9]\d{9}$" onkeypress="return blockChar(event)" required="required" value="<%= arrData ? arrData.notifyMobileNo : '' %>" />
+									  <span>Notify Mobile No<span>*</span></span>
+									</div>
+								  </div>
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+										<textarea class="form-control" name="notifyEmailMessage" id="notifyEmailMessage"><%=arrData.notifyEmailMessage%></textarea>
+										<span>Notify Email Message<span></span></span>
+									</div>
+								</div>
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+									  <textarea class="form-control" name="notifySmsMessage" id="notifySmsMessage"><%=arrData.notifySmsMessage%></textarea>
+									  <span>Notify SMS Message<span></span></span>
+									</div>
+								</div>
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+									  <textarea class="form-control" name="senderEmailMessage" id="senderEmailMessage"><%=arrData.senderEmailMessage%></textarea>
+									  <span>Sender Email Message<span></span></span>
+									</div>
+								</div>
+								<div class="col-sm-6"> 
+									<div class="animate_form field">
+									  <textarea class="form-control" name="senderSmsMessage" id="senderSmsMessage"><%=arrData.senderSmsMessage%></textarea>
+									  <span>Sender SMS Message<span></span></span>
+									</div>
+								</div>
+						</div>
+					</div>
+					<!--category content end-->
+				</div>
+			</div>
+			<div class="btn_right mb-4">
+				<input type="hidden" name="updatedId" value="<%= arrData ? arrData.id : '' %>">
+				<button id="send" type="submit" class="submit_btn">Submit</button>
+			</div>
+		</form>
+		</div>
+	</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+<script type="text/javascript">
+	function blockChar(e){
+	  var k;
+	  document.all ? k = e.keyCode : k = e.which;
+	  return (k >= 48 && k <= 57);
+	}
+	function  blockother(e){
+	  var k;
+	  document.all ? k = e.keyCode : k = e.which;
+	  return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 32);
+	}
+  </script>

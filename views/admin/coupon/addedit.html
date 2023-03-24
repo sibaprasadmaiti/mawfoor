@@ -1,0 +1,218 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+<!-- page content -->
+<div class="content_wraper">
+	<div class="main_container">          
+		<div class="header_wraper">
+			<h2><%=title%></h2>
+			<ul>
+			<li><a href="<%= adminbaseurl %>dashboard">Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>coupon/list/1"></i> Coupon</a></li> 
+            <li><%=title%></li>
+			</ul>
+		</div> 
+		
+		<% if(messages!='') {%>
+		<div class="succ_msg msg" id="succ_msg">    
+			<i class="fa fa-check"  aria-hidden="true"></i>        
+			<%=messages%>
+		</div>
+		<%}%>                
+		<% if(errors!='') {%>
+		<div class="succ_err msg" id="err_msg">
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+			<%=errors%>
+		</div>
+		<% }%> 
+
+
+		<form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>coupon/addOrUpdate">
+			<div class="content_body panel_body edit_store">
+			  	<div class="panel_title">
+				  <h3>Coupon</h3>
+				</div>
+				<div class="clearfix"></div>
+				<div class="row edit_box">
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Coupon Type <span class="text-danger">*</span></span>
+							<select name="couponType" class="form-control" id="couponType">
+								<option <% if(arrData.couponType=='amount'){ %>selected="selected" <% }%> value="amount">Amount</option>
+								<option <% if(arrData.couponType=='percentage'){ %>selected="selected" <% }%> value="percentage">Percentage</option>  
+							</select>
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Coupon Value <span class="text-danger">*</span></span>
+							<input id="couponValue" class="form-control"  name="couponValue"  onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" type="text" value="<%= arrData ? arrData.couponValue : '' %>">
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Description <span class="text-danger">*</span></span>
+							<input id="description" class="form-control"  name="description" type="text" value="<%= arrData ? arrData.description : '' %>">
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Short Description <span class="text-danger"></span></span>
+							<input id="shortDescription" class="form-control"  name="shortDescription" type="text" value="<%= arrData ? arrData.shortDescription : '' %>">
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>From Date <span class="text-danger"></span></span>
+							<input id="dateFrom" class="form-control"  name="dateFrom" type="text" value="<%= arrData ? arrData.dateFrom : '' %>">
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>To Date <span class="text-danger"></span></span>
+							<input id="dateTo" class="form-control"  name="dateTo" type="text" value="<%= arrData ? arrData.dateTo : '' %>">
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Coupon Code <span class="text-danger">*</span></span>
+							<input id="couponCode" class="form-control" oninput="this.value = this.value.toUpperCase()"  name="couponCode" type="text" value="<%= arrData ? arrData.couponCode : '' %>">
+						</div>
+					</div>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Purchase Limit<span class="text-danger">*</span></span>
+							<input id="purchaseLimit" class="form-control"  name="purchaseLimit" type="text" value="<%= arrData ? arrData.purchaseLimit : '' %>" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+						</div>
+					</div>
+
+					<% if(sessionStoreId!='') {%>
+						<input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+					<% } else {%>
+						<div class="col-sm-6 mb-5">
+							<div class="animate_form field mb-1">
+								<span>Select Store <span class="text-danger">*</span></span>
+								<select name="storeId" id="storeId" class="form-control">
+									<% stores.forEach(function(store){%>
+									<option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+									<% })%>
+								</select>
+							</div>
+						</div>
+					<% }%>
+
+					<div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Customer Type <span class="text-danger">*</span></span>
+							<select name="customerType" class="form-control" id="customerType">
+								<option <% if(arrData.customerType=='all'){ %>selected="selected" <% }%> value="all">All Customer</option>
+								<option <% if(arrData.customerType=='new'){ %>selected="selected" <% }%> value="new">New Customer</option>  
+							</select>
+						</div>
+					</div>
+
+					<div class="col-sm-6">
+						<div class="animate_form field">
+						<span>Customer <span class="text-danger">*</span></span>
+						<select class="multipleselect" multiple="true" name="cuponCustomerId" id="cuponCustomerId" class="form-control" required="required">
+						  <option value="" selected disabled>-- Select --</option>
+						  <% arrCustomers.forEach(function(customer){ 
+													  if(selectedCustomer){
+														  var select='';                     
+														  selectedCustomer.forEach(function(selCusr){ 
+															  if(selCusr.customerId==customer.id) {
+																  select='selected="selected"';
+															  }                                                     
+														  });
+													  }%>
+						  <option <%= select %> value="<%=customer.id%>~<%=customer.fullName%>"><%=customer.fullName%></option>
+						  <% }); %>
+						 </select>
+					  
+					  <div class="alert_msg"></div>
+						 <style>
+						  .multipleselect {
+						   width: 100%;
+						  }
+				  
+						  .multipleselect option {
+						   padding: 1em;
+						  }
+						 </style>
+						 <input type="checkbox" name="sall" id="sall">&nbsp;Select All
+						</div>
+					   </div>
+
+					   <div class="col-sm-6 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Status <span class="text-danger">*</span></span>
+							<select name="status" class="form-control" id="status">
+								<option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+								<option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+							</select>
+						</div>
+					</div>
+
+					<div class="col-sm-12 mb-5">
+						<div class="animate_form field mb-1">
+							<span>Terms And Conditions </span>
+							<textarea id="termsAndConditions" name="termsAndConditions" class="termsAndConditions" ><%= arrData ? arrData.termsAndConditions : '' %></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn_right mb-4">
+				<input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+				<button id="send" type="submit" class="submit_btn">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+
+<%- include ../jqueryDatePicker/jquerydatepicker.html %>
+<script src="<%= adminbaseurl %>ckeditor/ckeditor.js"></script>
+
+<script type="text/javascript">
+	CKEDITOR.replace('termsAndConditions')
+</script>
+<script>
+$("#dateFrom","#dateTo").keydown(function(event) {
+  if(event.keyCode != 8){
+    event.preventDefault();
+  }
+});
+var dateToday = new Date();
+var dates = $("#dateFrom, #dateTo").datepicker({
+  changeMonth: true,
+  changeYear: true,
+  dateFormat: 'yy-mm-dd',
+  minDate: dateToday,
+  onSelect: function(selectedDate) {    
+    console.log(this)
+    var option = this.id.indexOf("dateFrom") != -1 ? "minDate" : "maxDate",
+    instance = $(this).data("datepicker"),
+    date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+    dates.not(this).datepicker("option", option, date);
+  }
+});
+</script>
+
+<script>
+	$("#sall").change(function() {
+	  if($(this).prop("checked") == true){
+		$('#cuponCustomerId option').prop('selected', true);
+	  } else {
+		$('#cuponCustomerId option').prop('selected', false);
+	  }
+	}); 
+	</script>

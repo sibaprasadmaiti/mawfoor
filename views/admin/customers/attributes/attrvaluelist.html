@@ -1,0 +1,158 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><a href="<%= adminbaseurl %>attrsetting/list/1">Attribute Setting</a></li>
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+  
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%> 
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+                <h3>Values of (<%= attrSetting.displayName %>)</h3>
+                <div class="mt-3">
+                    <div class="float-right">
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#createmodal"><i class="fa fa-plus"></i> Create</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Sl No</th>
+                            <th>Name</th>
+                            <th>Label</th>
+                            <th>Value</th>
+                            <th>Image</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% var i= 1; arrData.forEach(function(val) { %>	
+                        <tr>
+                            <td class="text-center"> <%= i %></td>
+                            <td> <%= attrSetting.displayName %></td>
+                            <td> <%= val.label %></td>
+                            <td> <%= val.value %></td>
+                            <td>
+                              <% if(val.image !='' && val.image != null){%>
+                                <a href="<%= baseurl+ 'admin/attrValue/'+ val.image %>"><img src="<%= baseurl+ 'admin/brands/'+ val.image %>" class="product_img" height="50px" width="50px" ></a>
+                            <% }else{ %>
+                                <a href="<%= baseurl + 'admin/attrValue/no_image.jpg' %>"><img src="<%= baseurl + 'admin/brands/no_image.jpg' %>" class="product_img" height="50px" width="50px" ></a>
+                            <% } %>
+                            </td>
+                            <td class="text-center">
+                                <a href="<%= adminbaseurl%>attrsetting/value/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        <% i++; }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../partials/footer.html %>
+
+
+ <!--////////////////////////// Value Create Modal Start //////////////////////////-->
+ <div class="modal fade" id="createmodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title text-dark" id="modalLabel" style="font-size: 20px;">Create</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>attrsetting/value/add">
+                <div class="mb-4">
+                    <div class="animate_form field">
+                        <span>Field Name <span class="text-danger">*</span></span>
+                        <input class="form-control"  type="text" readonly value="<%= attrSetting.displayName %>">
+                        <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= attrSetting.storeId %>">
+                        <input id="attrSettingId" class="form-control"  name="attrSettingId" type="hidden" value="<%= attrSettingId %>">
+                        <input id="attrName" class="form-control"  name="attrName" type="hidden" value="<%= attrSetting.attrName %>">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Label <span class="text-danger">*</span></span>
+                        <input id="label" class="form-control"  name="label" type="text" >
+                    </div>
+                    <span class="text-danger font-weight-bold" id="type_error"></span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Value <span class="text-danger">*</span></span>
+                        <input id="value" class="form-control"  name="value" type="text" >
+                    </div>
+                    <span class="text-danger font-weight-bold" id="type_error"></span>
+                </div>
+                <!-- <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Slug <span class="text-danger">*</span></span>
+                        <input id="slug" class="form-control"  name="slug" type="text" >
+                    </div>
+                    <span class="text-danger font-weight-bold" id="type_error"></span>
+                </div> -->
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <span>Description <span class="text-danger">*</span></span>
+                        <textarea id="description" class="form-control"  name="description" type="text" ></textarea>
+                    </div>
+                    <span class="text-danger font-weight-bold" id="type_error"></span>
+                </div>
+                <div class="mb-4">
+                    <div class="animate_form field mb-1">
+                        <label>Image</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="preView()" <% if(arrData && arrData.image && arrData.image==''){ %> required="required" <% }%> />
+              <input type="hidden" name="update_image" value="<%= arrData ? arrData.image : '' %>" />
+              <!-- <div class="upload_img01">
+                <% if(arrData.image !='' && arrData.image != null && helper.isFileExistsInattrValueImage(arrData.id+'/'+arrData.image)){%>
+                  <img id="preview" src="<%= baseurl+ 'admin/attrValue/'+ arrData.image %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } else { %>
+                  <img id="preview" src="<%= baseurl + 'admin/attrValue/no_image.jpg' %>" style="width: 120px; margin-top: 10px;" class="img-thumbnail" />
+                <% } %>
+                        </div> -->
+                    </div>
+                <div class="btn_right mb-4">
+                    <button id="send" type="submit" class="submit_btn">Submit</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--////////////////////////// Value Create Modal End //////////////////////////-->

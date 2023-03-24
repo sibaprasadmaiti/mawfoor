@@ -1,0 +1,286 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body">
+      <div class="table_heading mb-0">
+        <h3><%=title%></h3>
+        <form align="right" class="header-searchbox"  >
+          <div class="searchcom" >
+              <input type="text" placeholder="Search.." name="search" />
+              <button><i class="fa fa-search" aria-hidden="true"></i></button>
+          </div>
+      </form>
+      </div>
+      <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+        <div class="title_right text-right">
+          <div>
+            <span style="font-size: 16px;">Showing </span>
+            <select onchange="location = this.value" style="height: 25px; width: 60px;">
+              <option value="1?pazesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+              <option value="1?pazesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+              <option value="1?pazesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+              <option value="1?pazesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+            </select> 
+            <span style="font-size: 16px;"> entries </span>      
+          </div>
+        </div>
+        <div>
+          <div class="row">
+            <div>
+              <select name="customerName" id="customerName" class="form-control selectpicker" data-live-search="true" onchange="location = this.value">
+                <option value="" selected disabled>Select Customer</option>
+                <% feedbackCustomers.forEach(function(feedback) { %>
+                  <% arrCustomer.forEach(function(customer) {
+                    if(customer.id==feedback.customerId){ %>
+                      <option value="?pagesize=<%=pageSize%>&customer=<%= customer.id %><% if(dateFilter!=''){ %>&date=<%=dateFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(customerFilter==customer.id){ %>selected <% }%>><%= customer.firstName %> <%= customer.lastName %></option>
+                  </ <% } }); %>
+                <% }) %>
+              </select>
+            </div>
+            <div>
+              <input type="date" class="form-control" name="date" id="date" value="<%=dateFilter %>" />
+            </div>
+            <div>
+              <select name="status" id="status" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Status</option>
+                <option value="?pagesize=<%=pageSize%>&status=Yes<% if(dateFilter!=''){ %>&date=<%=dateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(statusFilter=='Yes'){ %>selected <% }%>>Active</option>
+
+                <option value="?pagesize=<%=pageSize%>&status=No<% if(dateFilter!=''){ %>&date=<%=dateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>" <% if(statusFilter=="No"){ %>selected <% }%>>Inactive</option>
+              </select>
+            </div>
+            <!-- <div>
+              <button type="button" class="btn btn-info" onclick="filter()">Submit</button>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="mt-0">
+          <a href="<%= adminbaseurl %>feedback/download?pagesize=<%=pageSize%><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(dateFilter!=''){ %>&date=<%=dateFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="btn btn-success btn-sm right">Export List</a>
+          <!-- <a href="<%= adminbaseurl %>feedback/view" class="btn btn-info btn-sm"  ><i class="fa fa-plus"></i> Add Feedback</a> -->
+        </div>
+      </div>
+
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+            <tr style="cursor: pointer;">
+              
+              <% if(orderType=='DESC'){%>
+                <th data-column="id" data-order="ASC" class="text-center theading">Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="id" data-order="DESC" class="text-center theading">Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th>Customer</th>
+
+              <th>Order</th>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="rating" data-order="ASC" class="theading">Rating
+                  <% if(columnName=='rating'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="rating" data-order="DESC" class="theading">Rating
+                  <% if(columnName=='rating'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="message" data-order="ASC" class="theading">Massage
+                  <% if(columnName=='message'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="message" data-order="DESC" class="theading">Massage
+                  <% if(columnName=='message'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="reply" data-order="ASC" class="theading">Reply
+                  <% if(columnName=='reply'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="reply" data-order="DESC" class="theading">Reply
+                  <% if(columnName=='reply'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(sessionStoreId=='') {%>
+                <th>Store</th>
+              <% }%>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="status" data-order="ASC" class="theading">Status
+                  <% if(columnName=='status'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="status" data-order="DESC" class="theading">Status
+                  <% if(columnName=='status'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% var i=1; arrData.forEach(function(val) { %>
+              <tr>
+                <td class="text-center"> <%= i %></td>
+                <td>
+                  <% arrCustomer.forEach(function(customer) {
+                          if(customer.id==val.customerId){ %>
+                  <%= customer.firstName %> <%= customer.lastName %></ <% } }); %>
+                </td>
+                <td><%= val.orderId %></td>
+                <td><%= val.rating %></td>
+                <td><%= val.message %></td>
+                <td><%= val.reply %></td>
+                <% if(sessionStoreId=='') {%>
+                  <td> <% arrStore.forEach(function(store) {if(store.id==val.storeId){ %><%= store.storeName %></ <% } }); %></td>
+                <% }%>
+                <td class="font-weight-bold"> 
+                  <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span><% } else {%> <span class="text-danger">Inactive</span> <% } %>
+                </td>
+                <td class="text-center">
+                  <a href="<%= adminbaseurl%>feedback/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                  <a href="<%= adminbaseurl%>feedback/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                </td>
+              </tr>
+            <% i++; }) %>
+          </tbody>
+        </table>
+        <!--====================================== Pagination Start ======================================-->
+        <% if(listCount>0) {%>
+          <div class="pagination_sec">
+              <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+              <% if(currentPage>1) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>feedback/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Prev</a></li>
+                  </ul>
+              <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                  </ul>
+              <% } %>
+              <% for(var i=1; i<=pageCount; i++) { %>
+                  <ul>
+                  <% if(currentPage==i) {%>
+                  <li><a href="<%= adminbaseurl%>feedback/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="active"><%=i %></a></li>
+                  <% }else{ %>
+                  <li><a href="<%= adminbaseurl%>feedback/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class=""><%=i %></a></li>
+                  <% } %>
+                  </ul>
+              <% } %>
+              <% if(currentPage < pageCount) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>feedback/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Next</a></li>
+                  </ul>
+                  <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                  </ul>
+              <% } %>
+          </div>
+      <% } %>
+      <!--====================================== Pagination End ======================================-->
+      </div>
+    </div>
+  </div>
+</div>
+<%- include ../partials/footer.html %>
+
+<script>
+  $(document).ready(() => {
+    $('.theading').on('click',function(){
+      var column = $(this).data('column');
+      var order = $(this).data('order');
+
+      if(order == 'DESC'){
+        $(this).data('order', 'ASC');        
+        window.location.href = `<%= adminbaseurl%>feedback/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+      }else{
+        $(this).data('order', 'DESC');
+        window.location.href = `<%= adminbaseurl%>feedback/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+      }
+    })
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#customerName').selectpicker();
+  });
+</script>
+
+<script>
+  $('#date').on('blur', function(){
+    let date = $('#date').val()
+    if(date !=''){
+      window.location.href = `<%= adminbaseurl%>feedback/list/1?pagesize=<%=pageSize%>&date=${date}<% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %>`
+    }
+  })
+</script>

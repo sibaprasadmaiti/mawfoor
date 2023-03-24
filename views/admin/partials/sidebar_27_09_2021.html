@@ -1,0 +1,201 @@
+<div class="left_sidebar">
+    <div class="sidebar_overlay"></div>
+    <a href="<%= adminbaseurl %>dashboard" class="logo">
+    	<img src="<%= adminbaseurl %>images/logo.png" alt="">
+    </a>
+    <div class="menu_waraper">
+        <ul>
+            <li><a href="<%= adminbaseurl %>dashboard" ><span class="fa fa-home" ></span>Dashboard</a></li>
+            <li>
+                <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-list-alt"></span>Catalog</a>
+                <ul class="collapse" id="submenu_masters">
+                    <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                        permissions.find(permission=> {
+                        return permission === 'ProductList'
+                        })
+                        }
+                        if(userPermission==true){ %>
+                        <li><a href="<%= adminbaseurl %>products"><span class="fa fa-list-alt"></span>Products</a></li>
+                    <%}%>    
+
+                    <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                        permissions.find(permission=> {
+                        return permission === 'CategoryList'
+                        })
+                        }
+                        if(userPermission==true){ %>
+                        <li><a href="<%= adminbaseurl %>categories"><span class="fa fa-list-alt"></span> Category</a></li>
+                    <%}%>
+
+                    <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                        permissions.find(permission=> {
+                        return permission === 'BrandList'
+                        })
+                        }
+                        if(userPermission==true){ %>
+                        <li><a href="<%= adminbaseurl %>brands/list/1"><span class="fa fa-list-alt"></span>Brands</a></li>
+                    <%}%>
+                </ul>
+            </li> 
+            <li>
+                <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-list-alt"></span>customer</a>
+                <ul class="collapse" id="submenu_masters">
+                    <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                        permissions.find(permission=> {
+                        return permission === 'CustomerList'
+                        })
+                        }
+                        if(userPermission==true){ %>
+                        <li><a href="<%= adminbaseurl %>customers/list/1"><span class="fa fa-list-alt"></span>All Customers</a></li>
+                    <%}%>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-list-alt"></span>Promotions</a>
+                <ul class="collapse" id="submenu_masters">
+                    <li><a href="<%= adminbaseurl %>transactionsOffer/list/1"><span></span> Catalog Price Rule</a></li>            
+                    <li><a href="<%= adminbaseurl %>couponTransaction/list/1"><span></span> Cart Price Rule</a></li>
+                    <li><a href="<%= adminbaseurl %>reservations/list/1"><span></span> Reservations</a></li>
+                    <li><a href="<%= adminbaseurl %>subscriber/list/1"><span></span> Subscriber</a></li>
+                    <li><a href="<%= adminbaseurl %>sendSMS/list/1"><span></span> Send SMS</a></li>
+                    <li><a href="<%= adminbaseurl %>franchise/list/1"><span></span> Franchise</a></li>  
+                </ul>
+            </li> 
+
+            <li>
+                <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-list-alt"></span>Content</a>
+                <ul class="collapse" id="submenu_masters">
+                    <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                        permissions.find(permission=> {
+                            return permission === 'PageList'
+                        })
+                    }
+                    if(userPermission==true){ %>
+                        <li><a href="<%= adminbaseurl %>pages/list/1"><span></span> Pages</a></li>
+                    <%}%>  
+                    <li><a href="<%= adminbaseurl %>contentBlock/list/1"><span></span> Content Blocks</a></li> 
+                    <li><a href="<%= adminbaseurl %>banner/list/1"><span></span> Banner</a></li>
+                    <li><a href="<%= adminbaseurl %>blogs/list/1"><span></span> Blogs</a></li>
+                    <li><a href="<%= adminbaseurl %>blogcomment/list/1"><span></span> Blog Comments</a></li>
+                    <li><a href="<%= adminbaseurl %>gallery/list/1"><span></span> Gallery</a></li>
+                    <li><a href="<%= adminbaseurl %>faq/list/1"><span></span> FAQ</a></li>
+                    
+                    <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                        permissions.find(permission=> {
+                        return permission === 'TestimonialList'
+                        })
+                        }
+                        if(userPermission==true){ %>
+                        <li><a href="<%= adminbaseurl %>testimonials/list/1"><span></span>Testimonials</a></li>
+                    <%}%>
+                    <li><a href="<%= adminbaseurl %>dynamicform/list/1"><span></span>Form</a></li>
+                </ul>
+            </li>
+
+        <li>
+            <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-file"></span>Reports</a>
+            <ul class="collapse" id="submenu_masters">
+                <li><a href="<%= adminbaseurl %>customersReport/list/1"><span></span> Customers Report</a></li>
+                <li><a href="<%= adminbaseurl %>orderReport/list/1"><span></span> Order Report</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-cog"></span>Setting</a>
+            <ul class="collapse" id="submenu_masters">
+                <% var userPermission =false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!! permissions.find(permission=> {
+                        return permission === 'RoleList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>roles"><span></span> Roles</a></li>
+                <%}%>
+
+                <% var userPermission =false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!! permissions.find(permission=> {
+                    return permission === 'StoreList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>stores"><span></span> Stores</a></li>
+                    <%}%>
+                
+                <% var userPermission =false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!! permissions.find(permission=> {
+                    return permission === 'AdminUserList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>adminUser"><span></span> Admin User</a></li>
+                    <%}%>
+                <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'SiteSettingsGroupList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>sitesettings/list"><span></span> Site Settings</a></li>
+                <%}%>
+
+                <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'SiteSettingsGroupList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>sitesettingsgroup/list"></i> Site SettingGroup</a></li>
+                <%}%>
+                <li><a href="<%= adminbaseurl %>attrsetting/list/1"><span></span> Attributes</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="#submenu_masters" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><span class="fa fa-list-alt"></span>Masters</a>
+            <ul class="collapse" id="submenu_masters">
+                <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'DropdownSettingList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>dropdownSettings/list"><span></span>Dropdown Settings</a></li>
+                <%}%>
+
+                <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'DropdownSettingList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <li><a href="<%= adminbaseurl %>shippingMethods/list"><span></span> Shipping Methods</a></li>
+                <%}%>
+
+                <% var userPermission=false; if(permissions.length==0 && role=='' ){ userPermission=true }else{ userPermission=!!
+                    permissions.find(permission=> {
+                    return permission === 'FormMasterList'
+                    })
+                    }
+                    if(userPermission==true){ %>
+                    <!-- <li><a href="<%= adminbaseurl %>formMasters/list"><span></span> Form Master</a></li> -->
+                <%}%>   
+                
+                <li><a href="<%= adminbaseurl %>deliveryTimeSlot/list/1"><span></span> Delivery Time Slot</a></li>
+                <li><a href="<%= adminbaseurl %>reservationTimeSlot/list/1"><span></span> Reservation Time Slot</a></li>
+                <li><a href="<%= adminbaseurl %>coupon/list/1"><span></span> Coupon</a></li>
+                <li><a href="<%= adminbaseurl %>feedback/list/1"><span></span> Feedback</a></li>
+                
+                <!--<li><a href="<%= adminbaseurl %>fileUpload/list"><span></span> Multiple FileUpload</a></li>-->
+                <!-- <li><a href="<%= adminbaseurl %>sendSMS/list/1"><span></span> Send SMS</a></li> -->
+
+                <li><a href="<%= adminbaseurl %>city/list/1"><span></span> City</a></li>
+                <li><a href="<%= adminbaseurl %>zipcode/list/1"><span></span> Zipcode</a></li> 
+                <!-- <li><a href="<%= adminbaseurl %>bannerDiaplay/list/1"><span></span> Banner Display</a></li>
+                <li><a href="<%= adminbaseurl %>bannerSection/list/1"><span></span> Banner Section</a></li> -->
+                <!-- <li><a href="<%= adminbaseurl %>blogcategory/list/1"><span></span> Blog Category</a></li>
+                <li><a href="<%= adminbaseurl %>blogauthor/list/1"><span></span> Blog Author</a></li>                -->
+            </ul>
+        </li>
+
+        <!-- <li><a href="<%= adminbaseurl %>cms/list/1" ><span class="fa fa-list-alt"></span>CMS</a></li> -->
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,201 @@
+<%- include ../partials/header.html %>       
+<%- include ../partials/sidebar.html %>
+<!-- page content -->
+<div class="content_wraper">
+    <div class="main_container">          
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+				 <li><a href="<%= adminbaseurl %>dropdownSettings/list/1">Dropdown Settings</a></li> 
+                <li><%=title%></li>
+            </ul>
+        </div>
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%>
+
+        <form class="form-horizontal form-label-left" novalidate method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>dropdownSettings/addOrUpdate">
+            <!--Arrtibute info start-->
+            <div class="content_body panel_body">
+                <div class="panel_title">
+                    <h3><%=title%></h3>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row edit_box">
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span>Name <span class="text-danger">*</span></span>
+                            <input id="name" class="form-control"  name="name" type="text" onkeyup="this.value=this.value.replace(/[^0-9A-Za-z ]/g,'');" value="<%= arrData ? arrData.name : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span>Slug <span class="text-danger">*</span></span>
+                            <input id="slug" class="form-control"  name="slug" type="text"  <%= arrData.slug ? '' : 'readonly' %> value="<%= arrData ? arrData.slug : '' %>">
+                        </div>
+                    </div>
+                    
+                    <% if(sessionStoreId!='') {%>
+                        <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+                    <% } else {%>
+                        <div class="col-sm-6 mb-5">
+                            <div class="animate_form field mb-1">
+                                <span>Select Store <span class="text-danger">*</span></span>
+                                <select name="storeId" id="storeId" class="form-control">
+                                    <% stores.forEach(function(store){%>
+                                    <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                                    <% })%>
+                                </select>
+                            </div>
+                        </div>
+                    <% }%>
+
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span>Type <span class="text-danger">*</span></span>
+                            <select name="type" class="form-control" id="type">
+                            <option <% if(arrData.type=='single'){ %>selected="selected" <% }%> value="single">Single</option>
+                            <option <% if(arrData.type=='multi'){ %>selected="selected" <% }%> value="multi">Multi</option>  
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-6 mb-3">
+                        <div class="animate_form field">
+                            <span>Status <span class="text-danger">*</span></span>
+                            <select name="status" class="form-control" id="status">
+                            <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+                            <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+                            </select>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            
+            <!-- Dropdown Option-->                  
+            <div class="content_body panel_body">
+                <div class="panel_title">
+                    <h3>Dropdown Option</h3>
+                    <button class="clone_trigger panel_btn" type="button"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label class="control-label" for="optionLabel">Option Label<span class="required"></span>
+                        </label>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="control-label" for="optionValue">Option Value<span class="required"></span>
+                        </label>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="control-label" for="optionOrder">Option Order<span class="required"></span>
+                        </label>
+                    </div>
+                </div>
+                <% if(arrOption!='') {
+                arrOption.forEach(function(val) { %>            
+                    <div class="row clone" style="margin-bottom: 15px;">        
+                        <div class="col-sm-3">
+                            <input    type="text" id="optionLabel" name="optionLabel" value="<%= val.optionLabel %>" class="form-control" >
+                        </div>              
+                        <div class="col-sm-3">
+                            <input type="text"  id="optionValue" name="optionValue" value="<%= val.optionValue %>" class="form-control" >
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text"  id="optionOrder" name="optionOrder" value="<%= val.optionOrder %>" class="form-control" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="remove_trigger btn btn-danger" type="button"><i class="fa fa-close" aria-hidden="true"></i></button>
+                        </div>            
+                        <input name="updateId" type="hidden" value="">                
+                    </div>
+                <% })
+                }else{%>
+                    <div class="row clone" style="margin-bottom: 15px;">
+                        <div class="col-sm-3">
+                            <input name="optionLabel" value=""  type="text" id="optionLabel"  class="form-control" >
+                        </div>
+                        <div class="col-sm-3">
+                            <input name="optionValue" type="text" id="optionValue"  value="" class="form-control" >
+                        </div>
+
+                            <div class="col-sm-3">
+                            <input name="optionOrder" type="text" id="optionOrder"  value="" class="form-control" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="remove_trigger btn btn-danger" type="button"><i class="fa fa-close" aria-hidden="true"></i></button>
+                        </div>
+                        <input name="updateId" type="hidden" value="">
+                    </div>
+                <% } %>  
+            
+                <div class="placer"></div>
+            </div>
+            <div class="btn_right mb-4">
+                <input type="hidden" name="updatedId" value="<%= arrData ? arrData.id : '' %>">
+                <button id="send" type="submit" class="submit_btn">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>   
+
+<script>
+  $(document).ready(function(){
+    $(".clone_trigger").click(function () {
+        $('.clone').first().clone()
+        .find("input:text").val("").end()
+        .insertBefore(".placer");
+        $('input.cl:last').val('');
+      event.preventDefault();
+    });     
+    $(document).on('click','.remove_trigger',function () {     
+        if ($(".clone").length > 0) {        
+            if($(".clone").length == 1){
+                $(".clone:last")
+                .find("input:text").val("").end()     
+            }else{
+                $(this).closest('.clone').remove();
+            }                         
+        }
+        event.preventDefault();
+    });       
+});
+</script>
+<script>
+    $('#slug').attr('readonly', true);
+    /*$("#name").keyup(function(){
+    $("#slug").val($(this).val().replace(/\s+/g, '-').toLowerCase());
+});*/
+
+    $("#name").keyup(function () {
+        var randomNumber = Math.floor(1000 + Math.random() * 9000);
+        var storeId = $('#storeId').val();
+        var name = $('#name').val();
+        var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+        slug += storeId + "-" + randomNumber;
+        $('#slug').val(slug);
+    });
+    $('#storeId').change(function () {
+        var randomNumber = Math.floor(1000 + Math.random() * 9000);
+        var storeId = $('#storeId').val();
+        var name = $('#name').val();
+        var slug = name.toString().toLowerCase().replace(/\s+/g, '-');
+        slug += storeId + "-" + randomNumber;
+        $('#slug').val(slug);
+    });
+</script>

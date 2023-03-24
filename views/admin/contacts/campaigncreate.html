@@ -1,0 +1,257 @@
+<%- include ../partials/header_new.html %>
+    <%- include ../partials/sidebar.html %>
+        <script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+
+        <style>
+            .product_list025 {
+                border: solid 1px #ccc;
+            }
+
+            .product_list025 tbody tr td:first-child {
+                width: 50px;
+                vertical-align: top;
+            }
+
+            .product_list025 tbody tr td i {
+                font-size: 12px;
+                border: solid 2px #555;
+                border-radius: 50%;
+                padding: 4px;
+                color: #555;
+            }
+
+            .product_list025 tbody tr td .form_inner {
+                width: 50%;
+            }
+            .product_list025 tbody tr td .form_inner.content {
+                width: 100%;
+            }
+
+            .product_list025 tbody tr td .form_inner .form-control {
+                font-size: 14px;
+                font-weight: normal;
+                color: #555;
+            }
+
+            .product_list025 tbody tr td .form_inner .file_up01 label {
+                margin: 0px;
+                margin-top: 5px;
+            }
+
+            .product_list025 tbody tr td .tab_title {
+                font-size: 16px;
+                font-weight: 500;
+                color: #555;
+                display: block;
+                cursor: pointer;
+            }
+
+            @media (max-width: 767px) {
+                .table_heading {
+                    padding: 0px;
+                }
+
+                .product_list025 tbody tr td .form_inner {
+                    width: 100%;
+                }
+
+                .product_list025 tbody tr td:first-child {
+                    width: 30px;
+                    vertical-align: top;
+                    padding-right: 0px;
+                    padding-left: 8px;
+                }
+            }
+        </style>
+
+        <div class="content_wraper">
+            <div class="main_container">
+                <div class="header_wraper">
+                    <ul>
+                        <li><a href="<%= adminbaseurl %>dashboard">Dashboard</a></li>
+                        <li><a href="<%= adminbaseurl %>campaign/list/1">Campaigns</a></li>
+                        <li>
+                            <h4>
+                                <%=title%><small></small>
+                            </h4>
+                        </li>
+                    </ul>
+                    <h2>
+                        <%=title%>
+                    </h2>
+                </div>
+
+                <% if(messages!='' ) {%>
+                    <div class="succ_msg msg" id="succ_msg">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                        <%=messages%>
+                    </div>
+                    <%}%>
+                        <% if(errors!='' ) {%>
+                            <div class="succ_err msg" id="err_msg">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <%=errors%>
+                            </div>
+                            <% }%>
+
+                                <div class="content_body">
+                                    <div class="table_heading mb-4">
+                                        <div class="table-responsive table_wraper">
+                                            <table class="table product_list025">
+                                                <tr></tr>
+                                                <tbody>
+                                                    <form action="<%= adminbaseurl %>campaign/create"
+                                                        enctype="multipart/form-data" method="post">
+                                                        <tr>
+                                                            <td>
+                                                                <i class="fa fa-check"></i>
+                                                            </td>
+                                                            <td>
+                                                                <span id="span1" class="tab_title">Title</span>
+                                                                <div class="my-3" id="div1">
+                                                                    <div class="form_inner">
+                                                                        <input class="form-control" id="title"
+                                                                            name="title" type="text"
+                                                                            placeholder="Campaign Title" required />
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="fa fa-check"></i>
+                                                            </td>
+                                                            <td>
+                                                                <span id="span2" class="tab_title">Subject</span>
+                                                                <div class="my-3" id="div2">
+                                                                    <div class="form_inner">
+                                                                        <input class="form-control" id="subject"
+                                                                            name="subject" type="text"
+                                                                            placeholder="Campaign Subject" required />
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="fa fa-check"></i>
+                                                            </td>
+                                                            <td>
+                                                                <span id="span3" class="tab_title">From</span>
+                                                                <div class="my-3" id="div3">
+                                                                    <div class="form_inner">
+                                                                        <select name="fromId" class="form-control"
+                                                                            id="fromId" required>
+                                                                            <option value="" selected disabled>Select
+                                                                                Sender Email</option>
+                                                                            <% emailConfig.forEach(function(email){%>
+                                                                                <option value="<%=email.id%>">
+                                                                                    <%=email.email %> (<%=email.domain
+                                                                                            %>)
+                                                                                </option>
+                                                                                <% })%>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="fa fa-check"></i>
+                                                            </td>
+                                                            <td>
+                                                                <span id="span4" class="tab_title">Content</span>
+                                                                <div class="my-3" id="div4">
+                                                                    <div class="form_inner content">
+                                                                        <textarea id="content" class="form-control"
+                                                                            name="content" type="text"
+                                                                            required></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="fa fa-check"></i>
+                                                            </td>
+                                                            <td>
+                                                                <span id="span5" class="tab_title">Contact list</span>
+                                                                <div class="my-3" id="div5">
+                                                                    <div
+                                                                        class="form_inner d-flex align-items-center justify-content-between">
+                                                                        <select name="contactId" class="form-control"
+                                                                            id="contactId" required>
+                                                                            <option value="" selected disabled>Select
+                                                                                Contact List</option>
+                                                                            <% contactList.forEach(function(content){%>
+                                                                                <option value="<%=content.id%>">
+                                                                                    <%=content.title %>
+                                                                                </option>
+                                                                                <% })%>
+                                                                        </select>
+                                                                        <button type="submit" id="sendbtn"
+                                                                            class="btn btn_theme01 ml-3">Send
+                                                                            now</button>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </form>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+            </div>
+        </div>
+
+        <%- include ../partials/footer.html %>
+
+            <script>
+                $(document).ready(() => {
+                    $('#div1').hide()
+                    $('#div2').hide()
+                    $('#div3').hide()
+                    $('#div4').hide()
+                    $('#div5').hide()
+                })
+                $('#span1').on('click', function () {
+                    $('#div1').toggle()
+                })
+                $('#span2').on('click', function () {
+                    $('#div2').toggle()
+                })
+                $('#span3').on('click', function () {
+                    $('#div3').toggle()
+                })
+                $('#span4').on('click', function () {
+                    $('#div4').toggle()
+                })
+                $('#span5').on('click', function () {
+                    $('#div5').toggle()
+                })
+            </script>
+
+            <script>
+                CKEDITOR.editorConfig = function (config) {
+                    config.language = 'es';
+                    config.uiColor = '#F7B42C';
+                    config.height = 300;
+                    config.toolbarCanCollapse = true;
+                };
+                CKEDITOR.replace('content');
+                CKEDITOR.config.startupMode = 'source';
+            </script>
+
+            <script>
+                $(document).on('click', () => {
+                    let title = $('#title').val()
+                    let subject = $('#subject').val()
+                    let fromId = $('#fromId').val()
+                    let content = $('#content').val()
+                    let contactId = $('#contactId').val()
+                    if (title.trim() == '' && subject.trim() == '' && fromId == '' && content.trim() == '' && contactId == '') {
+                        $('#sendbtn').hide()
+                    }
+                })
+            </script>

@@ -1,0 +1,129 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style> 
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboards</a></li>
+        <li><a href="<%= adminbaseurl %>reservations/list/1" >Reservation</a></li>
+        <li><%=title%></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>reservations/addOrUpdate">
+      <div class="content_body panel_body edit_store">
+        <div class="panel_title">
+          <h3>TimeSlot Information</h3>
+          <div class="text-right mb-3">
+            <a href="<%= adminbaseurl %>reservations/list/1" class="btn btn-info btn-sm"  ><i class="fa fa-list"></i> Timeslot list</a>
+          </div> 
+        </div>
+        <div class="clearfix"></div>
+        <div class="row edit_box">
+
+          <% if(sessionStoreId!='') {%>
+            <input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+          <% } else {%>
+              <div class="col-sm-6 mb-5">
+                  <div class="animate_form field mb-1">
+                      <span>Select Store <span class="text-danger">*</span></span>
+                      <select name="storeId" id="storeId" class="form-control">
+                          <% stores.forEach(function(store){%>
+                          <option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+                          <% })%>
+                      </select>
+                  </div>
+              </div>
+          <% }%>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Name <span class="text-danger">*</span></span>
+              <input id="name" class="form-control"  name="name" type="text"  required="required" value="<%= arrData ? arrData.name : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Date <span class="text-danger">*</span></span>
+              <input id="date" class="form-control"  name="date" type="date"  required="required" value="<%= arrData ? arrData.date : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+		  
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Select Time <span class="text-danger">*</span></span>
+                <select name="timeId" id="time" class="form-control" required="required">
+                  <option value=""  <% if(arrData.timeId == ''){ %> selected="selected" <% }%>>Select</option>
+                  <% times.forEach(function(time){%>
+                    <option value="<%=time.id%>"  <% if(arrData.timeId == time.id){ %> selected="selected" <% }%>><%=time.fromTime; %> to <%=time.toTime; %> </option>
+                  <% })%>
+                </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>No Of People <span class="text-danger">*</span></span>
+              <input id="nop" class="form-control"  name="noPeople" type="text"  required="required" value="<%= arrData ? arrData.noPeople : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Purpose <span class="text-danger">*</span></span>
+              <input id="purpose" class="form-control"  name="purpose" type="text"  required="required" value="<%= arrData ? arrData.purpose : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Mobile <span class="text-danger">*</span></span>
+              <input id="mob" class="form-control"  name="mobile" type="number"  required="required" value="<%= arrData ? arrData.mobile : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="animate_form field">
+              <span>Massage <span class="text-danger">*</span></span>
+              <input id="massage" class="form-control"  name="massage" type="text"  required="required" value="<%= arrData ? arrData.massage : '' %>" />
+              <div class="alert_msg"></div>
+            </div>
+          </div>
+
+         
+          <div class="col-sm-6">
+            <div class="animate_form field">
+                <span>Status <span class="text-danger">*</span></span>
+                <select name="status" class="form-control" required="required">
+                    <option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">Yes</option>
+                    <option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">No</option>
+                </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <div class="btn_right mb-4">
+        <input type="hidden" name="updateId" value="<%= arrData ? arrData.id : '' %>" />
+        <button id="send" type="submit" class="submit_btn">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include ../partials/footer.html %>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>

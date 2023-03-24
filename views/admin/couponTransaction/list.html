@@ -1,0 +1,441 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<style type="text/css">
+  .addStore{padding: 10px;float: right;font-size: 15px;}
+</style>   
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li>
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <% if(messages!='') {%>
+      <div class="succ_msg msg" id="succ_msg"><i class="fa fa-check"  aria-hidden="true"></i><%=messages%></div>
+    <%}%>
+    <% if(errors!='') {%>
+      <div class="succ_err msg" id="err_msg"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><%=errors%></div>
+    <% }%>
+    <div class="content_body">
+      <div class="table_heading mb-5">
+        <h3><%=title%></h3>
+
+        <div class="mt-3">
+          <div class="float-left">
+            <span style="font-size: 16px;">Showing </span>
+            <select onchange="location = this.value" style="height: 25px; width: 60px;">
+              <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+              <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+              <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+              <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+            </select> 
+            <span style="font-size: 16px;"> entries </span>        
+          </div>
+  
+          <div class="float-right">
+            <a href="<%= adminbaseurl %>couponTransaction/view" class="btn btn-info btn-sm"  ><i class="fa fa-plus"></i> Add Rule</a>
+            <span class="bg-light p-2 font-weight-bold" style="cursor: pointer; border: 1px solid rgb(199, 199, 199); border-radius: 4px;" onclick="showhide()"><i class="fa fa-cog"></i> Columns</span>
+                <div class="bg-light" id="columns" style="position:absolute; z-index: 1; padding: 10px; border: 1px solid rgb(199, 199, 199); border-radius: 4px;">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="couponId" id="couponId">
+                        <label class="form-check-label" for="couponId">Coupon Id</label> 
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="couponType" id="couponType"> 
+                        <label class="form-check-label" for="couponType">Coupon Type</label> 
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="timeFrom" id="timeFrom"> 
+                        <label class="form-check-label" for="timeFrom">Time From</label>  
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="timeTo" id="timeTo"> 
+                        <label class="form-check-label" for="timeTo">Time To</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="purchaseLimit" id="purchaseLimit"> 
+                        <label class="form-check-label" for="purchaseLimit">Purchase Limit</label> 
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="isShare" id="isShare"> 
+                        <label class="form-check-label" for="isShare">Is Share</label> 
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="appliedAmount" id="appliedAmount"> 
+                        <label class="form-check-label" for="appliedAmount">Applied Amount</label>  
+                    </div>
+                </div>
+          </div>
+       </div>
+    </div>
+
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+            <tr  style="cursor: pointer;">
+			  
+              <% if(orderType=='DESC'){%>
+                <th data-column="id" data-order="ASC" class="text-center theading">Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="id" data-order="DESC" class="text-center theading">Sl No
+                  <% if(columnName=='id'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th>Customer</th>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="couponId" data-order="ASC"  class="theading couponId">Coupon Id
+                  <% if(columnName=='couponId'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="couponId" data-order="DESC"  class="theading couponId">Coupon Id
+                  <% if(columnName=='couponId'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="appliedAmount" data-order="ASC"  class="theading appliedAmount">Applie dAmount
+                  <% if(columnName=='appliedAmount'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="appliedAmount" data-order="DESC"  class="theading appliedAmount">Applied Amount
+                  <% if(columnName=='appliedAmount'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="couponType" data-order="ASC"  class="theading couponType">Coupon Type
+                  <% if(columnName=='couponType'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="couponType" data-order="DESC"  class="theading couponType">Coupon Type
+                  <% if(columnName=='couponType'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+             
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="couponValue" data-order="ASC"  class="theading">Coupon Value
+                  <% if(columnName=='couponValue'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="couponValue" data-order="DESC"  class="theading">Coupon Value
+                  <% if(columnName=='couponValue'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="dateFrom" data-order="ASC"  class="theading">Date From
+                  <% if(columnName=='dateFrom'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="dateFrom" data-order="DESC"  class="theading">Date From
+                  <% if(columnName=='dateFrom'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+              
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="dateTo" data-order="ASC"  class="theading">Date To
+                  <% if(columnName=='dateTo'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="dateTo" data-order="DESC"  class="theading">Date To
+                  <% if(columnName=='dateTo'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="timeFrom" data-order="ASC"  class="theading timeFrom">Time From
+                  <% if(columnName=='timeFrom'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="timeFrom" data-order="DESC"  class="theading timeFrom">Time From
+                  <% if(columnName=='timeFrom'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+              
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="timeTo" data-order="ASC"  class="theading timeTo">Time To
+                  <% if(columnName=='timeTo'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="timeTo" data-order="DESC"  class="theading timeTo">Time To
+                  <% if(columnName=='timeTo'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="couponCode" data-order="ASC"  class="theading">Coupon Code
+                  <% if(columnName=='couponCode'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="couponCode" data-order="DESC"  class="theading">Coupon Code
+                  <% if(columnName=='couponCode'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="purchaseLimit" data-order="ASC"  class="theading purchaseLimit">Purchase Limit
+                  <% if(columnName=='purchaseLimit'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="purchaseLimit" data-order="DESC"  class="theading purchaseLimit">Purchase Limit
+                  <% if(columnName=='purchaseLimit'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="isShare" data-order="ASC"  class="theading isShare">Is Share
+                  <% if(columnName=='isShare'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="isShare" data-order="DESC"  class="theading isShare">Is Share
+                  <% if(columnName=='isShare'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <% if(sessionStoreId=='') {%>
+                <th>Store</th>
+              <% }%>
+
+              <% if(orderType=='DESC'){%>
+                <th data-column="status" data-order="ASC" class="theading">Status
+                  <% if(columnName=='status'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% }else{ %>
+                <th data-column="status" data-order="DESC" class="theading">Status
+                  <% if(columnName=='status'){%> 
+                    <i class="fa fa-sort fa-lg text-success"></i>
+                  <%}else{%>
+                    <i class="fa fa-sort fa-lg"></i> 
+                  <%}%>
+                </th>
+              <% } %>
+
+              <th class="text-center">Action</th>
+            
+            </tr>
+          </thead>
+          <tbody>
+            <% var i=1; arrData.forEach(function(val) { %>
+              <tr>
+                <td class="text-center"><%= i %></td>
+                <td>
+                  <% arrCustomer.forEach(function(customer) {
+                          if(customer.id==val.customerId){ %>
+                  <%= customer.firstName %> <%= customer.lastName %></ <% } }); %>
+                </td>
+                <td class="couponId"><%= val.couponId %></td>
+                <td class="appliedAmount"><%= val.appliedAmount %></td>
+                <td class="couponType"><%= val.couponType %></td>
+                <td><%= val.couponValue %></td>
+                <td><%= moment(val.dateFrom).format('DD MMM, YYYY') %></td>
+                <td><%= moment(val.dateTo).format('DD MMM, YYYY') %></td>
+                <td class="timeFrom"><%= val.timeFrom %></td>
+                <td class="timeTo"><%= val.timeTo %></td>
+                <td><%= val.couponCode %></td>
+                <td class="purchaseLimit"><%= val.purchaseLimit %></td>
+                <td class="isShare"><%= val.isShare %></td>
+                <% if(sessionStoreId=='') {%>
+                  <td><% arrStore.forEach(function(store) {if(store.id==val.storeId){ %><%= store.storeName %></ <% } }); %></td>
+                <% }%>
+                <td class="font-weight-bold"> 
+                  <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span><% } else {%> <span class="text-danger">Inactive</span> <% } %>
+                </td>
+                <td class="text-center">
+                  <a href="<%= adminbaseurl%>couponTransaction/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                  <a href="<%= adminbaseurl%>couponTransaction/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                </td>
+              </tr>
+            <% i++; }) %>
+          </tbody>
+        </table>
+        <!--====================================== Pagination Start ======================================-->
+        <% if(listCount>0) {%>
+          <div class="pagination_sec">
+              <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+              <% if(currentPage>1) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>couponTransaction/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Prev</a></li>
+                  </ul>
+              <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                  </ul>
+              <% } %>
+              <% for(var i=1; i<=pageCount; i++) { %>
+                  <ul>
+                  <% if(currentPage==i) {%>
+                  <li><a href="<%= adminbaseurl%>couponTransaction/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="active"><%=i %></a></li>
+                  <% }else{ %>
+                  <li><a href="<%= adminbaseurl%>couponTransaction/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class=""><%=i %></a></li>
+                  <% } %>
+                  </ul>
+              <% } %>
+              <% if(currentPage < pageCount) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>couponTransaction/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" >Next</a></li>
+                  </ul>
+                  <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                  </ul>
+              <% } %>
+          </div>
+        <% } %>
+        <!--====================================== Pagination End ======================================-->
+    </div>
+  </div>
+</div>
+</div>
+<%- include ../partials/footer.html %>
+
+<script>
+  $(document).ready(() => {
+    $('.theading').on('click',function(){
+      var column = $(this).data('column');
+      var order = $(this).data('order');
+
+      if(order == 'DESC'){
+        $(this).data('order', 'ASC');        
+        window.location.href = `<%= adminbaseurl%>couponTransaction/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+      }else{
+        $(this).data('order', 'DESC');
+        window.location.href = `<%= adminbaseurl%>couponTransaction/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>`
+      }
+    })
+});
+</script>
+
+<script>
+  $("input:checkbox").prop("checked",false).ready(function(){
+      $(".couponId").hide();
+      $(".couponType").hide();
+      $(".timeFrom").hide();
+      $(".timeTo").hide();
+      $(".purchaseLimit").hide();
+      $(".isShare").hide();
+      $(".appliedAmount").hide();
+  });
+  
+  $("input:checkbox").attr("checked",false).click(function(){
+      let shcolumn = "."+$(this).attr('name');
+      $(shcolumn).toggle();
+  });
+</script>
+
+<script>
+  $(document).ready(function(){
+      $("#columns").hide();
+  });
+  function showhide(){
+      $("#columns").toggle();
+  }
+</script> 

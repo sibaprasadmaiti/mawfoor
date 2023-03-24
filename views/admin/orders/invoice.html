@@ -1,0 +1,219 @@
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>MAWFOOR</title>
+    <link href="<%= adminbaseurl %>build/css/otg_invoice_style.css" rel="stylesheet">
+    <script src="<%= adminbaseurl %>build/js/jquery.min.js"></script>
+    <script src="<%= adminbaseurl %>build/js/otg_example.js"></script>
+    <style>
+    #address1{height:auto !important; padding-bottom: 5px;}
+    </style>   
+</head>
+<body>
+
+	<div id="page-wrap">
+		<textarea id="header">INVOICE</textarea>
+		<div id="" style="display:flex;">
+            <div readonly id="address" class="address-sec text-center" >
+                <h3 style="text-transform: uppercase"><%= companyDetails ? companyDetails.company : '' %></h3>
+                <p><%= companyDetails ? companyDetails.address : '' %></p>
+                <p><%= companyDetails ? companyDetails.email : '' %></p>
+                <p><%= companyDetails ? companyDetails.mobile : '' %></p>
+            </div>
+		</div>
+		
+		<div style="padding-top: 20px; padding-bottom: 10px;"></div>
+		
+		<div id="customer">
+            <div id="address1" style="min-width: 130px;">
+                <h3>Customer Address</h3>
+                <p><%= allDetails ? allDetails.customerName : '' %></p>
+                <p><%= allDetails ? allDetails.shippingAddress : '' %></p>
+                <p><%= allDetails ? allDetails.shippingCity : '' %> - <%= allDetails ? allDetails.shippingPin : '' %></p>
+                <p>Mob: <%= allDetails ? allDetails.customerMobile : '' %></p>
+            </div>
+
+            <table id="meta">
+                <tr>
+                    <td class="meta-head"><b>Order No</b> </td>
+                    <td>#<%= allDetails ? allDetails.orderNo : '' %></td>
+                </tr>
+                <tr>
+                    <td class="meta-head"><b>Date</b></td>
+                    <td><%= moment(allDetails.createdAt).format('MM/DD/YYYY'); %></td>
+                </tr>
+                <tr>
+                    <td class="meta-head"><b>Time</b></td>
+                    <td><%= moment(allDetails.createdAt).format('hh:mm A'); %></td>
+                </tr>
+            </table>
+		
+		</div>
+		
+		<table id="items" style="margin: 0">
+		
+		  <tr>
+		      <th width="40%" align="left">Product
+		      <th width="20%">Quantity</th>
+              <th width="20%">Rate</th>
+		      <th width="20%">Amount</th>
+          </tr>
+          
+          <% var i= 1; productDetails.forEach(function(val) { %>	
+		  <tr class="item-row">
+              <td class="item-name" style="text-align: left"><div class="delete-wpr"><%= val.productName %> <% if(val.giftSetName && val.giftSetName !='' && val.giftSetName != null){%> (<%= val.giftSetName %>) <%}%></div></td>
+              <td><%= val.quantity %></td>
+		      <td><%= val.price %></td>
+		      <td><span class="price"><%= val.totalPrice %></span></td>
+          </tr>
+          <% i++; }) %>
+          <tr>
+              <td colspan="5" style="border: 0;"><div style="border-top: 1px dotted #000"></div></td>
+          </tr>
+		  <tr>
+              <td colspan="1" class="totel-product" style=" border:none; font-size: 14px;">
+                 <% if(itemCount==1){%><%=itemCount %> Item  <%  } else { %> <%=itemCount %> Items <%  } %>
+               </td>
+             <td colspan="" class="blank" style=" border:none; font-size: 14px;"><div id="total-product">
+                     <%=totalQuantity%> Qty
+                </td>
+              <td colspan="2" class="total-line" style=" border:none; font-size: 14px;">
+                        Total <%= grandTotal %> 
+                </td>
+          </tr>
+
+          <tr>
+            <td colspan="3" class="total-line balance" style="font-size: 14px;">Item(s) Subtotal : </td>
+
+            <td class="total-value balance" style="font-size: 14px;"><%= allDetails.baseGrandTotal >= 1 ? allDetails.baseGrandTotal : 0  %></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" class="total-line balance" style="font-size: 14px;">Tax : </td>
+
+            <td class="total-value balance" style="font-size: 14px;"><%= allDetails.tax >= 1 ? allDetails.tax : 0  %></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" class="total-line balance" style="font-size: 14px;">Shipping Charges : </td>
+
+            <td class="total-value balance" style="font-size: 14px;"><%= allDetails.shippingAmount >= 1 ? allDetails.shippingAmount : 0  %></td>
+        </tr>
+
+        <%  if(allDetails.total !=null && allDetails.total !='' && allDetails.total != 0 && allDetails.total >= 1){ %>
+            <tr>
+                <!-- <td colspan="1" class="blank"> </td>  -->
+                <td colspan="3" class="total-line balance" style="font-size: 14px;">COD</td>
+    
+                <td class="total-value balance" style="font-size: 14px;"><%= allDetails.total ? allDetails.total : '' %></td>
+            </tr>
+        <%  } %>
+
+        <%  if(allDetails.discountAmount !=null && allDetails.discountAmount !='' && allDetails.discountAmount != 0 && allDetails.discountAmount >= 1){ %>
+            <tr>
+                <!-- <td colspan="1" class="blank"> </td>  -->
+                <td colspan="3" class="total-line balance" style="font-size: 14px;">Discount</td>
+    
+                <td class="total-value balance" style="font-size: 14px;"><%= allDetails.discountAmount ? allDetails.discountAmount : '' %></td>
+            </tr>
+        <%  } %>
+		  
+		  <tr>
+		      <!-- <td colspan="1" class="blank" style=" border:none;"> </td> -->
+		      <td colspan="3" class="total-line balance" style="font-size: 14px;">Grand Total :</td>
+		      <td class="total-value balance" style="font-size: 14px;" ><div class="due"><%= allDetails.amountPaid ? allDetails.amountPaid : '' %></div></td>
+          </tr>
+          
+          
+
+
+
+
+        <%  if(allDetails.couponAmount !=null && allDetails.couponAmount !='' && allDetails.couponAmount != 0 && allDetails.couponAmount >= 1){ %>
+            <tr>
+                <!-- <td colspan="1" class="blank"> </td>  -->
+                <td colspan="3" class="total-line balance" style="font-size: 14px;">Coupon Amount</td>
+    
+                <td class="total-value balance" style="font-size: 14px;"><%= allDetails.couponAmount ? allDetails.couponAmount : '' %></td>
+            </tr>
+        <%  } %>
+
+        <%  if(allDetails.walletAmount !=null && allDetails.walletAmount !='' && allDetails.walletAmount != 0 && allDetails.walletAmount >= 1){ %>
+            <tr>
+                <td colspan="3" class="total-line balance" style="font-size: 14px;">Wallet Amount :</td>
+                <td class="total-value balance" style="font-size: 14px;"><%= allDetails.walletAmount ? allDetails.walletAmount : '' %></td>
+           </tr>
+        <%  } %>
+        <%  if(allDetails.amountPaid !=null && allDetails.amountPaid !='' && allDetails.amountPaid != 0){ %>
+            <tr>
+                <td colspan="3" class="total-line balance" style="font-size: 14px;">Amount Paid :</td>
+                <td class="total-value balance" style="font-size: 14px;"><%= allDetails.amountPaid ? allDetails.amountPaid : '' %></td>
+           </tr>
+        <%  } %>
+
+
+
+        <%  if(allDetails.amountPaid !=null && allDetails.amountPaid !='' && allDetails.amountPaid != 0){ %>
+            <tr>
+                <!-- <td colspan="1" class="blank"> </td>  -->
+                <td colspan="3" class="total-line balance" style="font-size: 14px;">Payment mode :</td>
+                <%  if(allDetails.paymentMethod !="Cash On Delivery"){ %>
+                    <td class="total-value balance" style="font-size: 14px;"><%= allDetails.paymentMethod ? allDetails.paymentMethod : '' %></td>
+                 <%  }else{ %>
+                    <td class="total-value balance" style="font-size: 14px;">COD</td>
+    
+                 <%  } %>
+           </tr>
+        <%  } %>
+		
+		</table>
+        <br>
+         <h4 style="text-align:center; text-transform: uppercase">THANK YOU FOR BEING SO <%= companyDetails.company %> </h4>
+        <h4 style="text-align:center; text-transform: uppercase"> FOR QUERIES/FEEDBACK CALL: <%= companyDetails.mobile %></h4>
+        
+    </div>
+    <div style=" width: 110px; margin-left: auto; margin-right: auto; margin-top: 15px;">
+        <button id="myPrntbtn" style=" margin: auto; padding: 10px;" onClick="window.print();">Print this page</button>
+    </div>
+    
+    
+   
+</body>
+
+</html>
+
+<!-- <script>
+    function myFunction() {
+        window.print();
+    }
+</script> -->
+
+<style type="text/css">
+@media print {
+    #myPrntbtn {
+        display :  none;
+    }
+}
+</style>
+<script type="text/javascript">
+    function printMyPage() {
+        //Get the print button
+        var printButton = document.getElementById("myPrntbtn");
+        //Hide the print button 
+        printButton.style.visibility = 'hidden';
+        //Print the page content
+        window.print()
+        //Show back the print button on web page 
+        printButton.style.visibility = 'visible';
+    }
+</script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){ 
+    var ihc = $('#invoice_address').text();
+    document.getElementById("invoice_address").innerHTML = ihc;
+    var ifc = $('#invoice_footer').text();
+    document.getElementById("invoice_footer").innerHTML = ifc;
+});
+</script>

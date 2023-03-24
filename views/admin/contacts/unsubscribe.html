@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Email Unsubscribe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0="
+      crossorigin="anonymous"
+    />
+
+    <style type="text/css">
+      table,
+      td,
+      div,
+      h1,
+      p {
+        font-family: "Noto Sans", sans-serif !important;
+      }
+      .succ_msg {
+        border-radius: 2px;
+        padding: 11px 15px;
+        background: #66bb6a;
+        float: none;
+        color: #fff;
+        position: absolute;
+        top: 0;
+        z-index: 9;
+        right: 0;
+      }
+      /****Error Message css****/
+      .succ_err {
+        border-radius: 2px;
+        padding: 11px 15px;
+        background: #ef5350;
+        float: none;
+        color: #fff;
+        position: absolute;
+        top: 0;
+        z-index: 9;
+        right: 0;
+      }
+    </style>
+  </head>
+
+  <body style="margin: 0px; padding: 0px; background-color: #eef2f5">
+    <% if(messages!='') {%>
+    <div class="succ_msg msg" id="succ_msg">
+      <i class="fa fa-check" aria-hidden="true"></i>
+      <%=messages%>
+    </div>
+    <%}%> <% if(errors!='') {%>
+    <div class="succ_err msg" id="err_msg">
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+      <%=errors%>
+    </div>
+    <% }%>
+    <form id="demo" method="post">
+      <table
+        role="presentation"
+        style="
+          border-collapse: collapse;
+          border: 0;
+          border-spacing: 0;
+          width: 700px;
+          margin: 50px auto;
+          box-shadow: 3px 3px 10px #dadada;
+          border-radius: 5px;
+          background-color: #fff;
+        "
+      >
+        <tr align="center">
+          <td
+            style="
+              margin: 35px;
+              font-size: 20px;
+              color: #666;
+              display: block;
+              border-bottom: solid 1px #ccc;
+              padding-bottom: 10px;
+              margin-bottom: 30px;
+              font-weight: 400;
+            "
+          >
+            Why are you unsubscribing?
+          </td>
+        </tr>
+
+        <tr>
+          <td
+            style="
+              margin: 0px 35px;
+              border-bottom: solid 1px #ccc;
+              display: block;
+              margin-bottom: 20px;
+              padding-bottom: 20px;
+            "
+          >
+            <ul style="padding-inline-start: 0px; margin: 0px">
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <input
+                  type="radio"
+                  name="reason"
+                  value="I,m not interested anymore"
+                  style="margin-right: 10px"
+                /><label for="1">I,m not interested anymore</label>
+              </li>
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <input
+                  type="radio"
+                  name="reason"
+                  value="I recieved to many of these emails"
+                  style="margin-right: 10px"
+                /><label for="2">I recieved to many of these emails</label>
+              </li>
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <input
+                  type="radio"
+                  name="reason"
+                  value="This content is not relevant to me"
+                  style="margin-right: 10px"
+                /><label for="3">This content is not relevant to me</label>
+              </li>
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <input
+                  type="radio"
+                  name="reason"
+                  value="This is spam / I never subscribed to this email list"
+                  style="margin-right: 10px"
+                /><label for="4"
+                  >This is spam / I never subscribed to this email list</label
+                >
+              </li>
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <input
+                  type="radio"
+                  name="reason"
+                  value="My inbox is too full"
+                  style="margin-right: 10px"
+                /><label for="5">My inbox is too full</label>
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="margin: 0px 35px; display: block; padding-bottom: 15px">
+            <ul style="padding-inline-start: 0px; margin: 0px">
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <input
+                  type="radio"
+                  name="reason"
+                  value="Other"
+                  style="margin-right: 10px"
+                /><label for="6">Other</label>
+              </li>
+              <li
+                style="
+                  display: block;
+                  font-size: 15px;
+                  line-height: 16px;
+                  font-weight: 400;
+                  margin-bottom: 10px;
+                  color: #666;
+                "
+              >
+                <textarea
+                  rows="3"
+                  name="reason2"
+                  style="
+                    width: 625px;
+                    font-family: 'Noto Sans', sans-serif !important;
+                    border-color: #ccc;
+                    resize: none;
+                    border-radius: 3px;
+                    outline: none;
+                    font-size: 14px;
+                    font-weight: 400;
+                    color: #666;
+                    line-height: 20px;
+                    padding: 5px 10px;
+                  "
+                ></textarea>
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr align="center">
+          <td style="margin-bottom: 45px; display: block">
+            <button
+              type="submit"
+              style="
+                background-color: #1b9dcd;
+                color: #fff;
+                outline: none;
+                border: none;
+                font-size: 15px;
+                font-weight: 400;
+                padding: 10px 30px;
+                border-radius: 3px;
+                cursor: pointer;
+              "
+            >
+              <i
+                class="fa fa-angle-right"
+                aria-hidden="true"
+                style="
+                  margin-right: 15px;
+                  font-size: 22px;
+                  vertical-align: middle;
+                "
+              ></i
+              ><span style="vertical-align: middle">Submit</span>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      setTimeout(function () {
+        $("#succ_msg,#err_msg").fadeOut("slow");
+      }, 1000);
+    </script>
+  </body>
+</html>

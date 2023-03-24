@@ -1,0 +1,113 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>  
+
+<link href="<%= adminbaseurl %>build/css/croppr.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">
+<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+<!-- page content -->
+<div class="content_wraper">
+	<div class="main_container">          
+		<div class="header_wraper">
+			<h2><%=title%></h2>
+			<ul>
+			<li><a href="<%= adminbaseurl %>dashboard">Dashboards</a></li>
+            <li><a href="<%= adminbaseurl %>section/list/1"> Section</a></li> 
+            <li><%=title%></li>
+			</ul>
+		</div> 
+		
+		<% if(messages!='') {%>
+		<div class="succ_msg msg" id="succ_msg">    
+			<i class="fa fa-check"  aria-hidden="true"></i>        
+			<%=messages%>
+		</div>
+		<%}%>                
+		<% if(errors!='') {%>
+		<div class="succ_err msg" id="err_msg">
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+			<%=errors%>
+		</div>
+		<% }%>
+		
+		<form id="category-info" class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" action="<%= adminbaseurl %>section/addOrUpdate">
+			<div class="content_body panel_body edit_store">
+				<div class="panel_title">
+					<h3><%=title%></h3>
+				</div>												
+				<div class="clearfix"></div>
+				<div class="row edit_box">
+					<div class="col-sm-6"> 
+						<div class="animate_form field">
+							<div class="animate_form field mb-1">
+								<span>Title <span class="text-danger">*</span></span>
+								<input id="title" class="form-control"  name="title" type="text" value="<%= arrData ? arrData.title : '' %>">
+							</div>
+						</div>
+					</div>
+
+					<% if(sessionStoreId!='') {%>
+						<input id="storeId" class="form-control"  name="storeId" type="hidden" value="<%= sessionStoreId %>">
+					<% } else {%>
+						<div class="col-sm-6">
+							<div class="animate_form field mb-1">
+								<span>Select Store <span class="text-danger">*</span></span>
+								<select name="storeId" id="storeId" class="form-control">
+									<% stores.forEach(function(store){%>
+									<option value="<%=store.id%>"  <% if(arrData.storeId == store.id){ %> selected="selected" <% }%>><%=store.storeName; %></option>
+									<% })%>
+								</select>
+							</div>
+						</div>
+					<% }%>
+					
+					<div class="col-sm-6">
+						<div class="animate_form field">
+							<span>Status <span class="text-danger">*</span></span>
+							<select name="status" class="form-control" id="status">
+								<option <% if(arrData.status=='Yes'){ %>selected="selected" <% }%> value="Yes">YES</option>
+								<option <% if(arrData.status=='No'){ %>selected="selected" <% }%> value="No">NO</option>  
+							</select>
+						</div>
+					</div>
+					
+					<div class="col-sm-6"> 
+						<div class="animate_form field">
+							<div class="animate_form field mb-1">
+								<span>Short Description </span>
+								<input id="shortDescription" class="form-control"  name="shortDescription" type="text" value="<%= arrData ? arrData.shortDescription : '' %>">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-12"> 
+						<div class="animate_form field">
+							<span>Content <span class="text-danger">*</span></span>
+							<textarea id="content" class="form-control" name="content" type="text" style="height: 250px;border-style: inset;
+							border-width: 2px;"required="required" ><%= arrData ? arrData.content : '' %></textarea>
+							<div class="alert_msg"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn_right mb-4">
+				<input type="hidden" name="update_id" value="<%= arrData ? arrData.id : '' %>">
+				<button id="send" type="submit" class="submit_btn">Submit</button>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+<script src="<%= adminbaseurl %>vendors/validator/validator.js"></script>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+<%- include ../formvalidator/formvalidator.html %>
+<script>            
+    CKEDITOR.editorConfig = function (config) {
+       config.language = 'es';
+       config.uiColor = '#F7B42C';
+       config.height = 300;
+       config.toolbarCanCollapse = true;
+   
+   };
+   CKEDITOR.replace('content');
+</script>

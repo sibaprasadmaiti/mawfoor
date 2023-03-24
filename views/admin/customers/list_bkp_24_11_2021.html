@@ -1,0 +1,240 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<!-- CSS Styles -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+  .speech {border: 1px solid #DDD; width: 300px; padding: 0; margin: 0}
+  .speech input {border: 0; width: 240px; display: inline-block; height: 30px;}
+  .speech img {float: right; width: 40px }
+</style>
+<div class="content_wraper">
+  <div class="main_container">
+    <div class="header_wraper">
+      <h2><%=title%></h2>
+      <ul>
+        <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+        <li><h4><%=title%><small></small></h4></li>
+      </ul>
+    </div>
+    <div class="content_body">
+      <div class="table_heading mb-4">
+        <div class="float-left"><h3><%=title%></h3></div>
+            
+        <div class="float-right">
+          <form class="header-searchbox"  >
+            <div class="searchcom" >
+                <input type="text" placeholder="Search.." name="search" />
+                <button style="margin-top: 7px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+        <!-- ======================================= List-per-page Start ========================================= -->
+        <div class="title_right text-right">
+          <div>
+            <span style="font-size: 16px;">Showing </span>
+            <select onchange="location = this.value" style="height: 25px; width: 60px;">
+              <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+
+              <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+
+              <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+
+              <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+            </select> 
+            <span style="font-size: 16px;"> entries </span>      
+          </div>
+        </div>
+        <!-- ======================================= List-per-page End ========================================= -->
+        <!-- ======================================= Filter Start ========================================= -->
+        <div class="mb-4">
+          <div class="row">
+            <div class="mr-1">
+              <label for="customerName" class="font-weight-bold">Customer</label><br>
+              <select style="height: 28px;" id="customerName" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Customer</option>
+                <% customerDetails.forEach(function(customer) { %>
+                    <option value="?pagesize=<%=pageSize%>&customer=<%= customer.id %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(customerFilter==customer.id){ %>selected <% }%>><%= customer.firstName %> <%= customer.lastName %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mr-1">
+              <label for="email" class="font-weight-bold">Email</label><br>
+              <select style="height: 28px;" id="email" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Email</option>
+                <% customerDetails.forEach(function(customer) { %>
+                    <option value="?pagesize=<%=pageSize%>&email=<%= customer.email %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(emailFilter==customer.email){ %>selected <% }%>><%= customer.email %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mr-1">
+              <label for="mobile" class="font-weight-bold">Mobile</label><br>
+              <select style="height: 28px;" id="mobile" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Mobile</option>
+                <% customerDetails.forEach(function(customer) { %>
+                    <option value="?pagesize=<%=pageSize%>&mobile=<%= customer.mobile %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(mobileFilter==customer.mobile){ %>selected <% }%>><%= customer.mobile %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="mr-1">
+              <label for="city" class="font-weight-bold">City</label><br>
+              <select style="height: 28px;" id="city" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select City</option>
+                <% arrcustomeraddress.forEach(function(customer) { %>
+                    <option value="?pagesize=<%=pageSize%>&city=<%= customer.city %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %>" <% if(cityFilter==customer.city){ %>selected <% }%>><%= customer.city %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div>
+              <label for="status" class="font-weight-bold">Status</label><br>
+              <select style="height: 28px;" name="status" id="status" class="form-control" onchange="location = this.value">
+                <option value="" selected disabled>Select Status</option>
+                <option value="?pagesize=<%=pageSize%>&status=Yes<% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(statusFilter=='Yes'){ %>selected <% }%>>Active</option>
+
+                <option value="?pagesize=<%=pageSize%>&status=No<% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(statusFilter=="No"){ %>selected <% }%>>Inactive</option>
+
+                <option value="?pagesize=<%=pageSize%>&status=Blocked<% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" <% if(statusFilter=="Blocked"){ %>selected <% }%>>Blocked</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- ======================================= Filter End ========================================= -->
+        <!-- ======================================= Export Start ========================================= -->
+        <div class="mt-0">
+          <a href="<%= adminbaseurl %>customers/download?<% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" class="btn btn-success btn-sm right">Export List</a>
+        </div>
+        <!-- ======================================= Export End ========================================= -->
+      </div>
+
+
+      <div class="table-responsive table_wraper">
+        <table class="table product_list025">
+          <thead>
+              <tr style="cursor: pointer;">
+
+                  <% if(orderType =='DESC') {%>
+                      <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }else{ %>
+                      <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }%>
+
+                  <th>Name</th>
+                  
+                  <% if(orderType =='DESC') {%>
+                    <th data-column="email" data-order="ASC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }else{ %>
+                      <th data-column="email" data-order="DESC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }%>
+
+                  <% if(orderType =='DESC') {%>
+                      <th data-column="mobile" data-order="ASC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }else{ %>
+                      <th data-column="mobile" data-order="DESC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                  <% }%>
+
+                  <th>Gender</th>
+
+                  <th>City</th>
+
+                  <% if(orderType =='DESC') {%>
+                    <th data-column="status" data-order="ASC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="status" data-order="DESC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+                  
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% var i= 1; arrData.forEach(function(val) { %>
+              <tr>
+                <td class="text-center"> <%= i %></td>
+                <td> <%= val.firstName %> <%= val.lastName %></td>
+                <td> <%= val.email %></td>
+                <td> <%= val.mobile %></td>
+                <td> <%= val.gender %></td>
+                <td> <% if(arrcustomeraddress.length>0){ arrcustomeraddress.forEach(function(custaddress) { if(custaddress.customerId == val.id){ %> <%= custaddress.city %><% } })} %></td>
+
+                <td class="font-weight-bold"> 
+                  <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span><% } %>
+                  <%if(val.status=='No' || val.status=='no') {%> <span class="text-warning">Inactive</span><% } %>
+                  <%if(val.status=='Blocked' || val.status=='blocked') {%> <span class="text-danger">Blocked</span><% } %>
+                </td>
+                <td>
+                  <a href="<%= adminbaseurl%>customers/view/<%= val.id %>" class="edit_btn"><i class="fa fa-eye"></i></a>
+                </td>
+              </tr>
+            <% i++; }) %>
+          </tbody>
+        </table>
+
+         <!--====================================== Pagination Start ======================================-->
+        <% if(listCount>0) {%>
+          <div class="pagination_sec">
+              <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div> 
+              <% if(currentPage>1) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" >Prev</a></li>
+                  </ul>
+              <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                  </ul>
+              <% } %>
+              <% for(var i=1; i<=pageCount; i++) { %>
+                  <ul>
+                  <% if(currentPage==i) {%>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=i %>?pagesize=<%= pageSize%><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" class="active"><%=i %></a></li>
+                  <% }else{ %>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=i %>?pagesize=<%= pageSize%><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" class=""><%=i %></a></li>
+                  <% } %>
+                  </ul>
+              <% } %>
+              <% if(currentPage < pageCount) {%>
+                  <ul>
+                  <li><a href="<%= adminbaseurl%>customers/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>" >Next</a></li>
+                  </ul>
+                  <% }else{ %>
+                  <ul>
+                  <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                  </ul>
+              <% } %>
+          </div>
+      <% } %>
+      <!--====================================== Pagination End ======================================-->
+      </div>
+     
+    </div>
+  </div>
+</div>
+<!-- page content -->
+<%- include ../partials/footer.html %>
+
+<script>
+  $(document).ready(() => {
+    $('.theading').on('click',function(){
+      var column = $(this).data('column');
+      var order = $(this).data('order');
+
+      if(order == 'DESC'){
+        $(this).data('order', 'ASC');        
+        window.location.href = `<%= adminbaseurl%>customers/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>`
+      }else{
+        $(this).data('order', 'DESC');
+        window.location.href = `<%= adminbaseurl%>customers/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(emailFilter!=''){ %>&email=<%=emailFilter %><% } %><% if(mobileFilter!=''){ %>&mobile=<%=mobileFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(customerFilter!=''){ %>&customer=<%=customerFilter %><% } %><% if(cityFilter!=''){ %>&city=<%=cityFilter %><% } %>`
+      }
+    })
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#customerName').select2();
+    $('#status').select2();
+    $('#email').select2();
+    $('#mobile').select2();
+    $('#city').select2();
+  });
+</script>

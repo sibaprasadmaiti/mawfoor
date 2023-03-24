@@ -1,0 +1,95 @@
+module.exports = function (sequelize, DataTypes) {
+    return sequelize.define(
+        "razorpay",
+        {
+            storeId: {
+                type: DataTypes.INTEGER(10),
+                allowNull: true,
+            },
+            courseId: {
+                type: DataTypes.INTEGER(10),
+                allowNull: true,
+            },
+            userId: {
+                type: DataTypes.INTEGER(10),
+                allowNull: true,
+            },
+            courseName: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            amount: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            mobile: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            email: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            name: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            duration: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            class: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            fees: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            installment: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            address: {
+                type: DataTypes.TEXT(),
+                allowNull: true,
+            },
+            payment: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            razorpay_payment_id: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            paymentId: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            cardId: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+            method: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            razorpay: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            createdBy: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            },
+            updatedBy: {
+                type: DataTypes.STRING(100),
+                allowNull: true,
+            }
+        },
+        {
+            tableName: "razorpay",
+            comment:"Razorpay Table",
+        }
+    )
+}

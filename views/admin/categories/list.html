@@ -1,0 +1,193 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>          
+      
+<!-- page content -->
+
+<div class="content_wraper">
+    <div class="main_container">      
+        <div class="header_wraper">
+            <h2><%=title ? title : ''%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><h4><%=title ? title : ''%><small></small></h4></li>
+            </ul>
+        </div>    
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%>        
+        <div class="content_body">
+            <div class="table_heading">
+                <h3>Manage <%=title ? title : ''%></h3>
+                <!-- <ul>
+                    <li>
+                        <span class="label_info">No item selected</span>
+                        <a href="javascript:void(0)" data-toggle="tooltip" title="Delete Products" onclick="deletebannerDisplayMul()"><span class="fa fa-trash-o"></span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" data-toggle="tooltip" title="Search Products" class="open_search"><span class="fa fa-search"></span></a>
+                    </li>
+                    <li data-toggle="tooltip" title="Show Entries">
+                        <a href="javascript:void(0)" class="dropdown-toggle" id="show_entry" data-toggle="dropdown" aria-expanded="true"><span class="fa fa-list-ul"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="show_entry">
+                            <a class="dropdown-item" href="javascript:void(0)">10</a>
+                            <a class="dropdown-item" href="javascript:void(0)">25</a>
+                            <a class="dropdown-item" href="javascript:void(0)">50</a>
+                            <a class="dropdown-item" href="javascript:void(0)">100</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" data-toggle="tooltip" title="Export All"><span class="fa fa-download"></span></a>
+                    </li>
+                </ul> -->
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox_cell">
+                                <!-- <label class="checkbox"><input type="checkbox" id="checkAll" name="check"><span></span></label> -->
+                            </th>
+                            <th style="width:15px">Sl No</th>
+                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <!-- <th>Created At</th> -->
+                            <th>Action</th>
+                            <th>
+                                <a href="<%= adminbaseurl %>categories/addedit" class="add_btn"><span>+</span></a>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>                      
+                        <% if(Array.isArray(arrData)){ 
+                            if(arrData.length > 0){
+                            var i= startingNumber ? startingNumber : 1;
+                            arrData.forEach(function(val) { %>	
+                        <tr>
+                            <td class="checkbox_cell">
+                            <!-- <label class="checkbox"><input type="checkbox" value="<%= val.id %>"><span></span></label> -->
+                            </td>
+                            <td> <%= i %></td>
+                            <td> <%= val.title %></td>
+                            <td> 
+                                <% if(val.image !='' && val.image != null){%>
+                                    <img src="<%= baseurl+ 'admin/categories/'+  val.id+'/'+val.image %>" class="product_img" height="50px" width="50px" >
+                                <% }else{ %>
+                                    <img src="<%= baseurl + 'admin/categories/no_image.jpg' %>" class="product_img" height="50px" width="50px" >
+                                <% } %>
+                            </td>
+                            <td> <%= val.status %></td>
+                            <!-- <td> <%= moment(val.createdAt).format( 'LL') %></td>  -->
+                            <td>
+                                <a href="<%= adminbaseurl%>categories/addedit/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                                <a href="<%= adminbaseurl%>categories/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        <% i++; }) 
+                        } else{%>
+                            <tr>
+                                <td>No Data Found</td>                            
+                            </tr>
+                        <% } 
+                        }else{ %>
+                        <tr>
+                            <td>No Data Found</td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination_sec">
+                <% if(Array.isArray(arrData)){ 
+                    if(arrData.length > 0){%>
+                <div class="table_info">Showing <%= startingNumber ? startingNumber : '' %> to <%= endingNumber ? endingNumber : '' %> of <%= itemCount ? itemCount : ''%> entries</div>   
+                <% }} %>
+                <%  if (paginate.hasPreviousPages || previousPage) { %>
+                <ul>
+                    <% if(paginate.hasPreviousPages) {%>
+                    <li><a href="<%= paginate.href(true) %>">Previous</a></li>
+                    <% }else{ %>
+                    <li><a href="javascript:void(0)" class="disable">Previous</a></li>
+                    <% } %>
+                    <% pages.forEach(function(page) { %>
+                    <li><a href="<%= page.url %>" <% if(currentPage && currentPage == page.number ) {%> class="active" <% } %>><%= page.number%></a></li>
+                    <%  }) %>
+                    <% if(previousPage) {%>
+                    <li><a href="<%= paginate.href() %>">Next</a></li>
+                    <% }else{ %>
+                    <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                    <% } %>
+                </ul>
+                <% } %>
+            </div>                  
+        </div>
+    </div>
+</div>
+    
+<!-- page content -->
+<%- include ../partials/footer.html %>
+
+<script>
+    $("#checkAll").click(function () {
+      $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        var checkboxes = $('.checkbox input[type="checkbox"]'); 
+        checkboxes.change(function(){
+            var countCheckedCheckboxes = checkboxes.filter(':checked').length;
+            if(countCheckedCheckboxes > 0){
+                $('.label_info').text(countCheckedCheckboxes+' item(s) selected');
+                
+            }else{
+                $('.label_info').text('No item selected');
+            } 
+        });
+    });
+
+    function deletebannerDisplayMul() {  
+    var chkArray = []; 
+    /* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
+    $(".checkbox input:checked").each(function() {
+    chkArray.push($(this).val());
+    });
+	var chkArraylengh = chkArray.length;
+    if(chkArraylengh > 0){
+    console.log(chkArray)
+        var Data = { 'check' :chkArray}
+        var answer = confirm ("Are you sure you want to delete from the database?");
+            if(answer){
+    $.ajax({ 
+        url: "<%= apiurl %>salesmanmul/delete",
+        type:'POST',
+        data: Data,
+        success:function(response){
+           
+           // console.log(response);
+            window.location.reload();
+            },
+        error: function (e) {
+            
+            console.log("ERROR : ", e);
+        }
+        });   
+    }
+     }else{
+	  alert('For delete select first ');
+     }
+}
+</script>

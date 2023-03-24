@@ -1,0 +1,64 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>
+<div class="content_wraper">
+    <div class="main_container">
+        <div class="header_wraper">
+            <h2><%=title%></h2>
+            <ul>
+                <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                <li><h4><%=title%><small></small></h4></li>
+            </ul>
+        </div>
+  
+        <% if(messages!='') {%>
+        <div class="succ_msg msg" id="succ_msg">    
+            <i class="fa fa-check"  aria-hidden="true"></i>        
+            <%=messages%>
+        </div>
+        <%}%>                
+        <% if(errors!='') {%>
+        <div class="succ_err msg" id="err_msg">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+            <%=errors%>
+        </div>
+        <% }%> 
+          
+        <div class="content_body">
+            <div class="table_heading mb-5">
+                <h3><%=title%></h3>
+            </div>
+
+            <div class="table-responsive table_wraper">
+                <table class="table product_list025">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Sl No </th>
+                            <th>Store Name</th>
+                            <th>Store Code</th>
+                            <th>Hostname</th>
+                            <th>Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% var i= 1; arrData.forEach(function(val) { %>	
+                        <tr>
+                            <td class="text-center"> <%= i %></td>
+                            <td> <%= val.storeName %></td>
+                            <td> <%= val.storeCode %></td>
+                            <td> <%= val.cCode %></td>
+                            <td class="font-weight-bold"> 
+                                <%if(val.status=='Yes') {%> <span class="text-success">Active</span><% } else {%> <span class="text-danger">Inactive</span> <% } %>
+                            </td>
+                            <td class="text-center">
+                                <a href="<%= adminbaseurl%>image-resize/configuration/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                            </td>
+                        </tr>
+                        <% i++ }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../partials/footer.html %>

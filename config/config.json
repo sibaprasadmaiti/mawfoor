@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "AvijitChandan",
+    "database": "mawfoo",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "timezone": "Asia/Kolkata"
+  },
+  "test": {
+    "username": "root",
+    "database": "mawfoo",
+    "password": "",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "timezone": "Asia/Kolkata"
+  },
+  "production": {
+    "username": "root",
+    "password": "",
+    "database": "mawfoo",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "timezone": "Asia/Kolkata"
+  }
+}

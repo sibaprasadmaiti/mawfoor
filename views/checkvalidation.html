@@ -1,0 +1,39 @@
+<form action="" method="post" novalidate>
+	<fieldset>
+		<div class="field">
+			<label>
+				<span>Name</span>
+				<input data-validate-length-range="6" data-validate-words="2" name="name" placeholder="ex. John f. Kennedy" required="required" type="text" />
+			</label>
+			<div class='tooltip help'>
+				<span>?</span>
+				<div class='content'>
+					<b></b>
+					<p>Name must be at least 2 words</p>
+				</div>
+			</div>
+		</div>
+		<div class="field">
+			<label>
+				<span>email</span>
+				<input name="email" required="required" type="email" />
+			</label>
+		</div>
+	</fieldset>
+</form>
+<script src="<%= adminbaseurl %>validator-master/multifield.js"></script>
+<script src="<%= adminbaseurl %>validator-master/validator.js"></script>
+<script>
+	// initialize a validator instance from the "FormValidator" constructor.
+	// A "<form>" element is optionally passed as an argument, but is not a must
+	var validator = new FormValidator({"events" : ['blur', 'input', 'change']}, document.forms[0]);
+
+
+	// on form "submit" event
+	document.forms[0].onsubmit = function(e){
+		var submit = true,
+		validatorResult = validator.checkAll(this);
+		console.log(validatorResult);
+		return !!validatorResult.valid;
+	};
+</script>

@@ -1,0 +1,240 @@
+<%- include ../partials/header.html %>
+<%- include ../partials/sidebar.html %>    
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .addStore{
+    padding: 10px;
+    float: right;
+    font-size: 15px;
+  }
+</style>   
+<div class="content_wraper">
+    <div class="main_container">
+         <div class="header_wraper">
+              <h2><%=title%></h2>
+              <ul>
+                  <li><a href="<%= adminbaseurl %>dashboard" >Dashboard</a></li> 
+                  <li><h4><%=title%><small></small></h4></li>
+              </ul>
+          </div>
+  
+          <% if(messages!='') {%>
+          <div class="succ_msg msg" id="succ_msg">    
+              <i class="fa fa-check"  aria-hidden="true"></i>        
+              <%=messages%>
+          </div>
+          <%}%>                
+          <% if(errors!='') {%>
+          <div class="succ_err msg" id="err_msg">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  
+              <%=errors%>
+          </div>
+          <% }%> 
+          
+      <div class="content_body">
+        <div class="table_heading mb-4">
+            <div class="float-left"><h3><%=title%></h3></div>
+                
+            <div class="float-right">
+              <form class="header-searchbox"  >
+                <div class="searchcom" >
+                    <input type="text" placeholder="Search.." name="search" />
+                    <button style="margin-top: 7px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="table_heading" style=" display: flex; align-items: center; justify-content: space-between;">
+            <!-- ======================================= List-per-page Start ========================================= -->
+            <div class="title_right text-right">
+              <div>
+                <span style="font-size: 16px;">Showing </span>
+                <select onchange="location = this.value" style="height: 25px; width: 60px;">
+                  <option value="1?pagesize=10<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" <% if(pageSize=='10'){ %>selected <% }%> >10</option>
+    
+                  <option value="1?pagesize=25<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" <% if(pageSize=='25'){ %>selected <% }%>>25</option>
+    
+                  <option value="1?pagesize=50<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" <% if(pageSize=='50'){ %>selected <% }%>>50</option>
+    
+                  <option value="1?pagesize=100<% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" <% if(pageSize=='100'){ %>selected <% }%>>100</option>
+                </select> 
+                <span style="font-size: 16px;"> entries </span>      
+              </div>
+            </div>
+            <!-- ======================================= List-per-page End ========================================= -->
+            <!-- ======================================= Filter Start ========================================= -->
+            <div class="mb-4">
+              <div class="row">
+                <div class="mr-1">
+                  <label for="name" class="font-weight-bold">Name</label><br>
+                  <select style="height: 28px;" id="name" class="form-control" onchange="location = this.value">
+                    <option value="" selected disabled>Select Name</option>
+                    <% nameList.forEach(function(name) { %>
+                        <option value="?pagesize=<%=pageSize%>&name=<%= name.id %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(nameFilter==name.id){ %>selected <% }%>><%= name.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="mr-1">
+                    <label for="businessType" class="font-weight-bold">Business Type</label><br>
+                    <select style="height: 28px;"  id="businessType" class="form-control" onchange="location = this.value">
+                      <option value="" selected disabled>Select Business Type</option>
+                      <option value="?pagesize=<%=pageSize%>&businessType=owned<% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(typeFilter=='owned'){ %>selected <% }%>>Owned</option>
+      
+                      <option value="?pagesize=<%=pageSize%>&businessType=lease<% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %>" <% if(typeFilter=="lease"){ %>selected <% }%>>Lease</option>
+                    </select>
+                  </div>
+                <div>
+                  <label for="status" class="font-weight-bold">Status</label><br>
+                  <select style="height: 28px;" id="status" class="form-control" onchange="location = this.value">
+                    <option value="" selected disabled>Select Status</option>
+                    <option value="?pagesize=<%=pageSize%>&status=Yes<% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %>" <% if(statusFilter=='Yes'){ %>selected <% }%>>Active</option>
+    
+                    <option value="?pagesize=<%=pageSize%>&status=No<% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %>" <% if(statusFilter=="No"){ %>selected <% }%>>Inactive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- ======================================= Filter End ========================================= -->
+            <!-- ======================================= Export Start ========================================= -->
+            <div class="mt-0">
+              <a href="<%= adminbaseurl %>franchise/download?<% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %>" class="btn btn-success btn-sm right">Export List</a>
+              <a href="<%= adminbaseurl %>franchise/view" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> Add franchise</a>
+            </div>
+            <!-- ======================================= Export End ========================================= -->
+          </div>
+
+      <div class="table-responsive table_wraper">
+      <table class="table product_list025">
+          <thead>
+              <tr style="cursor: pointer;">
+                <% if(orderType =='DESC') {%>
+                    <th data-column="id" data-order="ASC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="id" data-order="DESC" class="text-center theading">Sl No <% if(columnName =='id') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="name" data-order="ASC" class="theading">Name <% if(columnName =='name') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="name" data-order="DESC" class="theading">Name <% if(columnName =='name') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="email" data-order="ASC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="email" data-order="DESC" class="theading">Email <% if(columnName =='email') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="contactNo" data-order="ASC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="contactNo" data-order="DESC" class="theading">Contact No <% if(columnName =='contactNo') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="businessType" data-order="ASC" class="theading">Business Type <% if(columnName =='businessType') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="businessType" data-order="DESC" class="theading">Business Type <% if(columnName =='businessType') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+
+                <% if(sessionStoreId=='') {%>
+                    <th>Store</th>
+                <% }%>
+
+                <% if(orderType =='DESC') {%>
+                    <th data-column="status" data-order="ASC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }else{ %>
+                    <th data-column="status" data-order="DESC" class="theading">Status <% if(columnName =='status') {%><i class="fa fa-sort fa-lg text-success"></i><% }else{ %><i class="fa fa-sort fa-lg"></i> <% }%></th>
+                <% }%>
+                 
+                 <th class="text-center">Action</th>
+              </tr>
+          </thead>
+      <tbody>
+      
+          <% var i= 1;
+              arrData.forEach(function(val) { %>	
+          <tr>
+              <td class="text-center"> <%= i %></td>
+              <td> <%= val.name %></td>
+              <td> <%= val.email %></td>
+              <td> <%= val.contactNo %></td>
+              <td> <%= val.businessType %></td>
+              <% if(sessionStoreId=='') {%>
+                <td><% storeList.forEach(function(store) { if(store.id==val.storeId){ %> <%= store.storeName %></ <% } }) %></td>
+              <% }%>
+              <td class="font-weight-bold"> 
+                <%if(val.status=='Yes' || val.status=='yes') {%> <span class="text-success">Active</span><% } else {%> <span class="text-danger">Inactive</span> <% } %>
+              </td>
+              <td class="text-center"><a href="<%= adminbaseurl%>franchise/view/<%= val.id %>" class="edit_btn"><i class="fa fa-pencil"></i></a>
+                  <a href="<%= adminbaseurl%>franchise/delete/<%= val.id %>" class="edit_btn" onclick="return(confirm('Do you really want to delete? '));"><i class="fa fa-trash"></i></a>
+              </td>
+          </tr>
+          <% i++; }) %>
+          </tbody>
+          </table>
+           <!--====================================== Pagination Start ======================================-->
+            <% if(listCount>0) {%>
+            <div class="pagination_sec">
+                <div class="table_info">Showing <% if(((currentPage-1)*pageSize)+1==listCount) {%> <%= listCount %> <% }else{ %><%= ((currentPage-1)*pageSize)+1 %> to <%= currentPage==pageCount ? listCount : (currentPage*pageSize)  %> <% } %> of <%= listCount %> entries</div>
+                <% if(currentPage>1) {%>
+                    <ul>
+                    <li><a href="<%= adminbaseurl%>franchise/list/<%=currentPage-1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" >Prev</a></li>
+                    </ul>
+                <% }else{ %>
+                    <ul>
+                    <li><a href="javascript:void(0)" class="disable">Prev</a></li>
+                    </ul>
+                <% } %>
+                <% for(var i=1; i<=pageCount; i++) { %>
+                    <ul>
+                    <% if(currentPage==i) {%>
+                    <li><a href="<%= adminbaseurl%>franchise/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" class="active"><%=i %></a></li>
+                    <% }else{ %>
+                    <li><a href="<%= adminbaseurl%>franchise/list/<%=i %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" class=""><%=i %></a></li>
+                    <% } %>
+                    </ul>
+                <% } %>
+                <% if(currentPage < pageCount) {%>
+                    <ul>
+                    <li><a href="<%= adminbaseurl%>franchise/list/<%=currentPage+1 %>?pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %><% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>" >Next</a></li>
+                    </ul>
+                    <% }else{ %>
+                    <ul>
+                    <li><a href="javascript:void(0)" class="disable">Next</a></li>
+                    </ul>
+                <% } %>
+            </div>
+            <% } %>
+             <!--====================================== Pagination End ======================================-->
+         </div>
+      </div>
+  </div>
+</div>
+
+<%- include ../partials/footer.html %>
+
+<script>
+    $(document).ready(() => {
+      $('.theading').on('click',function(){
+        var column = $(this).data('column');
+        var order = $(this).data('order');
+  
+        if(order == 'DESC'){
+          $(this).data('order', 'ASC');        
+          window.location.href = `<%= adminbaseurl%>franchise/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>`
+        }else{
+          $(this).data('order', 'DESC');
+          window.location.href = `<%= adminbaseurl%>franchise/list/1?column=${column}&order=${order}&pagesize=<%= pageSize%><% if(searchItem!=''){ %>&search=<%=searchItem %> <% } %><% if(typeFilter!=''){ %>&businessType=<%=typeFilter %><% } %><% if(statusFilter!=''){ %>&status=<%=statusFilter %><% } %><% if(nameFilter!=''){ %>&name=<%=nameFilter %><% } %>`
+        }
+      })
+  });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#name').select2();
+      $('#businessType').select2();
+      $('#status').select2();
+    });
+  </script>
